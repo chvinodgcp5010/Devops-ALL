@@ -1,0 +1,10 @@
+================================== MVN phases ===========================================
+
+validate -> compile -> test -> package -> integration test ->verify -> install -> deploy
+
+https://maven.apache.org/guides/introduction/introduction-to-the-lifecycle.html
+
+https://maven.apache.org/guides/introduction/introduction-to-the-lifecycle.html#Lifecycle_Reference
+
+Plugins:
+https://maven.apache.org/ref/3.8.5/maven-core/default-bindings.html

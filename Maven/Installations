@@ -1,0 +1,84 @@
+On ubuntu by default git installs already
+
+
+================================================== INSTALL GIT ==================================================
+check 
+#apt install git -y
+
+clone maven repo:
+#git clone https://github.com/chvinodgcp5010/maven-build-code.git
+
+#git checkout vp-rem
+
+================================================== INSTALL JAVA (JDK) ==================================================
+
+Note: Maven need jdk so install jdk (not jre)
+
+check java versions:
+
+#apt search jdk
+
+Sorting... Done
+Full Text Search... Done
+crypto-policies/jammy 20190816git-1 all
+  unify the crypto policies used by different applications and libraries
+
+default-jdk/jammy 2:1.11-72build2 amd64
+  Standard Java or Java compatible Development Kit
+  
+openjdk-8-jdk/jammy 8u312-b07-0ubuntu1 amd64
+  OpenJDK Development Kit (JDK)
+
+
+#apt install openjdk-8-jdk -y
+
+check java version installed
+
+#java -version
+openjdk version "1.8.0_312"
+OpenJDK Runtime Environment (build 1.8.0_312-8u312-b07-0ubuntu1-b07)
+OpenJDK 64-Bit Server VM (build 25.312-b07, mixed mode)
+
+
+================================================== INSTALL MAVEN ==================================================
+
+maven and java version should match (sync)
+
+#apt install maven -y
+
+#mvn -version
+
+Apache Maven 3.6.3
+Maven home: /usr/share/maven
+Java version: 1.8.0_312, vendor: Private Build, runtime: /usr/lib/jvm/java-8-openjdk-amd64/jre
+Default locale: en, platform encoding: UTF-8
+OS name: "linux", version: "5.15.0-1004-aws", arch: "amd64", family: "unix"
+
+
+#git checkout vp-rem
+
+#cd maven-build-cod
+
+#maven-build-code# ls
+Jenkinsfile  README.md  ansible  pom.xml  src
+
+#mvn test
+
+#ls
+Jenkinsfile  README.md  ansible  pom.xml  src  target
+
+#ls target
+classes  generated-sources  generated-test-sources  jacoco.exec  maven-status  surefire-reports  test-classes
+
+#mvn install
+
+#ls target
+classes  generated-sources  generated-test-sources  jacoco.exec  maven-archiver  maven-status  site  surefire-reports  test-classes  vprofile-v2  vprofile-v2.war
+
+
+
+
+
+
+
+

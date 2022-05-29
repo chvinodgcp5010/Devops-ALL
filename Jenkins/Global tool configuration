@@ -1,0 +1,19 @@
+By default we installed jenkins , maven using 
+"apt install openjdk-8-jdk"
+"apt install maven -y"
+
+so jenkins will take these path and execute directly from "system installation" ( directly installed from cli )
+
+================================ global tool configurations ====================================
+
+If suppose if we have multiple versions of java and maven you need specific version to execute on specific build from there we need to 
+use "global tool configuration" 
+
+OR
+If we want to install dirctly from jenkins user interface use "global tool configurations" page and add install automtically .
+
+================================================================================================
+
+Try to remove maven using "apt remove maven -y" and execute build it will fail , because there is no maven 
+
+Caused: java.io.IOException: Cannot run program "mvn" (in directory "/var/lib/jenkins/workspace/first-view"): error=2, No such file or directory

@@ -42,7 +42,7 @@ OpenJDK 64-Bit Server VM (build 25.312-b07, mixed mode)
 
 ================================================== INSTALL MAVEN ==================================================
 
-maven and java version should match (sync)
+maven and java version should match (sync) otherwise build will fail.
 
 #apt install maven -y
 
@@ -74,6 +74,102 @@ classes  generated-sources  generated-test-sources  jacoco.exec  maven-status  s
 
 #ls target
 classes  generated-sources  generated-test-sources  jacoco.exec  maven-archiver  maven-status  site  surefire-reports  test-classes  vprofile-v2  vprofile-v2.war
+
+#it creates war file
+
+
+=============================== Note =====================================
+
+each and every build you can user "mvn clean install" instead of mvn install
+
+#mvn clean install 
+
+first it clean the target folder and install all fresh packages.
+
+
+IF you want specific version of maven you can isntall while typing on google "maven archive"
+
+https://archive.apache.org/dist/maven/maven-3/
+
+https://archive.apache.org/dist/maven/maven-3/3.2.3/binaries/apache-maven-3.2.3-bin.tar.gz
+
+Download at /opt folder
+#wget https://archive.apache.org/dist/maven/maven-3/3.2.3/binaries/apache-maven-3.2.3-bin.tar.gz
+
+check version:
+root@ip-172-31-21-157:/opt/apache-maven-3.2.3/bin# /opt/apache-maven-3.2.3/bin/mvn -version
+Apache Maven 3.2.3 (33f8c3e1027c3ddde99d3cdebad2656a31e8fdf4; 2014-08-11T20:58:10+00:00)
+Maven home: /opt/apache-maven-3.2.3
+Java version: 1.8.0_312, vendor: Private Build
+Java home: /usr/lib/jvm/java-8-openjdk-amd64/jre
+Default locale: en, platform encoding: UTF-8
+OS name: "linux", version: "5.15.0-1004-aws", arch: "amd64", family: "unix"
+
+
+============================== mvn version check its working or not ===============================
+
+clone git repo 
+
+cd repo
+
+root@ip-172-31-21-157:~/maven-build-code# ls
+Jenkinsfile  README.md  ansible  pom.xml  src 
+
+root@ip-172-31-21-157:~/maven-build-code#  /opt/apache-maven-3.2.3/bin/mvn clean install
+
+
+[INFO] Scanning for projects...
+[INFO]
+[INFO] ------------------------------------------------------------------------
+[INFO] Building Visualpathit VProfile Webapp v2
+[INFO] ------------------------------------------------------------------------
+[INFO]
+[INFO] --- maven-clean-plugin:2.5:clean (default-clean) @ vprofile ---
+[INFO] Deleting /root/maven-build-code/target
+[INFO]
+[INFO] --- maven-resources-plugin:2.6:resources (default-resources) @ vprofile ---
+[WARNING] Using platform encoding (UTF-8 actually) to copy filtered resources, i.e. build is platform dependent!
+[INFO] Copying 4 resources
+[INFO]
+[INFO] --- jacoco-maven-plugin:0.7.2.201409121644:prepare-agent (jacoco-initialize) @ vprofile ---
+[INFO] argLine set to -javaagent:/root/.m2/repository/org/jacoco/org.jacoco.agent/0.7.2.
+
+
+
+[INFO]
+[INFO] --- maven-war-plugin:2.2:war (default-war) @ vprofile ---
+[INFO] Packaging webapp
+[INFO] Assembling webapp [vprofile] in [/root/maven-build-code/target/vprofile-v2]
+[INFO] Processing war project
+[INFO] Copying webapp resources [/root/maven-build-code/src/main/webapp]
+[INFO] Webapp assembled in [294 msecs]
+[INFO] Building war: /root/maven-build-code/target/vprofile-v2.war
+[INFO] WEB-INF/web.xml already added, skipping
+[INFO]
+[INFO] --- jacoco-maven-plugin:0.7.2.201409121644:report (jacoco-site) @ vprofile ---
+[INFO] Analyzed bundle 'Visualpathit VProfile Webapp' with 15 classes
+[INFO]
+[INFO] --- maven-install-plugin:2.4:install (default-install) @ vprofile ---
+[INFO] Installing /root/maven-build-code/target/vprofile-v2.war to /root/.m2/repository/com/visualpathit/vprofile/v2/vprofile-v2.war
+[INFO] Installing /root/maven-build-code/pom.xml to /root/.m2/repository/com/visualpathit/vprofile/v2/vprofile-v2.pom
+
+Output:
+
+ls
+Jenkinsfile  README.md  ansible  pom.xml  src  target
+
+note:
+mvn installed using a specific version ( provided absolute total path )
+
+
+
+
+
+
+
+
+
+
 
 
 

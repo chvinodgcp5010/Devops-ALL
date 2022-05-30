@@ -1,0 +1,33 @@
+->Jenkins environment variables
+
+https://wiki.jenkins.io/display/JENKINS/Building+a+software+project
+
+->Each and every build it will create artifacts and old artifacts will delete and new artifact will add to job .
+
+If we need versioning of job artifacts?
+
+on "build" job step
+
+use:
+invoke top level maven targets.
+
+#maven ( name we added on global tool configuration jenkins)
+#install ( goal)
+
+click on build -> click on execute shell command where add below script.
+
+mkdir -p versions/
+cp target/vprofile-v1.war versions/vprofile-V$BUILD_ID.war
+
+Once all done execute build on jenkins and check the workspace on jenkins ui , you will get versions folder 
+
+versions/	
+vprofile-V5.war	May 30, 2022 3:25:09 AM	17.30 MB	view
+vprofile-V6.war	May 30, 2022 3:25:33 AM	17.30 MB	view
+vprofile-V7.war	May 30, 2022 3:25:47 AM	17.30 MB	view
+vprofile-V8.war	May 30, 2022 3:26:01 AM	17.30 MB	view
+
+On Jenkins VM Console:
+
+root@ip-172-31-18-34:/var/lib/jenkins/workspace/firstjob/versions# ls
+vprofile-V5.war  vprofile-V6.war  vprofile-V7.war  vprofile-V8.war

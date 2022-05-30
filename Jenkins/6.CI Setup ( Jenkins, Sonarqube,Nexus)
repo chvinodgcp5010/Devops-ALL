@@ -1,0 +1,280 @@
+==================================== GIT repo (https://github.com/chvinodgcp5010/CICD-project-Nexus-and-Sonarqube.git) ==================================
+
+https://github.com/chvinodgcp5010/CICD-project-Nexus-and-Sonarqube/tree/ci-jenkins/userdata
+
+branch : ci-jenkins
+
+goto userdata:
+
+################################################# Jenkins setup (installation) (Ubuntu 18) ###################################################
+
+Open security group 
+
+ssh 22
+http 80
+custom tcp 8080 
+
+---------------------------- Commands  ------------------------------------
+
+#!/bin/bash
+
+sudo apt update
+
+sudo apt install openjdk-8-jdk -y
+#sudo apt install ca-certificates -y
+sudo apt install maven git wget unzip -y
+
+curl -fsSL https://pkg.jenkins.io/debian-stable/jenkins.io.key | sudo tee \
+  /usr/share/keyrings/jenkins-keyring.asc > /dev/null
+
+echo deb [signed-by=/usr/share/keyrings/jenkins-keyring.asc] \
+  https://pkg.jenkins.io/debian-stable binary/ | sudo tee \
+  /etc/apt/sources.list.d/jenkins.list > /dev/null
+
+sudo apt-get update
+sudo apt-get install jenkins -y
+sudo systemcl enable jenkins
+sudo systemctl status jenkins
+
+---------------------------- END ------------------------------------
+
+<ip>:8080
+
+check versions
+
+=>root@ip-172-31-93-221:~# java -version
+
+openjdk version "1.8.0_312"
+OpenJDK Runtime Environment (build 1.8.0_312-8u312-b07-0ubuntu1~18.04-b07)
+OpenJDK 64-Bit Server VM (build 25.312-b07, mixed mode)
+
+=>root@ip-172-31-93-221:~# mvn -version
+Apache Maven 3.6.0
+Maven home: /usr/share/maven
+Java version: 1.8.0_312, vendor: Private Build, runtime: /usr/lib/jvm/java-8-openjdk-amd64/jre
+Default locale: en, platform encoding: UTF-8
+OS name: "linux", version: "5.4.0-1071-aws", arch: "amd64", family: "unix"
+
+
+=>root@ip-172-31-93-221:~# jenkins --version
+2.332.3
+
+
+
+################################################### Nexus setup (Centos 7) ###################################################
+
+INSTANCE TYPE:  T2.MEDIUM   (minimum)
+
+security group of ec2 instance
+
+ssh         22    --> Myip
+custom tcp 8081   --> only with jenkins secuirty group ( allow ) ----> as of now use anywhere
+
+---------------------------- Commads ------------------------------------
+#!/bin/bash
+
+yum install java-1.8.0-openjdk.x86_64 wget -y   
+mkdir -p /opt/nexus/   
+mkdir -p /tmp/nexus/     
+
+cd /tmp/nexus/                                                                            #wget $NEXUSURL -O nexus.tar.gz 
+wget https://download.sonatype.com/nexus/3/latest-unix.tar.gz               #(NEXUSURL : "https://download.sonatype.com/nexus/3/latest-unix.tar.gz")
+tar -xzvf latest-unix.tar.gz
+
+rm -rf /tmp/nexus/latest-unix.tar.gz 
+rsync -avzh /tmp/nexus/ /opt/nexus/                                          # sync files from /tmp/nexus to /opt/nexus
+
+useradd nexus
+chown -R nexus.nexus /opt/nexus 
+
+-------------------------------------------
+cat <<EOT>> /etc/systemd/system/nexus.service
+[Unit]                                                                          
+Description=nexus service                                                       
+After=network.target       
+                                                                  
+[Service]                                                                       
+Type=forking                                                                    
+LimitNOFILE=65536                                                               
+ExecStart=/opt/nexus/nexus-3.39.0-01/bin/nexus start                                            #ExecStart=/opt/nexus/$NEXUSDIR/bin/nexus start  
+ExecStop=/opt/nexus/nexus-3.39.0-01/bin/nexus stop                                              #ExecStop=/opt/nexus/$NEXUSDIR/bin/nexus stop                                    
+User=nexus                                                                      
+Restart=on-abort                                                                
+                                                                  
+[Install]                                                                       
+WantedBy=multi-user.target                                                      
+EOT
+--------------------------------------------------
+
+echo 'run_as_user="nexus"' > /opt/nexus/nexus-3.39.0-01/bin/nexus.rc
+systemctl daemon-reload
+systemctl start nexus
+systemctl enable nexus
+
+################################################### SONARQUBE SETUP (ubuntu18) ###################################################
+
+Instance type: t2.medium
+
+secuirty group:
+
+ssh         22              myip
+http        80              anywehre
+cutom tcp 9000              anywhere
+
+
+https://docs.sonarqube.org/latest/setup/get-started-2-minutes/
+
+consists "sonarqube" "postgres" "nginx"
+
+
+
+============================= COMMANDS =================================
+#!/bin/bash
+
+cp /etc/sysctl.conf /root/sysctl.conf_backup
+
+cat <<EOT> /etc/sysctl.conf
+vm.max_map_count=262144
+fs.file-max=65536
+ulimit -n 65536
+ulimit -u 4096
+EOT
+
+
+cp /etc/security/limits.conf /root/sec_limit.conf_backup
+
+cat <<EOT> /etc/security/limits.conf
+sonarqube   -   nofile   65536
+sonarqube   -   nproc    409
+EOT
+
+
+sudo apt-get update -y
+sudo apt-get install openjdk-11-jdk -y
+sudo update-alternatives --config java
+java -version
+sudo apt update
+
+wget -q https://www.postgresql.org/media/keys/ACCC4CF8.asc -O - | sudo apt-key add -
+sudo sh -c 'echo "deb http://apt.postgresql.org/pub/repos/apt/ `lsb_release -cs`-pgdg main" >> /etc/apt/sources.list.d/pgdg.list'
+sudo apt install postgresql postgresql-contrib -y
+#sudo -u postgres psql -c "SELECT version();"
+sudo systemctl enable postgresql.service
+sudo systemctl start  postgresql.service
+
+sudo echo "postgres:admin123" | chpasswd
+runuser -l postgres -c "createuser sonar"
+sudo -i -u postgres psql -c "ALTER USER sonar WITH ENCRYPTED PASSWORD 'admin123';"
+sudo -i -u postgres psql -c "CREATE DATABASE sonarqube OWNER sonar;"
+sudo -i -u postgres psql -c "GRANT ALL PRIVILEGES ON DATABASE sonarqube to sonar;"
+
+systemctl restart  postgresql
+#systemctl status -l   postgresql
+netstat -tulpena | grep postgres
+sudo mkdir -p /sonarqube/
+
+--------------
+
+NOTE:
+
+sonarqube website:
+-> downloads
+-> on bottom will get long term support 
+->Download SonarQube 8.9.8 LTS
+->copy url ( https://binaries.sonarsource.com/Distribution/sonarqube/sonarqube-8.9.8.54436.zip )
+-------------
+
+cd /sonarqube/                            
+sudo curl -O https://binaries.sonarsource.com/Distribution/sonarqube/sonarqube-8.3.0.34182.zip
+sudo apt-get install zip -y
+sudo unzip -o sonarqube-8.3.0.34182.zip -d /opt/
+sudo mv /opt/sonarqube-8.3.0.34182/ /opt/sonarqube
+
+sudo groupadd sonar
+sudo useradd -c "SonarQube - User" -d /opt/sonarqube/ -g sonar sonar
+sudo chown sonar:sonar /opt/sonarqube/ -R
+cp /opt/sonarqube/conf/sonar.properties /root/sonar.properties_backup
+
+
+cat <<EOT> /opt/sonarqube/conf/sonar.properties
+sonar.jdbc.username=sonar
+sonar.jdbc.password=admin123
+sonar.jdbc.url=jdbc:postgresql://localhost/sonarqube
+sonar.web.host=0.0.0.0
+sonar.web.port=9000
+sonar.web.javaAdditionalOpts=-server
+sonar.search.javaOpts=-Xmx512m -Xms512m -XX:+HeapDumpOnOutOfMemoryError
+sonar.log.level=INFO
+sonar.path.logs=logs
+EOT
+
+
+cat <<EOT> /etc/systemd/system/sonarqube.service
+[Unit]
+Description=SonarQube service
+After=syslog.target network.target
+[Service]
+Type=forking
+ExecStart=/opt/sonarqube/bin/linux-x86-64/sonar.sh start
+ExecStop=/opt/sonarqube/bin/linux-x86-64/sonar.sh stop
+User=sonar
+Group=sonar
+Restart=always
+LimitNOFILE=65536
+LimitNPROC=4096
+[Install]
+WantedBy=multi-user.target
+EOT
+
+
+systemctl daemon-reload
+systemctl enable sonarqube.service
+#systemctl start sonarqube.service
+#systemctl status -l sonarqube.service
+apt-get install nginx -y
+rm -rf /etc/nginx/sites-enabled/default
+rm -rf /etc/nginx/sites-available/default
+
+
+cat <<EOT> /etc/nginx/sites-available/sonarqube
+server{
+    listen      80;
+    server_name sonarqube.groophy.in;
+    access_log  /var/log/nginx/sonar.access.log;
+    error_log   /var/log/nginx/sonar.error.log;
+    proxy_buffers 16 64k;
+    proxy_buffer_size 128k;
+    location / {
+        proxy_pass  http://127.0.0.1:9000;
+        proxy_next_upstream error timeout invalid_header http_500 http_502 http_503 http_504;
+        proxy_redirect off;
+              
+        proxy_set_header    Host            \$host;
+        proxy_set_header    X-Real-IP       \$remote_addr;
+        proxy_set_header    X-Forwarded-For \$proxy_add_x_forwarded_for;
+        proxy_set_header    X-Forwarded-Proto http;
+    }
+}
+EOT
+
+
+ln -s /etc/nginx/sites-available/sonarqube /etc/nginx/sites-enabled/sonarqube
+systemctl enable nginx.service
+#systemctl restart nginx.service
+sudo ufw allow 80,9000,9001/tcp
+echo "System reboot in 30 sec"
+sleep 30
+reboot
+
+
+###################### Sonar-analysis properties ######################
+
+
+sonar.projectKey=vprofile
+sonar.projectName=vprofile-repo
+sonar.projectVersion=1.0
+sonar.sources=src/
+sonar.java.binaries=target/test-classes/com/visualpathit/account/controllerTest/
+sonar.junit.reportsPath=target/surefire-reports/
+sonar.jacoco.reportsPath=target/jacoco.exec
+sonar.java.checkstyle.reportPaths=target/checkstyle-result.xml

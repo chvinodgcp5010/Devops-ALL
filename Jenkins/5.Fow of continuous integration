@@ -20,11 +20,13 @@ set notifications ( if build fails)
 
 ==================================== GIT repo (https://github.com/chvinodgcp5010/CICD-project-Nexus-and-Sonarqube.git) ==================================
 
+https://github.com/chvinodgcp5010/CICD-project-Nexus-and-Sonarqube/tree/ci-jenkins/userdata
+
 branch : ci-jenkins
 
 goto userdata:
 
-########## Jenkins setup (installation) ##########
+########## Jenkins setup (installation) (Ubuntu 18) ##########
 
 #!/bin/bash
 sudo apt update
@@ -41,7 +43,7 @@ sudo apt-get install jenkins -y
 ###
 
 
-############ Nexus setup ################
+############ Nexus setup (Centos 7) ################
 
  
 #!/bin/bash
@@ -78,8 +80,9 @@ systemctl daemon-reload
 systemctl start nexus
 systemctl enable nexus
 
-##################### Sonarqube setup #####################
+##################### Sonarqube setup (ubuntu18) #####################
 
+consists "sonarqube" "postgres" "nginx"
 
 #!/bin/bash
 cp /etc/sysctl.conf /root/sysctl.conf_backup
@@ -197,3 +200,20 @@ sonar.java.binaries=target/test-classes/com/visualpathit/account/controllerTest/
 sonar.junit.reportsPath=target/surefire-reports/
 sonar.jacoco.reportsPath=target/jacoco.exec
 sonar.java.checkstyle.reportPaths=target/checkstyle-result.xml
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

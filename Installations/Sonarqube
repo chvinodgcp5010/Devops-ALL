@@ -1,3 +1,5 @@
+https://github.com/chvinodgcp5010/CICD-project-Nexus-and-Sonarqube/blob/ci-jenkins/userdata/sonar-setup.sh
+
 Instance type: t2.medium
 
 secuirty group:
@@ -156,8 +158,6 @@ reboot
 <ip>:9000
 
 
-
-==========================
 
 ###################### Sonar-analysis properties ######################
 

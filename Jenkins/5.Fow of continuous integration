@@ -26,7 +26,15 @@ branch : ci-jenkins
 
 goto userdata:
 
-########## Jenkins setup (installation) (Ubuntu 18) ##########
+################################################# Jenkins setup (installation) (Ubuntu 18) ###################################################
+
+Open security group 
+
+ssh 22
+http 80
+custom tcp 8080 
+
+---------------------------- script ------------------------------------
 
 #!/bin/bash
 sudo apt update
@@ -40,47 +48,90 @@ echo deb [signed-by=/usr/share/keyrings/jenkins-keyring.asc] \
   /etc/apt/sources.list.d/jenkins.list > /dev/null
 sudo apt-get update
 sudo apt-get install jenkins -y
+sudo systemcl enable jenkins
+sudo systemctl status jenkins
 ###
+---------------------------- script ------------------------------------
+
+<ip>:8080
+
+check versions
+
+=>root@ip-172-31-93-221:~# java -version
+
+openjdk version "1.8.0_312"
+OpenJDK Runtime Environment (build 1.8.0_312-8u312-b07-0ubuntu1~18.04-b07)
+OpenJDK 64-Bit Server VM (build 25.312-b07, mixed mode)
+
+=>root@ip-172-31-93-221:~# mvn -version
+Apache Maven 3.6.0
+Maven home: /usr/share/maven
+Java version: 1.8.0_312, vendor: Private Build, runtime: /usr/lib/jvm/java-8-openjdk-amd64/jre
+Default locale: en, platform encoding: UTF-8
+OS name: "linux", version: "5.4.0-1071-aws", arch: "amd64", family: "unix"
 
 
-############ Nexus setup (Centos 7) ################
+=>root@ip-172-31-93-221:~# jenkins --version
+2.332.3
 
- 
+
+
+################################################### Nexus setup (Centos 7) ###################################################
+
+INSTANCE TYPE:  T2.MEDIUM   (minimum)
+
+security group of ec2 instance
+
+ssh         22    --> Myip
+custom tcp 8081   --> only with jenkins secuirty group ( allow ) ----> as of now use anywhere
+
+---------------------------- script ------------------------------------
 #!/bin/bash
 yum install java-1.8.0-openjdk.x86_64 wget -y   
 mkdir -p /opt/nexus/   
-mkdir -p /tmp/nexus/                           
+mkdir -p /tmp/nexus/     
+
 cd /tmp/nexus/
-NEXUSURL="https://download.sonatype.com/nexus/3/latest-unix.tar.gz"
-wget $NEXUSURL -O nexus.tar.gz
-EXTOUT=`tar xzvf nexus.tar.gz`
-NEXUSDIR=`echo $EXTOUT | cut -d '/' -f1`
-rm -rf /tmp/nexus/nexus.tar.gz
-rsync -avzh /tmp/nexus/ /opt/nexus/
+
+                                                                            #wget $NEXUSURL -O nexus.tar.gz 
+wget https://download.sonatype.com/nexus/3/latest-unix.tar.gz               #(NEXUSURL : "https://download.sonatype.com/nexus/3/latest-unix.tar.gz")
+
+tar -xzvf latest-unix.tar.gz
+
+rm -rf /tmp/nexus/latest-unix.tar.gz 
+
+rsync -avzh /tmp/nexus/ /opt/nexus/                                          # sync files from /tmp/nexus to /opt/nexus
+
 useradd nexus
+
 chown -R nexus.nexus /opt/nexus 
+--------------------------------------------------
 cat <<EOT>> /etc/systemd/system/nexus.service
 [Unit]                                                                          
 Description=nexus service                                                       
-After=network.target                                                            
+After=network.target       
                                                                   
 [Service]                                                                       
 Type=forking                                                                    
 LimitNOFILE=65536                                                               
-ExecStart=/opt/nexus/$NEXUSDIR/bin/nexus start                                  
-ExecStop=/opt/nexus/$NEXUSDIR/bin/nexus stop                                    
+ExecStart=/opt/nexus/nexus-3.39.0-01/bin/nexus start                                            #ExecStart=/opt/nexus/$NEXUSDIR/bin/nexus start  
+ExecStop=/opt/nexus/nexus-3.39.0-01/bin/nexus stop                                              #ExecStop=/opt/nexus/$NEXUSDIR/bin/nexus stop                                    
 User=nexus                                                                      
 Restart=on-abort                                                                
                                                                   
 [Install]                                                                       
 WantedBy=multi-user.target                                                      
 EOT
-echo 'run_as_user="nexus"' > /opt/nexus/$NEXUSDIR/bin/nexus.rc
+--------------------------------------------------
+
+echo 'run_as_user="nexus"' > /opt/nexus/nexus-3.39.0-01/bin/nexus.rc
 systemctl daemon-reload
 systemctl start nexus
 systemctl enable nexus
 
-##################### Sonarqube setup (ubuntu18) #####################
+################################################### Sonarqube setup (ubuntu18) ###################################################
+
+https://docs.sonarqube.org/latest/setup/get-started-2-minutes/
 
 consists "sonarqube" "postgres" "nginx"
 
@@ -92,11 +143,15 @@ fs.file-max=65536
 ulimit -n 65536
 ulimit -u 4096
 EOT
+
+
 cp /etc/security/limits.conf /root/sec_limit.conf_backup
 cat <<EOT> /etc/security/limits.conf
 sonarqube   -   nofile   65536
 sonarqube   -   nproc    409
 EOT
+
+
 sudo apt-get update -y
 sudo apt-get install openjdk-11-jdk -y
 sudo update-alternatives --config java
@@ -137,6 +192,8 @@ sonar.search.javaOpts=-Xmx512m -Xms512m -XX:+HeapDumpOnOutOfMemoryError
 sonar.log.level=INFO
 sonar.path.logs=logs
 EOT
+
+
 cat <<EOT> /etc/systemd/system/sonarqube.service
 [Unit]
 Description=SonarQube service
@@ -153,6 +210,8 @@ LimitNPROC=4096
 [Install]
 WantedBy=multi-user.target
 EOT
+
+
 systemctl daemon-reload
 systemctl enable sonarqube.service
 #systemctl start sonarqube.service
@@ -160,6 +219,8 @@ systemctl enable sonarqube.service
 apt-get install nginx -y
 rm -rf /etc/nginx/sites-enabled/default
 rm -rf /etc/nginx/sites-available/default
+
+
 cat <<EOT> /etc/nginx/sites-available/sonarqube
 server{
     listen      80;
@@ -180,6 +241,8 @@ server{
     }
 }
 EOT
+
+
 ln -s /etc/nginx/sites-available/sonarqube /etc/nginx/sites-enabled/sonarqube
 systemctl enable nginx.service
 #systemctl restart nginx.service

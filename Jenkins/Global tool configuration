@@ -1,3 +1,6 @@
+Jenkins doesnot have sufficient capability but its has its "plugins" and setting we use it makes more powerful.
+
+
 By default we installed jenkins , maven using below commnads.
 
 "apt install openjdk-8-jdk"

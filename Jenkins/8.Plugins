@@ -1,0 +1,34 @@
+Plugins
+
+Nexus
+sonarwube
+git
+Timestamp
+Pipeline maven integration plugin
+
+Search for nexus on plugins:
+
+nexus:
+1."nexus artifact uploader"
+https://plugins.jenkins.io/nexus-artifact-uploader/
+
+sonarqube:
+2."sonarqube scanner"
+https://plugins.jenkins.io/sonar/
+
+3.build timestamp:
+It version our artifacts
+This plugin adds BUILD_TIMESTAMP to Jenkins variables and system properties.
+https://plugins.jenkins.io/build-timestamp/
+
+4.Pipeline maven integration plugin
+This plugin provides integration with Pipeline, configures maven environment to use within a pipeline job by calling sh mvn or bat mvn. The selected maven
+installation will be configured and prepended to the path.
+
+https://plugins.jenkins.io/pipeline-maven/
+
+5.Pipeline utility steps
+Utility steps for pipeline jobs.
+
+https://plugins.jenkins.io/pipeline-utility-steps/
+

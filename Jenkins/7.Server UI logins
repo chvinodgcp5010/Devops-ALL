@@ -1,0 +1,56 @@
+systemctl staus jenkins
+systemctl staus sonarqube
+systemctl staus nexus
+
+If you deploy on t2.micro it will not come up
+
+
+jenkins:
+<ip>:8080
+
+sonarqube:
+<ip>:9000
+
+nexus:
+<ip>:8081
+
+================================================ nexus login ==========================================
+
+On right side of <ip>:8081  ---> there is sign in option 
+
+click on "sign in"
+Your admin user password is located in
+/opt/nexus/sonatype-work/nexus3/admin.password on the server.
+
+cat /opt/nexus/sonatype-work/nexus3/admin.password
+
+f2639bdc-18a0-42df-b1d7-d4454frfrfrv01
+
+Usernaem: admin
+pwd: f2639bdc-18a0-42df-b1d7-d4454frfrfrv01
+
+
+update password: any
+
+==========================================
+Note:
+Configure Anonymous Access
+
+Enable anonymous access means that by default, users can search, browse and download components from repositories without credentials. Please consider the security implications for your organization.
+
+Disable anonymous access should be chosen with care, as it will require credentials for all users and/or build tools.
+
+Click on : Enable anonymous access  ----> for now and and submit
+
+================================ Sonarqube login ================================
+
+<ip>:9000
+
+username/password
+admin / admin
+
+
+
+
+
+

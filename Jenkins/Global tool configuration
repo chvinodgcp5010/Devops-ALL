@@ -62,7 +62,219 @@ drwxr-xr-x 2 jenkins jenkins  4096 May 30 02:31 boot/
 drwxr-xr-x 3 jenkins jenkins  4096 May 30 02:31 conf/
 drwxr-xr-x 4 jenkins jenkins  4096 May 30 02:31 lib/
 
+============================== Execute from where source code present on jenkins manually check =======================================
 
+cd /var/lib/jenkins/workspace/first-view# ls
+Jenkinsfile  README.md  ansible  context.xml  pom.xml  src  tomcat-setup.sh  tomcat-users.xml
+
+#mvn install 
+
+ls
+Jenkinsfile  README.md  ansible  context.xml  pom.xml  src  target  tomcat-setup.sh  tomcat-users.xml
+
+Note: 
+after executing maven each and very time we will get a target folder.
+target folder consists of .class files and .jar files etc after compiling the src code data will store on /target folder.
+
+#tree target
+
+target/
+├── classes
+│   ├── accountsdb.sql
+│   ├── application.properties
+│   ├── com
+│   │   └── visualpathit
+│   │       └── account
+│   │           ├── controller
+│   │           │   └── UserController.class
+│   │           ├── model
+│   │           │   ├── Role.class
+│   │           │   └── User.class
+│   │           ├── repository
+│   │           │   ├── RoleRepository.class
+│   │           │   └── UserRepository.class
+│   │           ├── service
+│   │           │   ├── SecurityService.class
+│   │           │   ├── SecurityServiceImpl.class
+│   │           │   ├── UserDetailsServiceImpl.class
+│   │           │   ├── UserService.class
+│   │           │   └── UserServiceImpl.class
+│   │           └── validator
+│   │               └── UserValidator.class
+│   ├── logback.xml
+│   └── validation.properties
+├── generated-sources
+│   └── annotations
+├── generated-test-sources
+│   └── test-annotations
+├── jacoco.exec
+├── maven-archiver
+│   └── pom.properties
+├── maven-status
+│   └── maven-compiler-plugin
+│       ├── compile
+│       │   └── default-compile
+│       │       ├── createdFiles.lst
+│       │       └── inputFiles.lst
+│       └── testCompile
+│           └── default-testCompile
+│               ├── createdFiles.lst
+│               └── inputFiles.lst
+├── site
+│   └── jacoco
+│       ├── com.visualpathit.account.controller
+│       │   ├── UserController.html
+│       │   ├── UserController.java.html
+│       │   ├── index.html
+│       │   └── index.source.html
+│       ├── com.visualpathit.account.model
+│       │   ├── Role.html
+│       │   ├── Role.java.html
+│       │   ├── User.html
+│       │   ├── User.java.html
+│       │   ├── index.html
+│       │   └── index.source.html
+│       ├── com.visualpathit.account.service
+│       │   ├── SecurityServiceImpl.html
+│       │   ├── SecurityServiceImpl.java.html
+│       │   ├── UserDetailsServiceImpl.html
+│       │   ├── UserDetailsServiceImpl.java.html
+│       │   ├── UserServiceImpl.html
+│       │   ├── UserServiceImpl.java.html
+│       │   ├── index.html
+│       │   └── index.source.html
+│       ├── com.visualpathit.account.validator
+│       │   ├── UserValidator.html
+│       │   ├── UserValidator.java.html
+│       │   ├── index.html
+│       │   └── index.source.html
+│       ├── index.html
+│       ├── jacoco.csv
+│       └── jacoco.xml
+├── surefire-reports
+│   ├── TEST-com.visualpathit.account.controllerTest.SampleTest.xml
+│   ├── TEST-com.visualpathit.account.controllerTest.UserControllerTest.xml
+│   ├── TEST-com.visualpathit.account.modelTest.RoleTest.xml
+│   ├── TEST-com.visualpathit.account.modelTest.UserTest.xml
+│   ├── com.visualpathit.account.controllerTest.SampleTest.txt
+│   ├── com.visualpathit.account.controllerTest.UserControllerTest.txt
+│   ├── com.visualpathit.account.modelTest.RoleTest.txt
+│   └── com.visualpathit.account.modelTest.UserTest.txt
+├── test-classes
+│   └── com
+│       └── visualpathit
+│           └── account
+│               ├── controllerTest
+│               │   ├── SampleTest.class
+│               │   └── UserControllerTest.class
+│               ├── modelTest
+│               │   ├── RoleTest.class
+│               │   └── UserTest.class
+│               └── setup
+│                   └── StandaloneMvcTestViewResolver.class
+├── vprofile-v1
+│   ├── META-INF
+│   ├── WEB-INF
+│   │   ├── appconfig-data.xml
+│   │   ├── appconfig-mvc.xml
+│   │   ├── appconfig-root.xml
+│   │   ├── appconfig-security.xml
+│   │   ├── classes
+│   │   │   ├── accountsdb.sql
+│   │   │   ├── application.properties
+│   │   │   ├── com
+│   │   │   │   └── visualpathit
+│   │   │   │       └── account
+│   │   │   │           ├── controller
+│   │   │   │           │   └── UserController.class
+│   │   │   │           ├── model
+│   │   │   │           │   ├── Role.class
+│   │   │   │           │   └── User.class
+│   │   │   │           ├── repository
+│   │   │   │           │   ├── RoleRepository.class
+│   │   │   │           │   └── UserRepository.class
+│   │   │   │           ├── service
+│   │   │   │           │   ├── SecurityService.class
+│   │   │   │           │   ├── SecurityServiceImpl.class
+│   │   │   │           │   ├── UserDetailsServiceImpl.class
+│   │   │   │           │   ├── UserService.class
+│   │   │   │           │   └── UserServiceImpl.class
+│   │   │   │           └── validator
+│   │   │   │               └── UserValidator.class
+│   │   │   ├── logback.xml
+│   │   │   └── validation.properties
+│   │   ├── lib
+│   │   │   ├── antlr-2.7.7.jar
+│   │   │   ├── aopalliance-1.0.jar
+│   │   │   ├── aspectjrt-1.8.6.jar
+│   │   │   ├── classmate-1.1.0.jar
+│   │   │   ├── commons-dbcp-1.4.jar
+│   │   │   ├── commons-logging-1.2.jar
+│   │   │   ├── commons-pool-1.5.4.jar
+│   │   │   ├── dom4j-1.6.1.jar
+│   │   │   ├── hibernate-commons-annotations-4.0.5.Final.jar
+│   │   │   ├── hibernate-core-4.3.11.Final.jar
+│   │   │   ├── hibernate-entitymanager-4.3.11.Final.jar
+│   │   │   ├── hibernate-jpa-2.1-api-1.0.0.Final.jar
+│   │   │   ├── hibernate-validator-5.2.1.Final.jar
+│   │   │   ├── jandex-1.1.0.Final.jar
+│   │   │   ├── javassist-3.18.1-GA.jar
+│   │   │   ├── jboss-logging-3.2.1.Final.jar
+│   │   │   ├── jboss-logging-annotations-1.2.0.Beta1.jar
+│   │   │   ├── jboss-transaction-api_1.2_spec-1.0.0.Final.jar
+│   │   │   ├── jcl-over-slf4j-1.7.12.jar
+│   │   │   ├── jstl-1.2.jar
+│   │   │   ├── logback-classic-1.1.3.jar
+│   │   │   ├── logback-core-1.1.3.jar
+│   │   │   ├── mysql-connector-java-5.1.36.jar
+│   │   │   ├── slf4j-api-1.7.12.jar
+│   │   │   ├── spring-aop-4.2.0.RELEASE.jar
+│   │   │   ├── spring-beans-4.2.0.RELEASE.jar
+│   │   │   ├── spring-context-4.2.0.RELEASE.jar
+│   │   │   ├── spring-core-4.2.0.RELEASE.jar
+│   │   │   ├── spring-data-commons-1.10.2.RELEASE.jar
+│   │   │   ├── spring-data-jpa-1.8.2.RELEASE.jar
+│   │   │   ├── spring-expression-4.2.0.RELEASE.jar
+│   │   │   ├── spring-jdbc-4.0.9.RELEASE.jar
+│   │   │   ├── spring-orm-4.0.9.RELEASE.jar
+│   │   │   ├── spring-security-config-4.0.2.RELEASE.jar
+│   │   │   ├── spring-security-core-4.0.2.RELEASE.jar
+│   │   │   ├── spring-security-web-4.0.2.RELEASE.jar
+│   │   │   ├── spring-tx-4.0.9.RELEASE.jar
+│   │   │   ├── spring-web-4.2.0.RELEASE.jar
+│   │   │   ├── spring-webmvc-4.2.0.RELEASE.jar
+│   │   │   ├── validation-api-1.1.0.Final.jar
+│   │   │   └── xml-apis-1.0.b2.jar
+│   │   ├── views
+│   │   │   ├── index_home.jsp
+│   │   │   ├── login.jsp
+│   │   │   ├── registration.jsp
+│   │   │   └── welcome.jsp
+│   │   └── web.xml
+│   └── resources
+│       ├── Images
+│       │   ├── header.jpg
+│       │   ├── technologies
+│       │   │   ├── Ansible_logo.png
+│       │   │   ├── Vagrant.png
+│       │   │   ├── aws.png
+│       │   │   ├── docker.png
+│       │   │   ├── git.jpg
+│       │   │   ├── jenkins.png
+│       │   │   ├── puppet.jpg
+│       │   │   └── python-logo.png
+│       │   ├── visualpath.png
+│       │   ├── visualpathlogo2.png
+│       │   └── visualpathlogo3.png
+│       ├── css
+│       │   ├── bootstrap.min.css
+│       │   ├── common.css
+│       │   └── profile.css
+│       └── js
+│           └── bootstrap.min.js
+└── vprofile-v1.war
+
+53 directories, 141 files
 
 
 

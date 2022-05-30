@@ -1,1 +1,20 @@
 Git -> maven -> sonarqube ->nexus
+
+
+Developer(git) -> github -> git (fetch code) -> build (maven) -> unit test (maven) ->code analysis (sonarqube) -> upload artifacts (nexus)
+
+
+CICD PIPELINE SETUP:
+--------------------
+Jenkins setup
+nexus ""
+sonarqube ""
+security group
+Plugins
+Integrate
+-> nexus
+-> sonarqube with jenkins
+Write pipeline script
+set notifications ( if build fails)
+
+

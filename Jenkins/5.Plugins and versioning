@@ -11,10 +11,10 @@ on "build" job step
 use:
 invoke top level maven targets.
 
-#maven ( name we added on global tool configuration jenkins)
-#install ( goal)
+->maven ( name we added on global tool configuration jenkins)
+->install ( goal)
 
-click on build -> click on execute shell command where add below script.
+Click on build -> Click on "execute shell" command where add below script.
 
 mkdir -p versions/
 cp target/vprofile-v1.war versions/vprofile-V$BUILD_ID.war
@@ -50,15 +50,16 @@ and save the job
 
 Once done you will get "build with parameters" tab instead on build previous tab.
 
-Check box and add some version like "9.9" and execute build.
+build with parameters : 
+
+Check box and add some version like "143" and execute build.
 
 ==========O/P=========
 
 check on workspace:
 
-	vprofile-V9.99.war	May 30, 2022 4:31:42 AM	17.30 MB	view
-	vprofile-V-VND.war	May 30, 2022 4:30:18 AM	17.30 MB	view
-
+	vprofile-V2022-05-150-09-09-23-143.war	May 30, 2022 9:09:39 AM	17.30 MB	view
+	vprofile-V2022-05-150-09-12-25-123.war	May 30, 2022 9:12:38 AM	17.30 MB	view
 
 NOTE:
 ----

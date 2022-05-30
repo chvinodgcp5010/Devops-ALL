@@ -24,7 +24,7 @@ Caused: java.io.IOException: Cannot run program "mvn" (in directory "/var/lib/je
 if you install from VM and add other version from global tool configuration it will take from global tool only. we need to give mvn name to the job otherwise it
 will take the system installed versions.
 
-1. updated mvn version install automatically from jenkins to 3.8.*
+1. updated mvn version install automatically from jenkins to 3.8.5 and name it as "maven-3.8.5"
 2. added mvn name in to the build job.
 
 execute the build.
@@ -32,7 +32,7 @@ execute the build.
 logs:
 
 /var/lib/jenkins/tools/hudson.tasks.Maven_MavenInstallation/mvn on Jenkins
-[first-view] $ /var/lib/jenkins/tools/hudson.tasks.Maven_MavenInstallation/mvn/bin/mvn install
+[first-view] $ /var/lib/jenkins/tools/hudson.tasks.Maven_MavenInstallation/maven-3.8.5/bin/mvn install
 
 
 PREVIOUS: without global tool config (install from vm)
@@ -45,11 +45,11 @@ NOTE:
 If you install automatically from Jenkins you will get console output on jenkins like below.
 
 The recommended git tool is: NONE                     ( here git not using from automatically)
-[first-view] $ /var/lib/jenkins/tools/hudson.tasks.Maven_MavenInstallation/mvn/bin/mvn clean install   (mvn added from jenkins automatically)
+[first-view] $ /var/lib/jenkins/tools/hudson.tasks.Maven_MavenInstallation/maven-3.8.5/bin/mvn clean install   (maven added from jenkins automatically)
 
 if you use tools automatically it will be in tools directory.
 
-root@ip-172-31-18-34:/var/lib/jenkins/tools# ll hudson.tasks.Maven_MavenInstallation/mvn/
+root@ip-172-31-18-34:/var/lib/jenkins/tools# ll hudson.tasks.Maven_MavenInstallation/maven-3.8.5/
 total 60
 drwxr-xr-x 6 jenkins jenkins  4096 May 30 02:31 ./
 drwxr-xr-x 3 jenkins jenkins  4096 May 30 02:31 ../

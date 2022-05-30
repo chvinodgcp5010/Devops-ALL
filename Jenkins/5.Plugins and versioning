@@ -31,3 +31,128 @@ On Jenkins VM Console:
 
 root@ip-172-31-18-34:/var/lib/jenkins/workspace/firstjob/versions# ls
 vprofile-V5.war  vprofile-V6.war  vprofile-V7.war  vprofile-V8.war
+
+
+==================================== Try avoiding taking parameter from user ===========================================
+
+click on job -> configure -> on General 
+-> click on " this project is parameterized "
+
+add parameter -> string parameter -> name it as "VERSIONVND" 
+
+on execute shell 
+
+mkdir -p versions/
+#cp target/vprofile-v1.war versions/vprofile-V$BUILD_ID.war
+cp target/vprofile-v1.war versions/vprofile-V$VERSIONVND.war 
+
+and save the job 
+
+Once done you will get "build with parameters" tab instead on build previous tab.
+
+Check box and add some version like "9.9" and execute build.
+
+==========O/P=========
+
+check on workspace:
+
+	vprofile-V9.99.war	May 30, 2022 4:31:42 AM	17.30 MB	view
+	vprofile-V-VND.war	May 30, 2022 4:30:18 AM	17.30 MB	view
+
+
+NOTE:
+----
+
+donot recommend jobs with interactive by human, try avoid taking parameter from user.
+
+RESTART JENKINS:
+
+http://**.**.**.**:8080/restart
+http://**.**.**.**:8080/SafeRestart
+
+***************************** JENKINS TIMINGS WILL BE ON "UTC" ONLY.*****************************
+
+
+************************************* Jenkins Plugins **************************************
+PLUGINs:
+https://plugins.jenkins.io/zentimestamp/
+
+search "Build Timestamp" plugin on jenkins install  "Zentimestamp plugin" --> instal without restart
+
+Build Timestamp Plugin
+This plugin adds BUILD_TIMESTAMP to Jenkins variables and system properties.
+
+-----click on job------
+
+goto general
+Date and Time Pattern "YYYY-MM-DD_hh-mm-ss"
+
+On general
+
+click on "this project is parameterized" click on string 
+Name: "VERSIONVND"
+
+goto execute shell and add
+
+mkdir -p versions/
+#cp target/vprofile-v1.war versions/vprofile-V$BUILD_ID.war
+#cp target/vprofile-v1.war versions/vprofile-V$VERSIONVND.war                     
+cp target/vprofile-v1.war versions/vprofile-V$BUILD_TIMESTAMP-$VERSIONVND.war             #VERSIONVND ->PARAMETER GIVEN ABOVE #BUILD_TIMESTAMP ->PARAMETER WE GET FROM PLUGIN
+
+build with parameters
+
+VERSIONVND :
+143
+
+Click on build and check workspace:
+
+versions/
+
+	vprofile-V2022-05-150-09-09-23-143.war	May 30, 2022 9:09:39 AM	17.30 MB	view         #143 -> VERSIONVND parameter
+	vprofile-V2022-05-150-09-12-25-123.war	May 30, 2022 9:12:38 AM	17.30 MB	view
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

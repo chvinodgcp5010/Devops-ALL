@@ -1,10 +1,11 @@
-By default we installed jenkins , maven using 
+By default we installed jenkins , maven using below commnads.
+
 "apt install openjdk-8-jdk"
 "apt install maven -y"
 
-so jenkins will take these path and execute directly from "system installation" ( directly installed from cli )
+So jenkins will take these path and execute directly from "system installation" ( directly installed from cli )
 
-================================ global tool configurations ====================================
+================================ GLOBAL TOOL CONFIGURATIONS ====================================
 
 If suppose if we have multiple versions of java and maven you need specific version to execute on specific build from there we need to 
 use "global tool configuration" 
@@ -17,3 +18,56 @@ If we want to install dirctly from jenkins user interface use "global tool confi
 Try to remove maven using "apt remove maven -y" and execute build it will fail , because there is no maven 
 
 Caused: java.io.IOException: Cannot run program "mvn" (in directory "/var/lib/jenkins/workspace/first-view"): error=2, No such file or directory
+
+============================= instead of using system level tools while installing manually install automatically from jenkins UI ==============
+
+if you install from VM and add other version from global tool configuration it will take from global tool only. we need to give mvn name to the job otherwise it
+will take the system installed versions.
+
+1. updated mvn version install automatically from jenkins to 3.8.*
+2. added mvn name in to the build job.
+
+execute the build.
+
+logs:
+
+/var/lib/jenkins/tools/hudson.tasks.Maven_MavenInstallation/mvn on Jenkins
+[first-view] $ /var/lib/jenkins/tools/hudson.tasks.Maven_MavenInstallation/mvn/bin/mvn install
+
+
+PREVIOUS: without global tool config (install from vm)
+
+[first-view] $ mvn install
+
+
+NOTE:
+
+If you install automatically from Jenkins you will get console output on jenkins like below.
+
+The recommended git tool is: NONE                     ( here git not using from automatically)
+[first-view] $ /var/lib/jenkins/tools/hudson.tasks.Maven_MavenInstallation/mvn/bin/mvn clean install   (mvn added from jenkins automatically)
+
+if you use tools automatically it will be in tools directory.
+
+root@ip-172-31-18-34:/var/lib/jenkins/tools# ll hudson.tasks.Maven_MavenInstallation/mvn/
+total 60
+drwxr-xr-x 6 jenkins jenkins  4096 May 30 02:31 ./
+drwxr-xr-x 3 jenkins jenkins  4096 May 30 02:31 ../
+-rwxr-xr-x 1 jenkins jenkins    99 May 30 02:31 .installedFrom*
+-rwxr-xr-x 1 jenkins jenkins 17568 Mar  5 11:30 LICENSE*
+-rwxr-xr-x 1 jenkins jenkins  5141 Mar  5 11:30 NOTICE*
+-rwxr-xr-x 1 jenkins jenkins  2612 Mar  5 11:30 README.txt*
+drwxr-xr-x 2 jenkins jenkins  4096 May 30 02:31 bin/
+drwxr-xr-x 2 jenkins jenkins  4096 May 30 02:31 boot/
+drwxr-xr-x 3 jenkins jenkins  4096 May 30 02:31 conf/
+drwxr-xr-x 4 jenkins jenkins  4096 May 30 02:31 lib/
+
+
+
+
+
+
+
+
+
+

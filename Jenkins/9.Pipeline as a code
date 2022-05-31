@@ -1,0 +1,131 @@
+Automate pipeline setup with Jenkinsfile
+Jenkinsfile defines stages in CICD pipeline.
+Jenkinsfile is a text file with pipeline DSL syntax
+Similar to groovy
+
+Two syntax
+->scripted
+->declarative
+
+Pipeline concepts:
+-----------------
+https://www.jenkins.io/doc/book/pipeline/
+Pipeline
+Node/Agent
+Stage
+Step
+
+
+##################### Jenkinsfile #####################
+pipeline {
+    agent any 
+    stages {
+        stage('Build') { 
+            steps {
+                // 
+            }
+        }
+        stage('Test') { 
+            steps {
+                // 
+            }
+        }
+        stage('Deploy') { 
+            steps {
+                // 
+            }
+        }
+    }
+}
+
+################################# Syntax1 ###############################
+
+pipeline {
+.......
+.......
+}
+
+################################# Syntax2 ###############################
+
+pipeline {
+   agent {                                            # where job going to run 
+   }
+   tools {                                            #from global tool configuration included tools you can mention here sonarscanner,jdk,maven etc
+   }
+   environment {                                      # env varibels
+   }
+   stages {                                           #steps we are going to perform
+   }
+}
+
+
+################################# Syntax2 ###############################
+
+pipeline {
+   agent {
+   label "master"
+   }
+   tools {
+   maven "maven"                                          # tool name we have included in global tool config in jenkins
+   }
+   environment {                                          # used in steps of stages in pipeline
+   NEXUS_VERSION = "nexus3"
+   NEXUS_PROTOCOL = "http"
+   NEXUS_URL = "<ip>:8081"
+   NEXUS_REPO = "maven-nexus-repo"
+   NEXUS_CREDENTIALS_ID = "nexus_user_credentials"
+   ART_VERSION = "${env.BUILD_ID"
+   }
+   stages {
+       stage ("clone from vcs") {
+     
+       }
+       stage ("maven build") {
+     
+       }
+       stage ("publish to nexus repo") {
+     
+       }
+   }
+}
+   
+################################# Syntax3 ###############################
+
+pipeline
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

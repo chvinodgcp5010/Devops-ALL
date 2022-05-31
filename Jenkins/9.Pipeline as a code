@@ -107,6 +107,7 @@ pipeline {
 
 ================================= Jenkinsfile =============================================
 paac : pipeline as a code
+https://github.com/chvinodgcp5010/CICD-project-Nexus-and-Sonarqube/tree/paac
 
 pipeline {
   agent any 
@@ -131,7 +132,10 @@ pipeline {
 
 ====================================
 
-trigger build from jenkins
+create a job "pipeline" and click on "pipeline" and use "pipelinescript" and paste above Jenkinsfile. 
+If we use "pipeline script from scm" you should have "Jenkinsfile" on root folder of code repo.
+
+trigger build from jenkins.
 
 click on job/buildnumber/workspace//var/lib/jenkins/workspace/pipeline-gspann 
 
@@ -158,6 +162,24 @@ vm.
 if we dont want to install manually or do we need to use different versions of tools for different jobs use global tool config and install
 automatically.
 
+NOTE:
+
+All Jenkinsfile doc available here https://www.jenkins.io/doc/book/pipeline/
+
+You can also generate scritp from "snippet generator"
+
+URL:
+http://<ip>:8080/job/pipeline-gspann/pipeline-syntax/
+
+select git:
+repo url: https://github.com/chvinodgcp5010/CICD-project-Nexus-and-Sonarqube.git
+branch : paac
+
+click on generate script
+
+git branch: 'paac', url: 'https://github.com/chvinodgcp5010/CICD-project-Nexus-and-Sonarqube.git'
+
+copy and paste above on Jenkinsfile
 
 
 

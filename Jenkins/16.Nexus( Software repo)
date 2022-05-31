@@ -13,24 +13,69 @@ docker: registry to store docker images
 
 NEXUS software repo manager:
 ----------------------------
-.runs on java
-.used to store artifacts
-.used as a pkg manager for dependencies
-.support variety of repo mvn,apt,docker
+->runs on java
+->used to store artifacts
+->used as a pkg manager for dependencies
+->support variety of repo mvn,apt,docker
 
 
-Jenkins integration with nexus:
--------------------------------
-dev --> commit --> github --> fetch ---> build (jenkins) --->nexus (upload)
+===============================   Jenkins integration with nexus:   ==============================================
 
+developer --> commit --> github --> fetch ---> build (jenkins) --->nexus (upload)
 
-
-Brwose on google:
+Browse on google:
   "nexus artifact uploader"
   
 https://github.com/jenkinsci/nexus-artifact-uploader-plugin
 
--------------------------------------------------- Jenkinsfile ---------------------------------------------------------------------
+NEXUS:
+======
+http://*.**.**.**:8081/
+
+login to nexus:
+==============
+    admin/******
+    
+click on "settings" -->Repository -->create repository --> select recipe as "maven2(hosted)" --> name "vprofile-vnd"
+
+
+ADD nexus repo credentials in jenkins:
+======================================
+
+manage jenkins --> manage credentials --> goto "Stores scoped to Jenkins" --> Global credentials (unrestricted) --> add credentials 
+
+kind: "username and password"
+Secret: "admin"
+Password: "admin"
+ID: "nexus-cred"
+description: "nexus-cred"
+
+===========================================
+
+Add this details in "Jenkinsfile"
+
+    stage('Nexus upload') {
+       steps {     
+          nexusArtifactUploader(
+            nexusVersion: 'nexus3',
+            protocol: 'http',
+            nexusUrl: '3.90.186.173:8081',
+            groupId: 'com.visualpathit',
+            version: "v2",
+            repository: 'vprofile-vnd',
+            credentialsId: 'nexus-cred',           ####################### manage secrets ##################### 
+            artifacts: [
+               [artifactId: 'vprofile',
+                classifier: '',
+                file: 'target/vprofile-v2.war',
+                type: 'war']
+                 ]
+               )
+             }
+          }
+
+
+==================================================== Jenkinsfile ====================================================
 
 pipeline {
   agent any 
@@ -80,6 +125,47 @@ pipeline {
           }
         }
 }
+
+=============================================================================
+#https://stackoverflow.com/questions/62849748/issue-in-uploading-artifacts-to-nexus-via-jenkins
+
+    stage('Nexus upload') {
+       steps {     
+          nexusArtifactUploader(
+            nexusVersion: 'nexus3',   
+            protocol: 'http',
+            nexusUrl: '*.*.*.**:8081',
+            groupId: 'com.visualpathit',                #from pom.xml
+            version: "v2",                              #from pom.xml
+            repository: 'vprofile-vnd',                 #from nexus repo created 
+            credentialsId: 'nexus-cred',                #from jenkins configure cred
+            artifacts: [
+               [artifactId: 'vprofile',                 #from pom.xml
+                classifier: '',
+                file: 'target/vprofile-v2.war',         #from workspace of jenkins build "target/vprofile-v2.war"
+                type: 'war']                            # war in pom.xml
+                 ]
+               )
+             }
+          }
+        }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

@@ -1,3 +1,5 @@
+https://www.jenkins.io/doc/book/pipeline/syntax/
+
 Automate pipeline setup with Jenkinsfile
 Jenkinsfile defines stages in CICD pipeline.
 Jenkinsfile is a text file with pipeline DSL syntax

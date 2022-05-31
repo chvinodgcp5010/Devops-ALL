@@ -31,8 +31,8 @@ pipeline {
             nexusVersion: 'nexus3',
             protocol: 'http',
             nexusUrl: '3.90.186.173:8081',
-            groupId: 'com.visualpathit',
-            version: "v2",                                                       ////or inplace of v2 update ${env.BUILD_ID}-${env.BUILD_TIMESTAMP}
+            groupId: 'com.visualpathit',                                       // any name
+            version: "${env.BUILD_ID}-${env.BUILD_TIMESTAMP}",                                                      
             repository: 'vprofile-vnd',
             credentialsId: 'nexus-cred',
             artifacts: [

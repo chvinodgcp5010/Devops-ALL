@@ -189,15 +189,16 @@ pipeline {
             nexusVersion: 'nexus3',   
             protocol: 'http',
             nexusUrl: '*.*.*.**:8081',
-            groupId: 'com.visualpathit',                #from pom.xml
-            version: "v2",                              #from pom.xml
-            repository: 'vprofile-vnd',                 #from nexus repo created 
-            credentialsId: 'nexus-cred',                #from jenkins configure cred
+            groupId: 'com.visualpathit',                               #from pom.xml or any name it works
+            //version: "v2",                                           #from pom.xml
+            version: "${env.BUILD_ID}-${env.BUILD_TIMESTAMP}"          #for this ${env.BUILD_TIMESTAMP}" you need to install "BUILD Timestamp plugin" and set timing on "configure system"
+            repository: 'vprofile-vnd',                                #from nexus repo created 
+            credentialsId: 'nexus-cred',                               #from jenkins configure cred
             artifacts: [
-               [artifactId: 'vprofile',                 #from pom.xml
+               [artifactId: 'vprofile',                                #from pom.xml
                 classifier: '',
-                file: 'target/vprofile-v2.war',         #from workspace of jenkins build "target/vprofile-v2.war"
-                type: 'war']                            # war in pom.xml
+                file: 'target/vprofile-v2.war',                        #from workspace of jenkins build "target/vprofile-v2.war"
+                type: 'war']                                           # war in pom.xml
                  ]
                )
              }

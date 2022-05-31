@@ -1,0 +1,156 @@
+
+https://www.jenkins.io/doc/book/pipeline/jenkinsfile/
+https://www.jenkins.io/doc/book/pipeline/#step
+https://www.jenkins.io/doc/book/pipeline/running-pipelines/
+https://www.jenkins.io/doc/book/pipeline/multibranch/\
+https://www.jenkins.io/doc/book/pipeline/docker/
+https://www.jenkins.io/doc/book/pipeline/shared-libraries/
+https://www.jenkins.io/doc/book/pipeline/development/
+https://www.jenkins.io/doc/book/pipeline/syntax/
+https://www.jenkins.io/doc/book/pipeline/pipeline-best-practices/
+
+Once sonarqube scanner added on global tool configuratn 
+
+added "sonarqube server" on configure system 
+
+=================== Search on google "sonarscanner pipeline script" =========================================
+
+https://sonarqube.inria.fr/sonarqube/documentation/analysis/scan/sonarscanner-for-jenkins/
+https://community.sonarsource.com/t/configure-sonarqube-scanner-in-jenkins-pipeline-for-a-typescript-react-project/49144
+
+
+we are using maven to build code for sonaruqbe 
+maven build the code and perform sonar analysis as well. not directly running sonarqube --> using maven we use sonar scaner.
+
+
+https://sonarqube.inria.fr/sonarqube/documentation/analysis/scan/sonarscanner-for-jenkins/
+
+SonarScanner for Maven:
+======================================================
+node {
+  stage('SCM') {
+    git 'https://github.com/foo/bar.git'
+  }
+  stage('SonarQube analysis') {
+    withSonarQubeEnv(credentialsId: 'f225455e-ea59-40fa-8af7-08176e86507a', installationName: 'My SonarQube Server') { // You can override the credential to be used
+      sh 'mvn org.sonarsource.scanner.maven:sonar-maven-plugin:3.6.0.1398:sonar'
+    }
+  }
+}
+
+
+======================================================
+
+Declarative pipeline example:
+
+pipeline {
+    agent any
+    stages {
+        stage('SCM') {
+            steps {
+                git url: 'https://github.com/foo/bar.git'
+            }
+        }
+        stage('build && SonarQube analysis') {
+            steps {
+                withSonarQubeEnv('My SonarQube Server') {
+                    // Optionally use a Maven environment you've configured already
+                    withMaven(maven:'Maven 3.5') {
+                        sh 'mvn clean package sonar:sonar'
+                    }
+                }
+            }
+        }
+        stage("Quality Gate") {
+            steps {
+                timeout(time: 1, unit: 'HOURS') {
+                    // Parameter indicates whether to set pipeline to UNSTABLE if Quality Gate fails
+                    // true = set pipeline to UNSTABLE, false = don't
+                    waitForQualityGate abortPipeline: true
+                }
+            }
+        }
+    }
+}
+
+===================================================================
+
+Here 
+sh 'mvn clean package sonar:sonar'
+
+maven will download sonar scanner tools and run scanning 
+
+stage("Quality Gate") {
+--> checks quality gates ( code ) passed or not.
+
+
+############################################## Jenkinsfile ################################################
+
+
+pipeline {
+  agent any 
+  stages {
+    stage ('fetch the code'){
+      steps {
+        git branch: 'paac', url: 'https://github.com/chvinodgcp5010/CICD-project-Nexus-and-Sonarqube.git' 
+      }
+    }
+    stage ('build code'){
+      steps {
+        sh 'mvn install'
+      }
+    }
+    stage ('test code'){
+      steps {
+        sh 'mvn test'
+       }
+    }
+    stage('build && SonarQube analysis') {
+       steps {
+            withSonarQubeEnv('sonarqube_server') {                               //the name we gave on "configure system" of sonar server as sonarqube_server.
+            // Optionally use a Maven environment you've configured already
+            //withMaven(maven:'Maven 3.5') {                                    //If we use maven as tool use withMaven otherwise no need installed maven directly so directly mentioned mvn
+            sh 'mvn clean package sonar:sonar'
+           }
+        }
+     }
+   }
+ }
+                        
+=========================================================
+
+Create a pipeline job and add pipeline as script and execute build , it successful
+
+O/P:
+
+[[1;34mINFO[m] ANALYSIS SUCCESSFUL, you can browse http://54.146.141.154:9000/dashboard?id=com.visualpathit%3Avprofile
+[[1;34mINFO[m] Note that you will be able to access the updated dashboard once the server has processed the submitted analysis report
+[[1;34mINFO[m] More about the report processing at http://54.146.141.154:9000/api/ce/task?id=AYEZOMORigAK109iaXBX
+
+
+Goto "sonarqube server"  and click on "quality gates"
+it show "sonarway" as default quality gate .
+
+
+Check same  "Projects" on sonarqube --> select "project settings"  --> select "quality gates"  and observe same quality gate "sonarway" on project.
+
+
+NOTE:
+
+if we forgot to add  "withSonarQubeEnv('sonarqube_server') "
+
+build fail with below error
+
+[[1;31mERROR[m] Failed to execute goal [32morg.sonarsource.scanner.maven:sonar-maven-plugin:3.9.1.2184:sonar[m 
+[1m(default-cli)[m on project [36mvprofile[m: [1;31mUnable to execute SonarScanner analysis[m: Fail to get bootstrap index from server:
+Failed to connect to localhost/127.0.0.1:9000: Connection refused (Connection refused) -> [1m[Help 1][m
+
+
+
+
+
+
+
+
+
+

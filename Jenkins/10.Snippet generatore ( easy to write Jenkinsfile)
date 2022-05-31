@@ -1,0 +1,17 @@
+Goto pipeline job on Jenkinsfile portion you will get pipeline syntax click on that and provide details
+
+
+URL:
+http://<ip>:8080/job/pipeline-gspann/pipeline-syntax/
+
+GIT syntax:
+
+select git:
+repo url: https://github.com/chvinodgcp5010/CICD-project-Nexus-and-Sonarqube.git
+branch : paac
+
+click on generate script
+
+git branch: 'paac', url: 'https://github.com/chvinodgcp5010/CICD-project-Nexus-and-Sonarqube.git'
+
+copy and paste above on Jenkinsfile

@@ -207,7 +207,9 @@ pipeline {
 
 
 
+Once build is completed check it on nexus server:
 
+click on browse ---> click on repo "vprofile-vnd"  you will get .war file
 
 
 

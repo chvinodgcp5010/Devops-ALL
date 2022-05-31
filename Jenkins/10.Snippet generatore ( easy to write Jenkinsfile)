@@ -15,3 +15,35 @@ click on generate script
 git branch: 'paac', url: 'https://github.com/chvinodgcp5010/CICD-project-Nexus-and-Sonarqube.git'
 
 copy and paste above on Jenkinsfile
+
+
+======= stage =======
+
+click on stage
+
+stagename: build
+
+Generate script:
+stage('build') {
+    // some block
+}
+
+
+=======mail ============
+
+to :
+abc@gmail.com
+
+subject: App-dev
+Body: App-dev-devops
+
+-->generate script:
+mail bcc: '', body: 'App-dev-devops', cc: '', from: '', replyTo: '', subject: 'App-dev', to: 'abc@gmail.com'
+
+
+
+
+
+
+
+

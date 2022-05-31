@@ -1,1 +1,90 @@
+Place to store and retrive artifacts.
+
+storgae location for software packages.
+
+Eg:
+
+Maven: maven dependencies
+apt: pkg for debian based systems
+yum: pkg for redhat based systems
+nuget:pkg manager for .net based systems
+npm: pkg manager for javascript
+docker: registry to store docker images
+
+NEXUS software repo manager:
+----------------------------
+.runs on java
+.used to store artifacts
+.used as a pkg manager for dependencies
+.support variety of repo mvn,apt,docker
+
+
+Jenkins integration with nexus:
+-------------------------------
+dev --> commit --> github --> fetch ---> build (jenkins) --->nexus (upload)
+
+
+
+Brwose on google:
+  "nexus artifact uploader"
+  
+https://github.com/jenkinsci/nexus-artifact-uploader-plugin
+
+-------------------------------------------------- Jenkinsfile ---------------------------------------------------------------------
+
+pipeline {
+  agent any 
+  stages {
+    stage ('fetch the code'){
+      steps {
+        git branch: 'paac', url: 'https://github.com/chvinodgcp5010/CICD-project-Nexus-and-Sonarqube.git' 
+      }
+    }
+    stage ('build code'){
+      steps {
+        sh 'mvn install'
+      }
+    }
+    stage ('test code'){
+      steps {
+        sh 'mvn test'
+       }
+    }
+    stage('build && SonarQube analysis') {
+       steps {
+            withSonarQubeEnv('sonarqube_server') {                               //the name we gave on "configure system" of sonar server as sonarqube_server.
+            // Optionally use a Maven environment you've configured already
+            //withMaven(maven:'Maven 3.5') {                                    //If we use maven as tool use withMaven otherwise no need installed maven directly so directly mentioned mvn
+            sh 'mvn clean package sonar:sonar'
+           }
+        }
+     }
+    stage('Nexus upload') {
+       steps {     
+          nexusArtifactUploader(
+            nexusVersion: 'nexus3',
+            protocol: 'http',
+            nexusUrl: '3.90.186.173:8081',
+            groupId: 'com.visualpathit',
+            version: "v2",
+            repository: 'vprofile-vnd',
+            credentialsId: 'nexus-cred',
+            artifacts: [
+               [artifactId: 'vprofile',
+                classifier: '',
+                file: 'target/vprofile-v2.war',
+                type: 'war']
+                 ]
+               )
+             }
+          }
+        }
+}
+
+
+
+
+
+
+
 

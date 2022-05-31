@@ -184,6 +184,12 @@ git branch: 'paac', url: 'https://github.com/chvinodgcp5010/CICD-project-Nexus-a
 copy and paste above on Jenkinsfile
 
 
+============================ Jenkins pipeline documentation =============================
+
+https://www.jenkins.io/doc/book/pipeline/
+https://www.jenkins.io/doc/book/pipeline/getting-started/
+https://www.jenkins.io/doc/book/pipeline/jenkinsfile/
+
 
 
 

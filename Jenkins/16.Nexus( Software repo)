@@ -7,7 +7,10 @@ security group of ec2 instance
 ssh         22    --> Myip
 custom tcp 8081   --> only with jenkins secuirty group ( allow ) ----> as of now use anywhere
 
----------------------------- Commads ------------------------------------
+---------------------------- Installation Commads ------------------------------------
+
+START
+
 #!/bin/bash
 
 yum install java-1.8.0-openjdk.x86_64 wget -y   
@@ -49,7 +52,8 @@ systemctl start nexus
 systemctl enable nexus
 
 
-
+END:
+---------------------------------------------------------------------------------------
 
 
 Place to store and retrive artifacts.

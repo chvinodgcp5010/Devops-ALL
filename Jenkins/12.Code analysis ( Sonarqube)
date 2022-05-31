@@ -1,0 +1,105 @@
+https://medium.com/@amitvermaa93/jenkins-sonarqube-integration-129f5c49c4ca
+
+Code analysis:
+
+Detects vulnerabilities and functional errors.
+
+Why Code analysis?
+
+1.Best practices:
+checks the code against best practices and flag the problems , which can be fixed by dev.
+
+2.vulnerabilities:
+----------------
+check vulnerabilities in code
+
+3.looks for bugs
+4.functional errors before deployment
+
+Code analysis:
+variety of test performed on the code.
+
+Various code analysis tools:
+---------------------------
+checkstyle
+coberture
+mstest
+owasp
+sonarqube scanner
+
+================================== Jenkins with sonarqube =======================================
+https://medium.com/@amitvermaa93/jenkins-sonarqube-integration-129f5c49c4ca
+
+
+1.first install sonarqube then integrate with jenkins.
+2. install sonarscanner on jenkins
+
+install sonar plugin
+
+globaltool configuration --> goto "SonarQube Scanner" --> add name "sonar-4.7" 
+click on -> install automatically and version as "sonarqbe-scanner-4.7" and save
+
+Once sonarscanner is added to jenkins 
+Goto
+-> jenkins -> configure system -> Add sonarwube server ip details and save.
+
+Configure system --> SonarQube servers -->
+
+
+SonarQube installations
+->Name: sonarqube_server
+->SERVER URL: http://**.***.**.**:9000/
+->Server authentication token : 
+Once copy token click on add , if add button is not work click on save and try again
+
+Click on --> add --> Jenkins (credentials provider)
+
+kind: "secret text"
+secret: "copy secret from sonarqube and paste"
+ID: jenkins-sonar-key    ( any name )
+
+click on add and Server authentication token : "jenkins-sonar-key"
+
+
+=========================================================================================
+(for token --> goto "sonarqube server" click on right end user: "administrator"  --> Myaccount -->security --> Name the token want to create
+-> create token)
+
+Copy token
+8373685c6d937be34354af27190d53258505f9ab
+=========================================================================================
+
+
+OUTPUT:
+
+Integrated sonarqube server with jenkins and setup "sonarscanner" tool
+
+next step :
+
+add sonarqube details on pipeline and test
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

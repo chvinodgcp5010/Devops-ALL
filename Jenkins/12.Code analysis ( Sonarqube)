@@ -35,13 +35,15 @@ https://medium.com/@amitvermaa93/jenkins-sonarqube-integration-129f5c49c4ca
 2. install sonarscanner on jenkins
 
 install sonar plugin
+====================
 
-globaltool configuration --> goto "SonarQube Scanner" --> add name "sonar-4.7" 
+Jenkins --> Globaltool configuration --> goto "SonarQube Scanner" --> add name "sonar-4.7" 
 click on -> install automatically and version as "sonarqbe-scanner-4.7" and save
 
 Once sonarscanner is added to jenkins 
+
 Goto
--> jenkins -> configure system -> Add sonarwube server ip details and save.
+-> jenkins -> configure system -> Add sonarqube server ip details and save.
 
 Configure system --> SonarQube servers -->
 
@@ -62,7 +64,9 @@ click on add and Server authentication token : "jenkins-sonar-key"
 
 
 =========================================================================================
-(for token --> goto "sonarqube server" click on right end user: "administrator"  --> Myaccount -->security --> Name the token want to create
+(for token --> goto "sonarqube server" click on right end user: "administrator"  --> Myaccount -->security --> Name the token 
+"jenkins-sonar-token" want to create
+
 -> create token)
 
 Copy token

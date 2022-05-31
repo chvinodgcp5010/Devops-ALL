@@ -169,7 +169,7 @@ pipeline {
             protocol: 'http',
             nexusUrl: '3.90.186.173:8081',
             groupId: 'com.visualpathit',
-            version: "v2",                        //or inplace of v2 update ${env.BUILD_ID}-${env.BUILD_TIMESTAMP}
+            version: "${env.BUILD_ID}-${env.BUILD_TIMESTAMP}",                        //or inplace of v2 update ${env.BUILD_ID}-${env.BUILD_TIMESTAMP}
             repository: 'vprofile-vnd',
             credentialsId: 'nexus-cred',
             artifacts: [
@@ -194,7 +194,6 @@ pipeline {
             protocol: 'http',
             nexusUrl: '*.*.*.**:8081',
             groupId: 'com.visualpathit',                               #from pom.xml or any name it works
-            //version: "v2",                                           #from pom.xml
             version: "${env.BUILD_ID}-${env.BUILD_TIMESTAMP}"          #for this ${env.BUILD_TIMESTAMP}" you need to install "BUILD Timestamp plugin" and set timing on "configure system"
             repository: 'vprofile-vnd',                                #from nexus repo created 
             credentialsId: 'nexus-cred',                               #from jenkins configure cred

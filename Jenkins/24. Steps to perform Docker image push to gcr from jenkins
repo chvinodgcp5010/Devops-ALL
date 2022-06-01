@@ -1,0 +1,16 @@
+======================================== ALL STEPS NEED TO PERFORM ====================================================
+
+Docker CI in jenkins
+
+->Install docker engine in jenkins
+  & add jenkins user to docker group and reboot
+  
+-> Intsall aws cli                        --> it will use for cont delivery stage
+-> Create IAM user 
+-> Create ECR repo
+
+Plugins:
+  Ecr,docker pipeline, aws sdk for credentials
+  
+-> Store aws credentials in jenkins
+-> Run pipeline

@@ -139,11 +139,16 @@ Authentication failed.
 
 After enabling  "PasswordAuthentication  yes "
 
-->vi /ets/ssh/sshd_config
+->vi /etc/ssh/sshd_config
 
 line number(56) update from no to yes and restart ssh
 
 PasswordAuthentication  yes 
+
+restart sshd
+
+systemctl restart sshd
+systemctl status sshd
 
 
 Once click on "launch agent" it show node as online 

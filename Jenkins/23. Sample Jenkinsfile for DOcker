@@ -1,3 +1,4 @@
+ 
 pipeline {
     agent any
     environment {
@@ -13,7 +14,7 @@ pipeline {
     }
 
 
-    stage('Test'){
+    stage('Test'){                                                                            //here there is no build in maven this will perform in docker stage.
       steps {
         sh 'mvn test'
       }
@@ -32,10 +33,10 @@ pipeline {
 
         stage('build && SonarQube analysis') {
             environment {
-             scannerHome = tool 'sonar4.7'
+             scannerHome = tool 'sonar-4.7'
           }
             steps {
-                withSonarQubeEnv('sonar') {
+                withSonarQubeEnv('sonarqube_server') {
                  sh '''${scannerHome}/bin/sonar-scanner -Dsonar.projectKey=vprofile \
                    -Dsonar.projectName=vprofile-repo \
                    -Dsonar.projectVersion=1.0 \

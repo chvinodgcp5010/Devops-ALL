@@ -1,1 +1,87 @@
 
+150th video
+
+ann.udemy.com/course/decodingdevops/learn/lecture/26465620#overview
+
+Developer(GIT) -->GITHUB -> GIT (Fetch code) -> maven (unit test) -> sonarqube (code analysis) -> quality gate -> Docker build (Artifacts) 
+-> ECR (Image store) ---> ( Deploy )Amazon ECS ( elastic container service)
+
+
+ECS 
+ECS fetch docker images (latest) that we publish and host on ECS.
+
+Docker hosting platforms:
+--------------------------
+1. Docker engine:
+
+docker run <image name>
+
+very much testing and local development env not for prod --> we need to manage underlining platforms
+
+high availabilty will not achieve.
+
+--> Kubernetes is required for production.
+
+Kubernetes:
+standalone , EKS , GKE , Openshift etc.
+
+
+ECS: (elastic container service)
+==================================
+
+Amazon ECS makes it easy to deploy, manage, and scale Docker containers running applications, services, and batch processes. 
+Amazon ECS places containers across your cluster based on your resource needs and is integrated with familiar features like Elastic Load Balancing, 
+EC2 security groups, EBS volumes and.
+
+runs higly secure , reliable and scalable containers.
+
+Run containers at scale	Flexible container placement	Integrated and extensible
+
+Amazon ECS makes it easy to use containers as a foundational building block for your applications by eliminating the need for you to install, 
+operate, and scale your own cluster management infrastructure.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

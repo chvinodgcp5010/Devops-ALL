@@ -17,13 +17,231 @@ eg: scripts, commands ,test scripts etc
 
 ===================================== Pre-requisite for node setup ==============================================
 
-1. any os
+1.Any os
 2.n/w access from master ( firewall rules)
 3.java jre ,jdk
 4.user
 5.directory with user ownership
 6.tools required by the jenkins job
 maven ,ant ,git
+
+
+
+1. Create Vm
+
+master as of now (ubuntu)
+creating slave same as (ubuntu18)
+
+2.create new security group:
+slave-1
+
+ssh 22  source (myip) and save
+ssh 22  source (master jenkins security group)
+
+
+review and launch
+
+
+3. login to slave VM
+
+1.apt update && apt install openjdk-8-jdk maven -y
+
+2.add user:
+
+->root@ip-172-31-26-220:~# adduser devops
+Adding user `devops' ...
+Adding new group `devops' (1001) ...
+Adding new user `devops' (1001) with group `devops' ...
+Creating home directory `/home/devops' ...
+Copying files from `/etc/skel' ...
+->Enter new UNIX password: devops
+->Retype new UNIX password: devops
+passwd: password updated successfully
+Changing the user information for devops
+Enter the new value, or press ENTER for the default
+        Full Name []:
+        Room Number []:
+        Work Phone []:
+        Home Phone []:
+        Other []:
+Is the information correct? [Y/n]
+
+3.create directory for workspace and provide devops.devops as roles to directory
+
+mkdir /opt/jenkins-slave
+
+->add ownershipt to directory as ->devops.devops 
+
+chown -R devops.devops /opt/jenkins-slave
+
+
+4.From jenkins master we are conecting to slaves using "ssh"
+by default aws ami linux password based access is disabled
+
+->vi /ets/ssh/sshd_config
+
+line number(56) update from no to yes and restart ssh
+
+PasswordAuthentication  yes 
+
+->service sshd restart
+or
+->systemctl restart sshd
+
+
+5. Jenkins Master --->ssh --> slave  ( using pwd based authentication ) so we created user devops 
+
+On MASTER:
+
+Manage Jenkins -> Manage node and clouds ->click on "new node" 
+Nodename       -> slave  ->permanent agent --> create
+
+Number of executors:     5                   ( you can add any)
+Remote root directory:  /opt/jenkins-slave   ( created on slave )
+Labels:                 gold
+Usage:                  use this node as much as possible
+Launch method :         launch agent via ssh
+
+Host:                172.31.26.220                                   ( jenkins slave private ip )
+Credentials:    add -> jenkins ->username and password 
+Username:            devops                                           (created in slave vm)
+password :           devops
+ID:                  jenkins-slave
+Host Key Verification Strategy:   non verifying verification strategy
+
+Jenkins will access to ssh to node (it will not answer yes /no to connect ) so use "non verifying verification strategy"
+
+Availability :        keep this node as much as possible
+
+Click on : SAVE
+
+
+================
+click on save node (x mode by default)
+
+click on "launch agent"
+
+Built-In Node	Linux (amd64)	In sync
+slave3	Linux (amd64)	 	In sync
+
+
+if you not enabled "password authetication" to yes it through an error
+
+SSHLauncher{host='172.31.26.220', port=22, credentialsId='slave', jvmOptions='', javaPath='', prefixStartSlaveCmd='', suffixStartSlaveCmd='', launchTimeoutSeconds=60, maxNumRetries=10, retryWaitTime=15, sshHostKeyVerificationStrategy=hudson.plugins.sshslaves.verifiers.NonVerifyingKeyVerificationStrategy, tcpNoDelay=true, trackCredentials=true}
+[06/01/22 12:53:06] [SSH] Opening SSH connection to 172.31.26.220:22.
+[06/01/22 12:53:06] [SSH] WARNING: SSH Host Keys are not being verified. Man-in-the-middle attacks may be possible against this connection.
+[06/01/22 12:53:06] [SSH] Authentication failed.
+Authentication failed.
+[06/01/22 12:53:06] Launch failed - cleaning up connection
+[06/01/22 12:53:06] [SSH] Connection closed.
+
+
+
+After enabling  "PasswordAuthentication  yes "
+
+->vi /ets/ssh/sshd_config
+
+line number(56) update from no to yes and restart ssh
+
+PasswordAuthentication  yes 
+
+
+Once click on "launch agent" it show node as online 
+
+=============== O/P ==========
+SSHLauncher{host='172.31.26.220', port=22, credentialsId='slave', jvmOptions='', javaPath='', prefixStartSlaveCmd='', suffixStartSlaveCmd='', launchTimeoutSeconds=60, maxNumRetries=10, retryWaitTime=15, sshHostKeyVerificationStrategy=hudson.plugins.sshslaves.verifiers.NonVerifyingKeyVerificationStrategy, tcpNoDelay=true, trackCredentials=true}
+[06/01/22 12:54:30] [SSH] Opening SSH connection to 172.31.26.220:22.
+[06/01/22 12:54:30] [SSH] WARNING: SSH Host Keys are not being verified. Man-in-the-middle attacks may be possible against this connection.
+[06/01/22 12:54:30] [SSH] Authentication successful.
+[06/01/22 12:54:30] [SSH] The remote user's environment is:
+BASH=/bin/bash
+
+Checking Java version in the PATH
+openjdk version "11.0.15" 2022-04-19
+OpenJDK Runtime Environment (build 11.0.15+10-Ubuntu-0ubuntu0.18.04.1)
+OpenJDK 64-Bit Server VM (build 11.0.15+10-Ubuntu-0ubuntu0.18.04.1, mixed mode, sharing)
+[06/01/22 12:54:30] [SSH] Checking java version of /opt/jenkins-slave/jdk/bin/java
+Couldn't figure out the Java version of /opt/jenkins-slave/jdk/bin/java
+bash: /opt/jenkins-slave/jdk/bin/java: No such file or directory
+Agent successfully connected and online
+
+
+=================================== CREATE A JOB ON MASTER AND CHECK IF IT EXECUTE ON SLAVE OR NOT =============================================
+
+USE : on slave mentioned as 
+"use this node as much as possible"
+
+so mostly it trigger slave node instead of master
+
+Job: pipeline
+
+
+========================================-Jenkinsfile:================================================
+
+
+pipeline {
+  agent any 
+  stages {
+    stage ('fetch the code'){
+      steps {
+        git branch: 'paac', url: 'https://github.com/chvinodgcp5010/CICD-project-Nexus-and-Sonarqube.git' 
+      }
+    }
+    stage ('build code'){
+      steps {
+        sh 'mvn install'
+      }
+    }
+    stage ('test code'){
+      steps {
+        sh 'mvn test'
+       }
+    }
+  }
+}
+
+---------------------------------------------------
+
+trigger few builds and check it is executing on slave node or not
+
+
+check the build output:
+
+->Still waiting to schedule task
+Waiting for next available executor
+Running on """slave1""" in /opt/jenkins-slave/workspace/pipeline-gspann
+
+check workspace on slave:
+
+cd /opt/jenkins-slave/workspace/pipeline-gspann
+
+root@ip-172-31-26-220:/opt/jenkins-slave/workspace/pipeline-gspann# ls
+Jenkinsfile  README.md  ansible  jenkins_data  pom.xml  settings.xml  src  target  userdata
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

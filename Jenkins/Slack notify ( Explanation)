@@ -1,0 +1,130 @@
+Need automatic jenkins build status if it fail or success.
+
+create a slack account 
+-> using gmail id 
+-> create workspace -> devops 
+-> create channel -> jenkinscicd
+
+save 
+
+click on left side "browse slack" ->"apps" --> search for jenkins "jenkinsCI"  add it and click on "configuration"
+
+Post to channel: #jenkinscicd
+click on add "Jenkins CI integration"
+
+
+once done it shows setup instructions:
+
+\Setup instructions
+
+Step 1
+In your Jenkins dashboard, click on Manage Jenkins from the left navigation.
+
+Step 2
+Click on Manage plugins and search for Slack notification in the Available tab. Click the tick box and install the plugin.
+
+Step 3
+Once it’s installed, click on Manage Jenkins again in the left navigation and then go to Configure system. Find the Global Slack notifier settings section and add the following values:
+Team subdomain: devops-yrf3241
+Integration token credential ID: Create a secret text credential using dV2UQE12NBwyGLHswuOeszDr as the value
+The other fields are optional. You can click on the question mark icons next to them for more information. Press Save once you’ve finished.
+
+Note: Please remember to replace the integration token in the screenshot below with your own.
+
+Step 4
+For each project that you want to receive notifications for, choose Configure from the project’s menu
+
+Step 5
+Then you’ll need to add Slack notifications to the Post-build actions for this project.
+
+Step 6
+In the Slack notifications section, choose the events you want to be notified about.
+
+
+on bottom click on save settings.
+
+copy token and channel
+dV2UQE12NBwyGLHswuOeszDr
+
+
+=============== On jenkins =====================
+
+manage jenkins --> configure system -> slack 
+
+workspace:  devops-yrf3241    ( devops name created me ) workspace is some extentsion
+click on credentials:  add 
+click on -> "secret text"
+copy secret -> dV2UQE12NBwyGLHswuOeszDr
+name: "slack notify"
+default channel: "#jenkinscicd"
+
+
+click on "test connection"
+
+if it success its good.
+
+if you want to change secret -> manage jenkins ->manage credentials --> click on credential of name -> update
+
+
+
+
+def COLOR_MAP = [
+    'SUCCESS': 'good', 
+    'FAILURE': 'danger',
+]
+pipeline {
+  agent any 
+  stages {
+    stage ('fetch the code'){
+      steps {
+        git branch: 'paac', url: 'https://github.com/chvinodgcp5010/CICD-project-Nexus-and-Sonarqube.git' 
+      }
+    }
+    stage ('build code'){
+      steps {
+        sh 'mvn instal'
+      }
+    }
+    stage ('test code'){
+      steps {
+        sh 'mvn test'
+       }
+    }
+    stage('build && SonarQube analysis') {
+       steps {
+            withSonarQubeEnv('sonarqube_server') {                               //the name we gave on "configure system" of sonar server as sonarqube_server.
+            // Optionally use a Maven environment you've configured already
+            //withMaven(maven:'Maven 3.5') {                                    //If we use maven as tool use withMaven otherwise no need installed maven directly so directly mentioned mvn
+            sh 'mvn clean package sonar:sonar'
+           }
+        }
+     }
+    stage('Nexus upload') {
+       steps {     
+          nexusArtifactUploader(
+            nexusVersion: 'nexus3',
+            protocol: 'http',
+            nexusUrl: '**.**.**.**:8081/',
+            groupId: 'com.visualpathit',                                       // any name
+            version: "${env.BUILD_ID}-${env.BUILD_TIMESTAMP}",                                                      
+            repository: 'vprofile-vnd',
+            credentialsId: 'nexus-cred',
+            artifacts: [
+               [artifactId: 'vprofile',
+                classifier: '',
+                file: 'target/vprofile-v2.war',
+                type: 'war']
+                 ]
+               )
+             }
+          }
+        }
+    post {
+        always {
+            echo 'Slack Notifications.'
+            slackSend channel: '#jenkinscicd',
+                color: COLOR_MAP[currentBuild.currentResult],
+                message: "*${currentBuild.currentResult}:* Job ${env.JOB_NAME} build ${env.BUILD_NUMBER} \n More info at: ${env.BUILD_URL}"
+        }
+    }
+}

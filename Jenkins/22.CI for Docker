@@ -2,29 +2,12 @@
 Developer(GIT) -->GITHUB -> GIT (Fetch code) -> maven (unit test) -> sonarqube (code analysis) -> If it pass quality gate -> Docker build (Artifacts) 
 -> ECR (Image store)
 
-Build docker image and upload to ECR
-====================================
-
-STEPS:
-
-registryCredential = 'ecr:us-east-2:awscreds'                                       //ecr:regioncode:CredentialIDstoreinJenkins    // secret key and access key                          
-appRegistry = "951401132355.dkr.ecr.us-east-2.amazonaws.com/vprofileappimg"         //Registryurl/Registryname
-vprofileRegistry = "https://951401132355.dkr.ecr.us-east-2.amazonaws.com"           //Registry url
-
-
---------------------------------------------------------------------
-registryCredential = 'ecr:us-east-2:awscreds'                                       //ecr:regioncode:CredentialIDstoreinJenkins    // secret key and access key                                                                                   //This will use aws to authenticate ecr //upload docker image to ecr it use this cred.
-registryCredential --->1. Need a IAM user to with ECR permissions ( secret key )
-
-appRegistry --> registry url /registry name                                            //For this need to create repo in ECR
---------------------------------------------------------------------
-
 
 WHAT I NEED TO INSTALL ?
 
-1. Need a IAM user to with ECR permissions ( secret key )  
+1. Need a IAM user to with ECR permissions ( aws IAM user secret key & access key )  
 2. Store aws credentials in Jenkins
-3.Create ECR repo on AWS
+3. Create ECR repo on AWS
 
 
 here there is no build in maven this will perform in docker stage.
@@ -32,18 +15,53 @@ Docekr build artifact and create image together.
 
 4. Here we are executing docker.build , in order to execute this we need to install  
 
-Plugin : "docker pipeline"
+*******Plugin : "docker pipeline"
 also in order to make this pipeline fuctional need to install 
-plugin: "docker engine on jenkins"
+
+*******plugin: "docker ecr"
+*******plugin: "docker engine on jenkins"
 
 
 dockerImage = docker.build( appRegistry + ":$BUILD_NUMBER", "./Docker-files/app/multistage/")
 
+Here above:
+==========
+docker.build --> a funcitn
+
 appRegistry                          --> ecr registry url/image url
 /Docker-files/app/multistage/        -->dockerfile present on path 
 
-==================================================================================
 
+
+======================= Pass environment variable to connect aws and ecr to authenticate and puhs images ===========================
+
+        
+pipeline {
+    agent any
+    environment {
+        registryCredential = 'ecr:us-east-2:awscreds'                                      // Need a IAM user to with ECR permissions ( secret key )
+        appRegistry = "951401132355.dkr.ecr.us-east-2.amazonaws.com/vprofileappimg"        //for this need to create registry in ECR
+        vprofileRegistry = "https://951401132355.dkr.ecr.us-east-2.amazonaws.com"
+    }
+     
+====================================
+
+Explanation: 
+
+STEPS:
+
+registryCredential = 'ecr:us-east-2:awscreds'                                       //ecr:regioncode:CredentialIDstoreinJenkins    
+// secret key and access key //This will use aws to authenticate ecr //upload docker image to ecr it use this cred.>1. Need a IAM user to with ECR permissions ( secret key )                   
+
+appRegistry = "951401132355.dkr.ecr.us-east-2.amazonaws.com/vprofileappimg"         //Registryurl/Registryname
+
+vprofileRegistry = "https://951401132355.dkr.ecr.us-east-2.amazonaws.com"           //Registry url
+
+
+
+============================================== Build docker image  =================================
+
+https://github.com/chvinodgcp5010/CICD-project-Nexus-and-Sonarqube/tree/docker/Docker-files/app/multistage
 
 
     stage('Build App Image') {
@@ -54,21 +72,46 @@ appRegistry                          --> ecr registry url/image url
              }
 
      }
-==================================================================================
-pipeline {
-    agent any
-    environment {
-        registryCredential = 'ecr:us-east-2:awscreds'                                      // Need a IAM user to with ECR permissions ( secret key )
-        appRegistry = "951401132355.dkr.ecr.us-east-2.amazonaws.com/vprofileappimg"        //for this need to create registry in ECR
-        vprofileRegistry = "https://951401132355.dkr.ecr.us-east-2.amazonaws.com"
-    }
+     
+========================================== Upload docker image to ECR ===============================
+
+    stage('Upload App Image') {
+          steps{
+            script {
+              docker.withRegistry( vprofileRegistry, registryCredential ) {
+                dockerImage.push("$BUILD_NUMBER")
+                dockerImage.push('latest')
+              }
+            }
+          }
+          
+==========================================  ==========================================     
     
-    
-    
-    
-    
-    
-    
+   
+docker.withRegistry( vprofileRegistry, registryCredential ) {                 //docker.withRegistry --> is a function
+dockerImage.push("$BUILD_NUMBER")                                             //push image and give tag as build number also tag as latest.
+dockerImage.push('latest')         
+          
+          
+ 
+==================================================  Dockerfile ======================================================
+
+FROM openjdk:8 AS BUILD_IMAGE                                                       //image openjdk8
+RUN apt update && apt install maven -y                                              //update and install maven
+RUN git clone -b vp-docker https://github.com/imranvisualpath/vprofile-repo.git     //clone source code
+RUN cd vprofile-repo && mvn install                                                 //run mvn install which generate artifacts
+
+FROM tomcat:8-jre11                                                                 // takes tomcat image
+
+RUN rm -rf /usr/local/tomcat/webapps/*
+COPY --from=BUILD_IMAGE vprofile-repo/target/vprofile-v2.war /usr/local/tomcat/webapps/ROOT.war  //copy artifact to tomcat image
+
+EXPOSE 8080
+CMD ["catalina.sh", "run"]                                                             //builds that image for us 
+
+
+
+
   ===============================================Jenkinsfile =====================================================================
   
   
@@ -106,10 +149,10 @@ pipeline {
 
         stage('build && SonarQube analysis') {
             environment {
-             scannerHome = tool 'sonar4.7'
+             scannerHome = tool 'sonar-4.7'
           }
             steps {
-                withSonarQubeEnv('sonar') {
+                withSonarQubeEnv('sonarqube_server') {
                  sh '''${scannerHome}/bin/sonar-scanner -Dsonar.projectKey=vprofile \
                    -Dsonar.projectName=vprofile-repo \
                    -Dsonar.projectVersion=1.0 \

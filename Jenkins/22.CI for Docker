@@ -1,0 +1,2 @@
+
+Developer(GIT) -->GITHUB -> GIT (Fetch code) -> maven (unit test) -> sonarqube (code analysis) -> Docker build (Artifacts) -> ECR (Image store)

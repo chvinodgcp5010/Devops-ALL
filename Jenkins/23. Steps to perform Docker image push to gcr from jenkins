@@ -96,14 +96,42 @@ click on create repository
 ================================================
 
 6.Install Plugins:
-  docker pipeline
-  aws ecr
-  aws sdk (for credentials)
-  cloudbees docker build and publish
+
+  docker pipeline          : Build and use Docker containers from pipelines.
+  aws ecr                  : This plugin generates Docker authentication token from Amazon Credentials to access Amazon ECR
+  Amazon Web Services SDK :: All (for credentials) : This plugin provides all AWS SDK for Java modules not packaged as standalone plugins.
+  
+  cloudbees docker build and publish:  This plugin enables building Dockerfile based projects, as well as publishing of the built images/repos to the
+  docker registry.
   
 
-    
-    
+7. Add aws keys to jenkins 
+
+manage jenkns --> manage credentials -->
+  
+on bottom --> clickon jenkins (Stores scoped to)
+
+kind: "aws credentials"
+ID: awscreds
+description: awscreds
+access key: -------------------
+secret access key: ----------------
+
+Save
+
+
+
+Once all done update Jenkinsfile and click on trigger build
+
+
+
+
+
+
+
+
+
+
     
     
     

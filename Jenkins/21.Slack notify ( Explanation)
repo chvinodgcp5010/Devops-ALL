@@ -85,7 +85,7 @@ More info at: http://34.238.41.72:8080/job/pipeline-gspann/57/
 
 ====================================================== Jenkinsfile  ===================================================
 
-def COLOR_MAP = [
+def COLOR_MAP = [                                                      //function for color map for slack notification
     'SUCCESS': 'good', 
     'FAILURE': 'danger',
 ]

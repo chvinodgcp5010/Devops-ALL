@@ -1,10 +1,9 @@
- 
 pipeline {
     agent any
     environment {
-        registryCredential = 'ecr:us-east-2:awscreds'
-        appRegistry = "951401132355.dkr.ecr.us-east-2.amazonaws.com/vprofileappimg"
-        vprofileRegistry = "https://951401132355.dkr.ecr.us-east-2.amazonaws.com"
+        registryCredential = 'ecr:us-east-1:awscreds'                                      //awscreds --> manage credentials added in jenkins ( aws keys), us-east-1 --> region
+        appRegistry = "301170100209.dkr.ecr.us-east-1.amazonaws.com/dataweave-vnd"         //ecr
+        vprofileRegistry = "https://301170100209.dkr.ecr.us-east-1.amazonaws.com"          //ecr
     }
   stages {
     stage('Fetch code'){
@@ -49,15 +48,15 @@ pipeline {
             }
         }
 
-        stage("Quality Gate") {
-            steps {
-                timeout(time: 1, unit: 'HOURS') {
+        //stage("Quality Gate") {
+            //steps {
+                //timeout(time: 1, unit: 'HOURS') {
                     // Parameter indicates whether to set pipeline to UNSTABLE if Quality Gate fails
                     // true = set pipeline to UNSTABLE, false = don't
-                    waitForQualityGate abortPipeline: true
-                }
-            }
-        }
+                   //waitForQualityGate abortPipeline: true
+                //}
+            //}
+        //}
 
     stage('Build App Image') {
        steps {

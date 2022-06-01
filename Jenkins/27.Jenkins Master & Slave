@@ -1,0 +1,35 @@
+Load distribution
+
+Jenkins master executes build job on node it selected.
+
+Cross platform builds:
+----------------------
+Execute build on other platforrms like .net ( windows ) ,ios ( mac )from jenkins master (linux)
+
+Software testing:
+-----------------
+execute testers test from automation script
+
+You can add any computer in n/w as jenkins node and execute commands on node.
+
+eg: scripts, commands ,test scripts etc
+
+
+===================================== Pre-requisite for node setup ==============================================
+
+1. any os
+2.n/w access from master ( firewall rules)
+3.java jre ,jdk
+4.user
+5.directory with user ownership
+6.tools required by the jenkins job
+maven ,ant ,git
+
+
+
+
+
+
+
+
+

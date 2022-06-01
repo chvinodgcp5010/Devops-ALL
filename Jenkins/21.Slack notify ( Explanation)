@@ -1,19 +1,22 @@
 Need automatic jenkins build status if it fail or success.
 
-create a slack account 
+create a Slack account 
 -> using gmail id 
--> create workspace -> devops 
+-> create workspace -> devops
+devops-yrf3241.slack.com
+
 -> create channel -> jenkinscicd
 
-save 
+Save 
 
-click on left side "browse slack" ->"apps" --> search for jenkins "jenkinsCI"  add it and click on "configuration"
+click on left side "browse slack" ->"apps" --> search for jenkins "jenkinsCI"  
+
+and click on "configuration"
 
 Post to channel: #jenkinscicd
 click on add "Jenkins CI integration"
 
-
-once done it shows setup instructions:
+Once done it shows setup instructions:
 
 \Setup instructions
 
@@ -26,7 +29,9 @@ Click on Manage plugins and search for Slack notification in the Available tab. 
 Step 3
 Once it’s installed, click on Manage Jenkins again in the left navigation and then go to Configure system. Find the Global Slack notifier settings section and add the following values:
 Team subdomain: devops-yrf3241
-Integration token credential ID: Create a secret text credential using dV2UQE12NBwyGLHswuOeszDr as the value
+
+Integration token credential ID: Create a secret text credential using dV2UQE23NFweyFDSswuOeszDr as the value
+
 The other fields are optional. You can click on the question mark icons next to them for more information. Press Save once you’ve finished.
 
 Note: Please remember to replace the integration token in the screenshot below with your own.
@@ -41,7 +46,7 @@ Step 6
 In the Slack notifications section, choose the events you want to be notified about.
 
 
-on bottom click on save settings.
+On bottom click on save settings.
 
 copy token and channel
 dV2UQE12NBwyGLHswuOeszDr
@@ -54,7 +59,7 @@ manage jenkins --> configure system -> slack
 workspace:  devops-yrf3241    ( devops name created me ) workspace is some extentsion
 click on credentials:  add 
 click on -> "secret text"
-copy secret -> dV2UQE12NBwyGLHswuOeszDr
+copy secret -> dV2UQE23NFweyFDSswuOeszDr
 name: "slack notify"
 default channel: "#jenkinscicd"
 
@@ -67,6 +72,30 @@ if you want to change secret -> manage jenkins ->manage credentials --> click on
 
 
 
+here Jenkins file slack notification "mention top as "defining function call" if build is success it show "good" -> blue colour
+if build failure --> it shows 
+
+def COLOR_MAP = [
+    'SUCCESS': 'good', 
+    'FAILURE': 'danger',
+]
+
+
+============================
+    post {
+        always {
+            echo 'Slack Notifications.'
+            slackSend channel: '#jenkinscicd',
+                color: COLOR_MAP[currentBuild.currentResult],
+                message: "*${currentBuild.currentResult}:* Job ${env.JOB_NAME} build ${env.BUILD_NUMBER} \n More info at: ${env.BUILD_URL}"
+        }
+    }
+
+
+
+
+
+=================================== Jenkinsfile =========================================
 
 def COLOR_MAP = [
     'SUCCESS': 'good', 

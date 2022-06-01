@@ -81,23 +81,6 @@ FAILURE: Job pipeline-gspann build 57
 More info at: http://34.238.41.72:8080/job/pipeline-gspann/57/
 
 
-for color defining function and calling at post "COLOR_MAP[currentBuild.currentResult]"
-
-def COLOR_MAP = [
-    'SUCCESS': 'good', 
-    'FAILURE': 'danger',
-]
-
-
-============================
-    post {
-        always {
-            echo 'Slack Notifications.'
-            slackSend channel: '#jenkinscicd',                                   // send notification to channel #jenkinscicd
-                color: COLOR_MAP[currentBuild.currentResult],
-                message: "*${currentBuild.currentResult}:* Job ${env.JOB_NAME} build ${env.BUILD_NUMBER} \n More info at: ${env.BUILD_URL}"
-        }
-    }
 
 
 ====================================================== Jenkinsfile  ===================================================
@@ -162,3 +145,52 @@ pipeline {
         }
     }
 }
+
+
+=============================================================================================================
+
+
+for color defining function and calling at post "COLOR_MAP[currentBuild.currentResult]"
+
+============================
+def COLOR_MAP = [
+    'SUCCESS': 'good', 
+    'FAILURE': 'danger',
+]
+
+
+============================
+    post {
+        always {
+            echo 'Slack Notifications.'
+            slackSend channel: '#jenkinscicd',                                   // send notification to channel #jenkinscicd
+                color: COLOR_MAP[currentBuild.currentResult],
+                message: "*${currentBuild.currentResult}:* Job ${env.JOB_NAME} build ${env.BUILD_NUMBER} \n More info at: ${env.BUILD_URL}"
+        }
+    }
+==============================
+
+Output of Jenkins build console for slack of build 62
+
+Slack Notifications.
+[Pipeline] slackSend
+Slack Send Pipeline step running, values are - baseUrl: <empty>, teamDomain: devops-yrf3241, channel: #jenkinscicd, color: good, botUser: false, tokenCredentialId: slack-notify, notifyCommitters: false, iconEmoji: <empty>, username: <empty>, timestamp: <empty>
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] }
+[Pipeline] // node
+[Pipeline] End of Pipeline
+Finished: SUCCESS
+
+ON Slack: channel #jenkinscicd
+
+SUCCESS: Job pipeline-gspann build 62
+More info at: http://**.**.**.**:8080/job/pipeline-gspann/62/
+
+
+if slack is not getting messages check the token and update it 
+manage jenkins -> manage credentials
+
+
+
+====================================================================================

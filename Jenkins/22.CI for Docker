@@ -1,2 +1,202 @@
 
-Developer(GIT) -->GITHUB -> GIT (Fetch code) -> maven (unit test) -> sonarqube (code analysis) -> If it pass quality gate -> Docker build (Artifacts) -> ECR (Image store)
+Developer(GIT) -->GITHUB -> GIT (Fetch code) -> maven (unit test) -> sonarqube (code analysis) -> If it pass quality gate -> Docker build (Artifacts) 
+-> ECR (Image store)
+
+Build docker image and upload to ECR
+====================================
+
+STEPS:
+
+registryCredential = 'ecr:us-east-2:awscreds'                                       //ecr:regioncode:CredentialIDstoreinJenkins    // secret key and access key                          
+appRegistry = "951401132355.dkr.ecr.us-east-2.amazonaws.com/vprofileappimg"         //Registryurl/Registryname
+vprofileRegistry = "https://951401132355.dkr.ecr.us-east-2.amazonaws.com"           //Registry url
+
+
+--------------------------------------------------------------------
+registryCredential = 'ecr:us-east-2:awscreds'                                       //ecr:regioncode:CredentialIDstoreinJenkins    // secret key and access key                                                                                   //This will use aws to authenticate ecr //upload docker image to ecr it use this cred.
+registryCredential --->1. Need a IAM user to with ECR permissions ( secret key )
+
+appRegistry --> registry url /registry name                                            //For this need to create repo in ECR
+--------------------------------------------------------------------
+
+
+WHAT I NEED TO INSTALL ?
+
+1. Need a IAM user to with ECR permissions ( secret key )  
+2. Store aws credentials in Jenkins
+3.Create ECR repo on AWS
+
+
+here there is no build in maven this will perform in docker stage.
+Docekr build artifact and create image together.
+
+4. Here we are executing docker.build , in order to execute this we need to install  
+
+Plugin : "docker pipeline"
+also in order to make this pipeline fuctional need to install 
+plugin: "docker engine on jenkins"
+
+
+dockerImage = docker.build( appRegistry + ":$BUILD_NUMBER", "./Docker-files/app/multistage/")
+
+appRegistry                          --> ecr registry url/image url
+/Docker-files/app/multistage/        -->dockerfile present on path 
+
+==================================================================================
+
+
+
+    stage('Build App Image') {
+       steps {
+       
+         script {
+                dockerImage = docker.build( appRegistry + ":$BUILD_NUMBER", "./Docker-files/app/multistage/")
+             }
+
+     }
+==================================================================================
+pipeline {
+    agent any
+    environment {
+        registryCredential = 'ecr:us-east-2:awscreds'                                      // Need a IAM user to with ECR permissions ( secret key )
+        appRegistry = "951401132355.dkr.ecr.us-east-2.amazonaws.com/vprofileappimg"        //for this need to create registry in ECR
+        vprofileRegistry = "https://951401132355.dkr.ecr.us-east-2.amazonaws.com"
+    }
+    
+    
+    
+    
+    
+    
+    
+  ===============================================Jenkinsfile =====================================================================
+  
+  
+  pipeline {
+    agent any
+    environment {
+        registryCredential = 'ecr:us-east-2:awscreds'
+        appRegistry = "951401132355.dkr.ecr.us-east-2.amazonaws.com/vprofileappimg"
+        vprofileRegistry = "https://951401132355.dkr.ecr.us-east-2.amazonaws.com"
+    }
+  stages {
+    stage('Fetch code'){
+      steps {
+        git branch: 'docker', url: 'https://github.com/devopshydclub/vprofile-project.git'
+      }
+    }
+
+
+    stage('Test'){                              //here there is no build in maven this will perform in docker stage.
+      steps {
+        sh 'mvn test'
+      }
+    }
+
+    stage ('CODE ANALYSIS WITH CHECKSTYLE'){
+            steps {
+                sh 'mvn checkstyle:checkstyle'
+            }
+            post {
+                success {
+                    echo 'Generated Analysis Result'
+                }
+            }
+        }
+
+        stage('build && SonarQube analysis') {
+            environment {
+             scannerHome = tool 'sonar4.7'
+          }
+            steps {
+                withSonarQubeEnv('sonar') {
+                 sh '''${scannerHome}/bin/sonar-scanner -Dsonar.projectKey=vprofile \
+                   -Dsonar.projectName=vprofile-repo \
+                   -Dsonar.projectVersion=1.0 \
+                   -Dsonar.sources=src/ \
+                   -Dsonar.java.binaries=target/test-classes/com/visualpathit/account/controllerTest/ \
+                   -Dsonar.junit.reportsPath=target/surefire-reports/ \
+                   -Dsonar.jacoco.reportsPath=target/jacoco.exec \
+                   -Dsonar.java.checkstyle.reportPaths=target/checkstyle-result.xml'''
+                }
+            }
+        }
+
+        stage("Quality Gate") {
+            steps {
+                timeout(time: 1, unit: 'HOURS') {
+                    // Parameter indicates whether to set pipeline to UNSTABLE if Quality Gate fails
+                    // true = set pipeline to UNSTABLE, false = don't
+                    waitForQualityGate abortPipeline: true
+                }
+            }
+        }
+
+    stage('Build App Image') {
+       steps {
+       
+         script {
+                dockerImage = docker.build( appRegistry + ":$BUILD_NUMBER", "./Docker-files/app/multistage/")
+             }
+
+     }
+    
+    }
+
+    stage('Upload App Image') {
+          steps{
+            script {
+              docker.withRegistry( vprofileRegistry, registryCredential ) {
+                dockerImage.push("$BUILD_NUMBER")
+                dockerImage.push('latest')
+              }
+            }
+          }
+     }
+
+  }
+}
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  

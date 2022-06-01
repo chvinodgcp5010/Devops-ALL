@@ -73,7 +73,15 @@ if you want to change secret -> manage jenkins ->manage credentials --> click on
 
 
 here Jenkins file slack notification "mention top as "defining function call" if build is success it show "good" -> blue colour
-if build failure --> it shows 
+if build failure --> it shows "Failure" --> red color 
+
+output of slack notification like below . and left side it shows color.
+
+FAILURE: Job pipeline-gspann build 57
+More info at: http://34.238.41.72:8080/job/pipeline-gspann/57/
+
+
+for color defining function and calling at post "COLOR_MAP[currentBuild.currentResult]"
 
 def COLOR_MAP = [
     'SUCCESS': 'good', 
@@ -85,17 +93,14 @@ def COLOR_MAP = [
     post {
         always {
             echo 'Slack Notifications.'
-            slackSend channel: '#jenkinscicd',
+            slackSend channel: '#jenkinscicd',                                   // send notification to channel #jenkinscicd
                 color: COLOR_MAP[currentBuild.currentResult],
                 message: "*${currentBuild.currentResult}:* Job ${env.JOB_NAME} build ${env.BUILD_NUMBER} \n More info at: ${env.BUILD_URL}"
         }
     }
 
 
-
-
-
-=================================== Jenkinsfile =========================================
+====================================================== Jenkinsfile  ===================================================
 
 def COLOR_MAP = [
     'SUCCESS': 'good', 

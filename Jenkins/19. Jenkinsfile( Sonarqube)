@@ -10,7 +10,7 @@ pipeline {
 
         stage('Build') {
             steps {
-                sh 'mvn clean install -DskipTests'
+                sh 'mvn clean install -DskipTests'                           //skip tests
             }
             post {
                 success {
@@ -34,10 +34,10 @@ pipeline {
 
         stage('Sonar Analysis') {
             environment {
-                scannerHome = tool 'sonar4.7'
+                scannerHome = tool 'sonar-4.7'                                        //manage jenkins-> global tool config->sonar scanner -> name it and insytall automatically
             }
-            steps {
-               withSonarQubeEnv('sonar') {
+            steps {   
+               withSonarQubeEnv('sonarqube_serverr') {                                            //manage jenkins ->configure system ->SonarQube servers ->sonarqube_server (name)
                    sh '''${scannerHome}/bin/sonar-scanner -Dsonar.projectKey=vprofile \
                    -Dsonar.projectName=vprofile \
                    -Dsonar.projectVersion=1.0 \

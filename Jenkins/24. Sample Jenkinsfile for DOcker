@@ -2,8 +2,8 @@ pipeline {
     agent any
     environment {
         registryCredential = 'ecr:us-east-1:awscreds'                                      //awscreds --> manage credentials added in jenkins ( aws keys), us-east-1 --> region
-        appRegistry = "301170100209.dkr.ecr.us-east-1.amazonaws.com/dataweave-vnd"         //ecr
-        vprofileRegistry = "https://301170100209.dkr.ecr.us-east-1.amazonaws.com"          //ecr
+        appRegistry = "301170100209.dkr.ecr.us-east-1.amazonaws.com/dataweave-vnd"         //ecr registry/registry name
+        vprofileRegistry = "https://301170100209.dkr.ecr.us-east-1.amazonaws.com"          //ecr registry
     }
   stages {
     stage('Fetch code'){
@@ -82,3 +82,39 @@ pipeline {
 
   }
 }
+
+
+//Here mvn install and all performing in container level not in jenkins level. artifact put in docker image 
+//check in gcr --> images 
+//pull images and metnioning the corect tags and deploy in differenet environments .k8s ,docker 
+
+//next how to deliver the image to container run time enviornment -->dockerize the app ---> continuos delivery.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

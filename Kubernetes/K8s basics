@@ -14,8 +14,7 @@ while deploying pod it automatically discovered by LB and gets updated in LB
 ( If node down bring your container on live node and container also monitored and replace )
 
 
-
-========================================== K8S Architecture =============================================
+========================================= K8S Architecture =============================================
 
 1. Master:(contol plane)
 ==========
@@ -28,7 +27,7 @@ Etcd
 
 1.APi server:
 =============
-1.Handles all the requests and incoming and outgoing communication across all services.
+1.Handles all the requests of  incoming and outgoing communication across all services.
 2.Connect to k8s cluster using kubectl CLI ( we need to install kubectl on machine ) and connect to k8s cluster
 
 2.ETCD storage:
@@ -40,7 +39,6 @@ should be backedup regularly
 
 3.Scheduler:
 =============
-
 ->Schedule the container (pod) on the correct worker node
 
 Factors takens in to account for scheudling decisions
@@ -70,8 +68,7 @@ Create default account and api access tokens for new namespace.
 
 
 
-
-
+======================================= Node Components =====================================
 
 2. Worker:
 ==========
@@ -80,6 +77,71 @@ Where docker engines run
 kubelet
 kubeproxy
 docker engine
+
+Kubelet:
+=========
+an agent that runs on each node in a cluster , It make sure the containers are running in a pod.
+
+docker run -p
+docker run -v 
+
+kubelet will do it all docker commands.
+
+Kubeproxy:
+=========
+
+network proxy that runs on each node in your cluster
+network rule:
+
+a rule will allow network communication to your pods inside and outside of a cluster
+
+
+Container runtime:
+=================
+k8s supports several container runtime environments
+(docker , rocket )
+
+
+kubectl :  command line tool Will connect to kubernetes master 
+ETCD: store current cluster state information
+API server: enables the communication
+Scheduler:  decides where your container will run (which nodes)
+Controller manager:
+resposible for monitoring container and workere nodes.
+
+
+
+kubelet:
+=======
+
+fetch the images 
+run the containers
+map the volume
+
+kubelete is a agent running in wokrer nodes and will do all heavylifting on the containers.
+
+
+kubepxy:
+======
+n/w proxy if you wnat to expose your pod outside use "kubeproxy" or even set n/w rules.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

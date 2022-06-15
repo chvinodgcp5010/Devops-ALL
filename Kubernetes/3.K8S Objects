@@ -1,0 +1,48 @@
+Pod:
+====
+Smallest object unit in k8s.
+
+Service:
+========
+To have a static endpoint to your pod like LB 
+
+Replicaset:
+==========
+to create replica of same pod
+
+deployment:
+===========
+similar to rs + you can deploy new image tag using this.
+
+Configmap:
+=========
+store our variables and configurations
+
+Secret:
+======
+
+Volumes:
+========
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

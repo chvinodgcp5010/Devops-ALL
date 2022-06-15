@@ -59,7 +59,13 @@ Responsible for noticing and responding when the nodes go down
 2.replication controller:
 Responsible for maintaining correct numbr of pods always running for every replication controllers 
 
+If goes down it will do autohealing
 
+3.Endpoint controller:
+Populates the endpoint object (Joins svcs and pods)
+
+4.Service account and token controller:
+Create default account and api access tokens for new namespace.
 
 
 

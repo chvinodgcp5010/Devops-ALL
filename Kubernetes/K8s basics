@@ -102,7 +102,7 @@ k8s supports several container runtime environments
 (docker , rocket )
 
 
-kubectl :  command line tool Will connect to kubernetes master 
+kubectl :  command line tool Will connect to kubernetes master (kubenetes-cli)
 ETCD: store current cluster state information
 API server: enables the communication
 Scheduler:  decides where your container will run (which nodes)

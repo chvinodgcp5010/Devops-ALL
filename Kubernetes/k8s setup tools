@@ -1,0 +1,31 @@
+Hardway: testing purpose ( not for production use )
+
+Manual setup:
+
+MINIKUBE: (testing and learing)
+=========
+One node k8s cluster on your computer
+lauch VM ( 1 vm both master as worker)
+
+
+Kubeadm:
+========
+->Popular tool to "setup k8s cluster" for production.
+->Multi node k8s cluster 
+
+( suppose need 4 worker nodes ) 
+--> we need to login to the master and perform some commands and 
+-->login to worker nodes and perform some commands
+and finally master and worker connected together.
+
+->Lot of manual commands that you need to execute to create and join cluster.
+
+Kops:
+=====
+most stable way "setup k8s cluster" for production.
+intially came only for aws but now 
+If you want to run your cluster most stable way is "kops"
+
+
+
+

@@ -1,3 +1,94 @@
 Gihub run on k8s
 
+K8S: Manages the cluster of docker engines
+manage other container run time env (rocket)
+
+1.Service discover and loadbalancer:
+=================================
+while deploying pod it automatically discovered by LB and gets updated in LB
+
+2.Automated rollout and rollback (of version)
+3.Automatic bin packing 
+(Place your container on right node based on resource requirement)
+3.Self healing 
+( If node down bring your container on live node and container also monitored and replace )
+
+
+
+========================================== K8S Architecture =============================================
+
+1. Master:(contol plane)
+==========
+managing the worker nodes 
+
+APi server (pods and services)
+scheduler
+control manager
+Etcd
+
+1.APi server:
+=============
+1.Handles all the requests and incoming and outgoing communication across all services.
+2.Connect to k8s cluster using kubectl CLI ( we need to install kubectl on machine ) and connect to k8s cluster
+
+2.ETCD storage:
+===============
+store all the information (cluster data) as key value pair
+kubeapi will store and retrieve info from it
+store current state of everything in cluster
+should be backedup regularly
+
+3.Scheduler:
+=============
+
+->Schedule the container (pod) on the correct worker node
+
+Factors takens in to account for scheudling decisions
+
+1.h/w or s/w policy constraints
+individual and collective resource requirements
+2.affinity / anti affinity 
+(affinity :  I wnat to run my container on specific node ) ---> ( anti-affinity: I dont want to run my contianer on this node)
+3.data locality
+
+4.Contoller manager:
+====================
+1.node contoller:
+Responsible for noticing and responding when the nodes go down
+
+2.replication controller:
+Responsible for maintaining correct numbr of pods always running for every replication controllers 
+
+
+
+
+
+
+
+
+
+2. Worker:
+==========
+Where docker engines run 
+
+kubelet
+kubeproxy
+docker engine
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 

@@ -126,26 +126,7 @@ kubepxy:
 n/w proxy if you wnat to expose your pod outside use "kubeproxy" or even set n/w rules.
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+=
 
 
 

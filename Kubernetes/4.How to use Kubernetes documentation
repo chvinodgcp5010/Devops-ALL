@@ -1,0 +1,16 @@
+================================= K8s documentation =======================================
+
+On browser check "kubernetes documentaion" click on first link
+
+https://kubernetes.io/docs/home/
+
+search on leftside bar : "pods"
+
+https://kubernetes.io/docs/concepts/workloads/pods/
+
+
+Deployment:
+
+search on leftside bar : "Deployment"
+
+https://kubernetes.io/docs/concepts/workloads/controllers/deployment/

@@ -96,11 +96,15 @@ Scheduler:
 
 kubelet: 
 -> kubelet is performing all actions 
-  ->pull images -> create container and start container 
+  ->pull images -> Create container and Start container 
 -> kubelet:
-            make sure run the containers inside the pod
+      make sure run the containers inside the pod
             
- 
+   Pulled     17s   kubelet            Container image "imranvisualpath/freshtomapp:V7" already present on machine
+   Created    17s   kubelet            Created container vproapp-container
+   Started    17s   kubelet            Started container vproapp-container
+   
+   
 ============================== Commands ===========================
 
 kubectl create -f nginx.yml
@@ -116,28 +120,6 @@ kubectl to use .kube/config file to connetc to the cluster.
 kubectl get no
 kubectl describe no "nodename"
 kubectl get no "nodename" -o yaml
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 

@@ -1,0 +1,75 @@
+Namespace:
+=========
+Group or isolate your resources.
+
+https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/
+
+In Kubernetes, namespaces provides a mechanism for isolating groups of resources within a single cluster. 
+Names of resources need to be unique within a namespace, but not across namespaces
+
+When we create cluster these ns will come default.
+
+kubectl get ns
+
+NAME              STATUS   AGE
+default           Active   18h
+kube-node-lease   Active   18h
+kube-public       Active   18h
+kube-system       Active   18h
+
+
+=============
+kubectl get ns
+kubectl get all 
+kubectl get all --all-namespaces
+
+on kubesystem namespace you will have all "controleplace(master" resources) and run as a pod
+
+kubectl get svc -n kube-system
+kubectl create ns kube-vnd
+kubectl run nginx1 --image nginx -n kube-vnd
+kubectl get po -n kube-vnd
+
+NAME     READY   STATUS    RESTARTS   AGE
+nginx1   1/1     Running   0          15s
+
+
+========================= How to place namespace on yaml file ==========================
+https://kubernetes.io/docs/concepts/workloads/pods/
+
+apiVersion: v1
+kind: Pod
+metadata:
+  name: nginx2
+  namespace: kube-vnd                    ##############
+spec:
+  containers:
+   - name: nginx
+     image: nginx
+     ports:
+      - containerPort: 80
+      
+========================= ========================= =========================
+kubectl apply -f nginx.yml
+kubectl get po -n kube-vnd
+kubectl delete ns kube-vnd
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

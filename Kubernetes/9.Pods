@@ -30,22 +30,111 @@ metadata:              ## info about pod (like name) and labels, key and value p
   
 
 spec:                  ## pod definition file.
+
+
  
-===============
+============================== POD YAML FILE ==================================
 
 apiVersion: v1
 kind: Pod
 metadata:
-  name: kube-pod
+  name: vproapp
   labels:
-    app: mindtree
+    app: vproapp
 spec:
  containers: 
-  - name: kube-cont
-    image: nginx
+  - name: vproapp-container
+    image: nginx                          #image: imravisualpath/freshtomapp:v7
     ports:
-     - name: pod-port
-       containerPorts: 80
+     - name: vproapp-port
+       containerPort: 80                  #image: 8080  ( port number of container exposed on dockerfile )
+
+
+==============================================================
+https://hub.docker.com/u/imranvisualpath
+
+
+apiVersion: v1
+kind: Pod
+metadata:
+  name: vproapp
+  labels:
+    app: vproapp
+spec:
+ containers:
+  - name: vproapp-container
+    image: imranvisualpath/freshtomapp:V7
+    ports:
+     - name: vproapp-port
+       containerPort: 8080 
+       
+       
+#https://hub.docker.com/layers/freshtomapp/imranvisualpath/freshtomapp/V7/images/sha256-ac3e47cf94e016125f34773a2827c0afc7fd6a341e81d2e940267018d57c4a59?context=explore
+In dockerfile exposed applicaton port as 8080 same need to provide on containerport.
+
+==============================   ==============================
+
+kubectl apply -f nginx.yml
+kubectl get po
+kubectl describe po <podname>
+
+O/p:
+
+Events:
+  Type    Reason     Age   From               Message
+  ----    ------     ----  ----               -------
+  Normal  Scheduled  18s   default-scheduler  Successfully assigned default/vproapp to gke-tcscluster-default-pool-0decad12-3j2v
+  Normal  Pulled     17s   kubelet            Container image "imranvisualpath/freshtomapp:V7" already present on machine
+  Normal  Created    17s   kubelet            Created container vproapp-container
+  Normal  Started    17s   kubelet            Started container vproapp-container
+  
+  
+Here:
+
+Scheduler:
+-> will schedule the pod on to specific node 
+
+kubelet: 
+-> kubelet is performing all actions 
+  ->pull images -> create container and start container 
+-> kubelet:
+            make sure run the containers inside the pod
+            
+ 
+============================== Commands ===========================
+
+kubectl create -f nginx.yml
+kubectl get po
+kubectl describe po "pod name"
+kubectl get po kube-pod -o yaml                   # get yaml file 
+kubectl get po kube-pod -o yaml >pod.yml          # save yaml file to other file
+kubectl edit po kube-pod
+
+
+kubectl to use .kube/config file to connetc to the cluster.
+
+kubectl get no
+kubectl describe no "nodename"
+kubectl get no "nodename" -o yaml
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

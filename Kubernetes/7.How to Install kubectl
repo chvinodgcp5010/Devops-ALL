@@ -1,0 +1,12 @@
+https://kubernetes.io/docs/tasks/tools/install-kubectl-linux/
+
+https://kubernetes.io/docs/tasks/tools/install-kubectl-linux/#install-kubectl-binary-with-curl-on-linux
+
+Once install kubectl , test using below
+
+kubectl get po 
+kubectl get no
+
+=====
+
+kubeconfig file to have it anywhere. you can use it on "jenkins" to deploy or apply changes to k8s clster from ansible etc.

@@ -1,1 +1,61 @@
+https://kubernetes.io/docs/concepts/workloads/pods/
+
+Pod is the basic execution unit of k8s application
+The smallest and simplest unit of k8s object model that you create or deploy
+Pod represents process running on your cluster
+
+Pod that runs a single container:
+================================
+1 container per pod --> most common k8s use case
+2 container per pod also but 2nd container will be only "helper container"
+
+Pod is a wrapper around your single container
+K8s manages the pods ratherthan contianer directly
+
+Multi-container pod:
+====================
+Tightly coupled and need to share resources 
+1 main container and other as "sidecar" or "helper" or "init container"
+Each pod is meant to run a single instance of an appn
+should use multiple pods to scale harizontally.
+
+
+docker compose is better to run container than docker run 
+
+======================== Pod definition ==========================
+
+apiVersion:
+kind: 
+metadata:              ## info about pod (like name) and labels, key and value pair and tags  ( dictionary form -->metadata)
+  
+
+spec:                  ## pod definition file.
+ 
+===============
+
+apiVersion: v1
+kind: Pod
+metadata:
+  name: kube-pod
+  labels:
+    app: mindtree
+spec:
+ containers: 
+  - name: kube-cont
+    image: nginx
+    ports:
+     - name: pod-port
+       containerPorts: 80
+
+
+
+
+
+
+
+
+
+
+
+
 

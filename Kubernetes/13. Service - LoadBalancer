@@ -1,0 +1,31 @@
+====================================== pod yaml file ============================
+
+apiVersion: v1
+kind: Pod
+metadata:
+  name: vproapp-pod
+  labels:
+    app: vproapp
+spec:
+  containers:
+  - name: vproapp-cont
+    image: imranvisualpath/freshtomapp:V7
+    ports:
+     - name: vproapp-port
+       containerPort: 8080
+     
+     
+=================================== LoadBalancer service =================================
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: vproapp-service
+spec:
+ selector: 
+   app: vproapp
+ ports:
+  - protocol: TCP                            
+    port: 80                           #any port (mostly same port as targetPort for easy understanding)
+    targetPort: 8080                   #(vproapp-port provided same on above)#(backend port must match with container port in deployment yaml)
+ type: LoadBalancer                    ##(backend port must match with container port in deployment yaml)

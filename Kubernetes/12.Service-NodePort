@@ -1,12 +1,12 @@
 user == >nodeip:nodeport =>Node (nodeip)(nodeport)---> service (nodeport) ---->100.34.54.34:80 (fontend port) --> backendport(80)
 
-backendport must match to container port
+backendport(targetPort) in service must match to (containerPort) in deployment file.
 
-Frontend you can give any port . 
+Frontend you can give any port (port: 9090) any port . 
 
 (in yaml)
 
-port : 80                       (frontendport you can give any) frontend port(internal) but you cannot access outside.( node port for outside n/w)
+port : 9090                      (frontendport you can give any port) frontend port(internal) but you cannot access outside.( node port for outside n/w)
 tartgetPort: 80                 (but backend port must match with container port)
 
 NOTE:

@@ -39,7 +39,7 @@ vproapp-service   LoadBalancer   10.48.7.204   35.123.223.22   1234:31772/TCP   
 Access using :
 LB ip: =>35.123.223.22:1234 
 
-
+check it on loadbalancer section on gcp ( It will create network loadbalancer )
 
 
 

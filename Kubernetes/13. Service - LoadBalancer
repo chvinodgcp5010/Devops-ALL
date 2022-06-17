@@ -23,9 +23,34 @@ metadata:
   name: vproapp-service
 spec:
  selector: 
-   app: vproapp
+   app: vproapp                        # Match same labels with deployment
  ports:
   - protocol: TCP                            
-    port: 80                           #any port (mostly same port as targetPort for easy understanding)
+    port: 1234                         #must be between 1 and 65535 (anyport), (mostly same port as targetPort for easy understanding)
     targetPort: 8080                   #(vproapp-port provided same on above)#(backend port must match with container port in deployment yaml)
  type: LoadBalancer                    ##(backend port must match with container port in deployment yaml)
+
+
+============================================================================================
+
+kubectl get svc
+vproapp-service   LoadBalancer   10.48.7.204   35.123.223.22   1234:31772/TCP   9m57s
+
+Access using :
+LB ip: =>35.123.223.22:1234 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

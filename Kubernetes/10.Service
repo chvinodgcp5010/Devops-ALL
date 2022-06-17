@@ -1,1 +1,5 @@
+https://kubernetes.io/docs/concepts/services-networking/service/
 
+
+Service:
+Way to expose an application running on a set of pods as a network service.

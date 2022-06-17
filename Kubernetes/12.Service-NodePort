@@ -78,7 +78,7 @@ Endpoints:                10.44.0.17:8080                   #pod ip using label 
 
 ACCESS USING :
 ===============
-NODEIP:NODEPORT                ## you can give any node ip of cluster.
+NODEIP:NODEPORT                ## you can give any node ip of cluster (if suppose have 3 nodes in cluster) you can access any ip of node.
 34.133.21.126:30001/
 
 

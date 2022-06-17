@@ -1,5 +1,48 @@
 https://kubernetes.io/docs/concepts/services-networking/service/
 
-
 Service:
 Way to expose an application running on a set of pods as a network service.
+Similar to loadbalancer
+
+Service provides a static endpoint behind pods (appn)
+
+SERVICE TYPES:
+=============
+NODEPORT:
+->like port mapping in docker
+->for non prod purpose
+->Only to expose pods on outside n/w
+
+CLUSTERIP:
+=========
+If you dont want to expose your n/w to outside like internal 
+( tomcat connect to mysql server ) 
+Mysql you need static endpoint so you can create clusterip service
+-> here no port mapped to node ( internal com)
+
+LOADBALANCER:
+=============
+->Expose outside n/w( in production use )
+->running tomcat pod , I want users access over internet (in aws create ELB and map pod to it )
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

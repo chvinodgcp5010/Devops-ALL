@@ -20,8 +20,10 @@ kubectl get pod
 kubectl get pod -o wide
 kubectl get pod nginx12 -o yaml
 kubectl describe pod nginx12
+update yaml file image to (image: nginx:1.14.2) and deploy
 clear
 ls
+
 
 # Fix it
 vim pod2.yaml
@@ -33,13 +35,34 @@ metadata:
 spec:
   containers:
   - name: nginx
-    image: nginix:1.14.2
+    image: nginx:1.14.2
     ports:
     - containerPort: 80
 
 kubectl apply -f pod2.yaml
+==========================
+kubectl get po nginx12 -o wide
+NAME      READY   STATUS             RESTARTS   AGE   IP          NODE                                        NOMINATED NODE   READINESS GATES
+nginx12   0/1     ImagePullBackOff   0          20s   10.44.1.9   gke-tcscluster-default-pool-0decad12-t6rg   <none>           <none>
 
-# Create one more faulty pod
+kubectl get pod nginx12 -o yaml
+    state:
+      waiting:
+        message: Back-off pulling image "nginox:1.14.2"
+        reason: ImagePullBackOff
+        
+ kubectl describe pod nginx12       
+  ----     ------     ----                ----               -------
+  Normal   Scheduled  109s                default-scheduler  Successfully assigned default/nginx12 to gke-tcscluster-default-pool-0decad12-t6rg
+  Normal   Pulling    29s (x4 over 108s)  kubelet            Pulling image "nginox:1.14.2"
+  Warning  Failed     27s (x4 over 108s)  kubelet            Failed to pull image "nginox:1.14.2": rpc error: code = Unknown desc = failed to pull and unpack image "docker.io/library/nginox:1.14.2": failed to resolve reference "docker.io/library/nginox:1.14.2": pull access denied, repository does not exist or may require authorization: server message: insufficient_scope: authorization failed
+  Warning  Failed     27s (x4 over 108s)  kubelet            Error: ErrImagePull
+  Normal   BackOff    12s (x5 over 107s)  kubelet            Back-off pulling image "nginox:1.14.2"
+  Warning  Failed     12s (x5 over 107s)  kubelet            Error: ImagePullBackOff
+  
+    
+
+=====================================# Create one more faulty pod =====================================
 kubectl run web2 --image=nginx test47
 
 # Find the problem
@@ -55,3 +78,17 @@ kubectl logs web2
 kubectl delete pod web2
 kubectl run web2 --image=nginx
 kubectl get pod
+
+
+
+
+
+
+
+
+
+
+
+
+
+

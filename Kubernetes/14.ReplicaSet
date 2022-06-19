@@ -1,0 +1,95 @@
+https://kubernetes.io/docs/concepts/workloads/controllers/replicaset/
+
+A ReplicaSet's purpose is to maintain a stable set of replica Pods running at any given time. As such, it is often used to guarantee 
+the availability of a specified number of identical Pods.
+
+Maintains replica of your pod.
+
+Deployed a pod (web application) due to some reason pod goes down , users not able to access the application that it.
+someone deletes the pod and recreate it to fix the problem
+
+But if pod running on replicaset, In RS if any pod crashes it recreate a new pod automatically no manual intervention.
+
+Mention more replcas and scheduler will distribute the pods on to different worker nodes for HA. even node crashes the pods inside will
+move to (recreate) to healthy worker node.
+
+If you deploy pod without replicaset if that node goes down and then pod goes down entire application will be down.
+
+Cheatsheet:
+
+https://kubernetes.io/docs/reference/kubectl/cheatsheet/
+
+
+================================== ReplicaSet yaml file ===========================================
+
+apiVersion: apps/v1
+kind: ReplicaSet
+metadata:
+   name: vproapp-rs
+   labels:
+     app: guestbook
+     tier: frontend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+       tier: frontend
+  template:
+    metadata:
+       #name:
+       labels:
+         tier: frontend
+    spec:
+      containers:
+       - name: php-redis
+         image: gcr.io/google_samples/gb-frontend:v3
+         ports:
+           - containerPort: 80
+  
+=============================
+Hit url on browser you will redirect to page of image on GCR.
+
+gcr.io/google_samples/gb-frontend:v3
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

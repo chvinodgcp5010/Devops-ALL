@@ -1,7 +1,9 @@
 https://kubernetes.io/docs/tasks/inject-data-application/define-command-argument-container/
 
-vim com.yaml
+( Topic need to focus more ) ==>Unable to understand
 
+vim com.yaml
+=============
 apiVersion: v1
 kind: Pod
 metadata:
@@ -20,5 +22,48 @@ kubectl apply -f com.yaml
 kubectl get pod
 kubectl logs command-demo
 
+O/P:
+====
+command-demo
+tcp://10.48.0.1:443
 
 
+================================= check env variables ======================================
+
+kubectl exec -it vproapp-pod env
+kubectl exec [POD] [COMMAND] is DEPRECATED and will be removed in a future version. Use kubectl exec [POD] -- [COMMAND] instead.
+W0619 12:11:12.973824    1183 gcp.go:120] WARNING: the gcp auth plugin is deprecated in v1.22+, unavailable in v1.25+; use gcloud instead.
+To learn more, consult https://cloud.google.com/blog/products/containers-kubernetes/kubectl-auth-changes-in-gke
+PATH=/usr/local/tomcat/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+HOSTNAME=vproapp-pod
+LANG=C.UTF-8
+JAVA_HOME=/docker-java-home
+JAVA_VERSION=11.0.3
+JAVA_DEBIAN_VERSION=11.0.3+1-1~bpo9+1
+CATALINA_HOME=/usr/local/tomcat
+TOMCAT_NATIVE_LIBDIR=/usr/local/tomcat/native-jni-lib
+LD_LIBRARY_PATH=/usr/local/tomcat/native-jni-lib
+OPENSSL_VERSION=1.1.0j-1~deb9u1
+GPG_KEYS=05AB33110949707C93A279E3D3EFE6B686867BA6 07E48665A34DCAFAE522E5E6266191C37C037D42 47309207D818FFD8DCD3F83F1931D684307A10A5 541FBE7D8F78B25E055DDEE13C370389288584E7 61B832AC2F1C5A90F0F9B00A1C506407564C17A3 713DA88BE50911535FE716F5208B0AB1D63011C7 79F7026C690BAA50B92CD8B66A3AD3F4F22C4FED 9BA44C2621385CB966EBA586F72C284D731FABEE A27677289986DB50844682F8ACB77FC2E86E29AC A9C5DF4D22E99998D9875A5110C01C5A2F6059E7 DCFD35E0BF8CA7344752DE8B6FB21E8933C60243 F3A04C595DB5B6A5F1ECA43E3B7BBB100D811BBE F7DA48BB64BCB84ECBA7EE6935CD23C10D498E23
+TOMCAT_MAJOR=8
+TOMCAT_VERSION=8.5.41
+TOMCAT_SHA512=16c86acb5ef635cdb260609e6d3630b87f963c9f71c35d97a0b413669509cb7258931f9d9f8d90f18665d936b491e4ea84ea8f4d71b336a208f353a268f70964
+TOMCAT_TGZ_URLS=https://www.apache.org/dyn/closer.cgi?action=download&filename=tomcat/tomcat-8/v8.5.41/bin/apache-tomcat-8.5.41.tar.gz  https://www-us.apache.org/dist/tomcat/tomcat-8/v8.5.41/bin/apache-tomcat-8.5.41.tar.gz  https://www.apache.org/dist/tomcat/tomcat-8/v8.5.41/bin/apache-tomcat-8.5.41.tar.gzhttps://archive.apache.org/dist/tomcat/tomcat-8/v8.5.41/bin/apache-tomcat-8.5.41.tar.gz
+TOMCAT_ASC_URLS=https://www.apache.org/dyn/closer.cgi?action=download&filename=tomcat/tomcat-8/v8.5.41/bin/apache-tomcat-8.5.41.tar.gz.asc      https://www-us.apache.org/dist/tomcat/tomcat-8/v8.5.41/bin/apache-tomcat-8.5.41.tar.gz.asc     https://www.apache.org/dist/tomcat/tomcat-8/v8.5.41/bin/apache-tomcat-8.5.41.tar.gz.asc  https://archive.apache.org/dist/tomcat/tomcat-8/v8.5.41/bin/apache-tomcat-8.5.41.tar.gz.asc
+VPROAPP_SERVOCE_PORT_9090_TCP_PORT=9090
+KUBERNETES_SERVICE_HOST=10.48.0.1
+KUBERNETES_SERVICE_PORT=443
+KUBERNETES_PORT_443_TCP_PORT=443
+VPROAPP_SERVOCE_PORT_9090_TCP_PROTO=tcp
+KUBERNETES_SERVICE_PORT_HTTPS=443
+KUBERNETES_PORT_443_TCP=tcp://10.48.0.1:443
+VPROAPP_SERVOCE_SERVICE_PORT=9090
+VPROAPP_SERVOCE_PORT_9090_TCP_ADDR=10.48.11.186
+VPROAPP_SERVOCE_PORT_9090_TCP=tcp://10.48.11.186:9090
+VPROAPP_SERVOCE_PORT=tcp://10.48.11.186:9090
+KUBERNETES_PORT=tcp://10.48.0.1:443
+KUBERNETES_PORT_443_TCP_PROTO=tcp
+KUBERNETES_PORT_443_TCP_ADDR=10.48.0.1
+VPROAPP_SERVOCE_SERVICE_HOST=10.48.11.186
+TERM=xterm
+HOME=/root

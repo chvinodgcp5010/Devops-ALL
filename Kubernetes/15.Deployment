@@ -37,6 +37,106 @@ spec:
         ports:
         - containerPort: 80
 
+==============================================
+
+Updating a Deployment
+
+kubectl set image deployment.v1.apps/nginx-deployment nginx=nginx:1.16.1
+
+here nginx=nginx:1.16.1 (nginx : container name)
+
+
+Rolling Back a Deployment:
+===========================
+Sometimes, you may want to rollback a Deployment; for example, when the Deployment is not stable, such as crash looping. 
+By default, all of the Deployment's rollout history is kept in the system so that you can rollback anytime you want 
+(you can change that by modifying revision history limit).
+
+Suppose that you made a typo while updating the Deployment, by putting the image name as nginx:1.161 instead of nginx:1.16.1:
+
+->kubectl set image deployment/nginx-deployment nginx=nginx:1.161 
+
+The output is similar to this:
+
+deployment.apps/nginx-deployment image updated
+The rollout gets stuck. You can verify it by checking the rollout status:
+
+kubectl rollout status deployment/nginx-deployment
+The output is similar to this:
+
+Waiting for rollout to finish: 1 out of 3 new replicas have been updated...
+
+
+kubectl get rs
+The output is similar to this:
+
+NAME                          DESIRED   CURRENT   READY   AGE
+nginx-deployment-1564180365   3         3         3       25s
+nginx-deployment-2035384211   0         0         0       36s
+nginx-deployment-3066724191   1         1         0       6s
+
+->kubectl describe deployment
+
+->kubectl rollout history deployment/nginx-deployment
+deployment.apps/nginx-deployment
+REVISION  CHANGE-CAUSE
+3         <none>
+4         <none>
+5         <none>
+
+revision history check only.
+->kubectl rollout history deployment/nginx-deployment --revision=4
+
+W0619 10:56:37.193422     819 gcp.go:120] WARNING: the gcp auth plugin is deprecated in v1.22+, unavailable in v1.25+; use gcloud instead.
+To learn more, consult https://cloud.google.com/blog/products/containers-kubernetes/kubectl-auth-changes-in-gke
+deployment.apps/nginx-deployment with revision #4
+Pod Template:
+  Labels:       app=nginx
+        pod-template-hash=559d658b74
+  Containers:
+   nginx:
+    Image:      nginx:1.16.1
+
+
+->Rolling Back to a Previous Revision
+Follow the steps given below to rollback the Deployment from the current version to the previous version, which is version 2.
+
+Now you've decided to undo the current rollout and rollback to the previous revision:
+
+->kubectl rollout undo deployment/nginx-deployment
+
+
+Alternatively, you can rollback to a specific revision by specifying it with --to-revision:
+
+rollout to specific revision
+->kubectl rollout undo deployment/nginx-deployment --to-revision=2
+
+Controlled By:  ReplicaSet/nginx-deployment-66b6c48dd5
+Containers:
+  nginx:
+    Container ID:   containerd://052ef7031300303c97b9101d56a90b0fbdcb6bd72301c7807286d9b4a047ad36
+    Image:          nginx:1.14.2
+
+
+
+=>Scaling a Deployment
+You can scale a Deployment by using the following command:
+
+->kubectl scale deployment/nginx-deployment --replicas=10
+
+Follow:
+
+https://kubernetes.io/docs/concepts/workloads/controllers/deployment/
+
+
+
+
+
+
+
+
+
+
 
 
 

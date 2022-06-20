@@ -1,8 +1,166 @@
 https://kubernetes.io/docs/concepts/configuration/configmap/
 
+CONFIGMAP:
+=========
+When you run any application or any stack you have "many variables and cofigurations" that can chanage over time. 
+use "configmaps" to store all vars and configurations in 1 place.
 
-# Create COnfig Map
+=> A ConfigMap is an API object used to store non-confidential data in key-value pairs. 
+=> Pods can consume ConfigMaps as environment variables,command-line arguments, or as configuration files in a volume.
+
+A ConfigMap allows you to decouple environment-specific configuration from your container images, so that your applications are easily 
+portable.
+
+Configmap:
+==========
+collection of variables and to inject those in to pods.
+
+How to inject data in pod?
+While we are running pod we can also "inject variables" and "configurations" in the pod.
+
+Environment variables:
+======================
+->Expose variable inside pod
+In pod definition file add below
+
+env:
+  - name:
+    value:
+================================== How to add environment variables ====================
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: helloworld
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      run: helloworld
+  template:
+    metadata:
+      labels:
+        run: helloworld
+    spec:
+      containers:
+      - name: helloworldv1
+        image: mysql:5.7
+        env:
+		     - name: MYSQL_DATABASE
+		       value: account
+		     - name: MYSQL_ROOT_DATABASE_PASSWORD
+		       value: somecomplexpassword
+
+======================================================
+We can check in container as these environment variables:  
+echo $MYSQL_DATABASE
+
+When you run the pod and container has these variables attached.
+
+Whenever you want in any pod you can inject these vars or config files use --> configmap:
+
+ConfigMap:
+=========
+
+Use imperative way to how to set variables in configmap (configmap: collection of variables)
+https://gauravguptacloud.medium.com/configmaps-in-kubernetes-117e87c2a919#:~:text=The%20first%20task%20is%20to,We%20create%20a%20configuration%20file.
+
+=>kubectl create configmap db-config --from-literal=MYSQL_DATABASE=account --from-literal=MYSQL_ROOT_DATABASE=somecomplexpassword
+
+=>kubectl get cm 
+NAME               DATA   AGE
+db-config          2      3m34s             -> 2keys ( MYSQL_DATABASE,  MYSQL_ROOT_DATABASE_PASSWORD)
+
+=>kubectl get cm -o yaml
+
+=>kubectl describe cm db-config
+
+Name:         db-config
+Namespace:    default
+
+Data
+====
+MYSQL_DATABASE:
+----
+account
+MYSQL_ROOT_DATABASE:
+----
+somecomplexpassword
+
+BinaryData
+====
+
+Events:  <none>
+
+============================================= CONFIGMAP YAML FILE =====================
+
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: db-config1
+data:
+  MYSQL_ROOT_DATABASE_PASSWORD: somecomplexpass
+  MYSQL_DATABASE: accounts
+
+
+=>kubectl get cm db-config1 -o yaml
+
+============================================= CONFIGMAP YAML FILE =====================
+https://kubernetes.io/docs/concepts/configuration/configmap/
+
+configmap has 4 keys 2 are simple keys and 2 are multiline content
+
+2 simple keys
+
+  player_initial_lives: "3"
+  ui_properties_file_name: "user-interface.properties"
+
+2 keys as multiline content
+
+  game.properties: |
+    enemy.types=aliens,monsters
+    player.maximum-lives=5    
+  user-interface.properties: |
+    color.good=purple
+    color.bad=yellow
+    allow.textmode=true  
+  
+    
+There are four different ways that you can use a ConfigMap to configure a container inside a Pod:
+
+Inside a container command and args
+Environment variables for a container
+Add a file in read-only volume, for the application to read
+Write code to run inside the Pod that uses the Kubernetes API to read a ConfigMap
+
+=========================================== CONFIGMAP ========================================
+
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: game-demo
+data:
+  # property-like keys; each key maps to a simple value
+  player_initial_lives: "3"
+  ui_properties_file_name: "user-interface.properties"
+
+  # file-like keys
+  game.properties: |
+    enemy.types=aliens,monsters
+    player.maximum-lives=5    
+  user-interface.properties: |
+    color.good=purple
+    color.bad=yellow
+    allow.textmode=true   
+
+
+========================================== HOW TO USE CONFIGMAP ON DEPLOYMENT FILE ===============================================
+https://kubernetes.io/docs/concepts/configuration/configmap/
+
+# Create Config Map
+
 vim samplecm.yaml
+
 apiVersion: v1
 kind: Pod
 metadata:
@@ -14,12 +172,11 @@ spec:
       command: ["sleep", "3600"]
       env:
         # Define the environment variable
-        - name: PLAYER_INITIAL_LIVES # Notice that the case is different here
-                                     # from the key name in the ConfigMap.
+        - name: PLAYER_INITIAL_LIVES                  # Notice that the case is different here  # from the key name in the ConfigMap.                                                
           valueFrom:
             configMapKeyRef:
-              name: game-demo           # The ConfigMap this value comes from.
-              key: player_initial_lives # The key to fetch.
+              name: game-demo                         # The ConfigMap this value comes from.
+              key: player_initial_lives               # The key to fetch.
         - name: UI_PROPERTIES_FILE_NAME
           valueFrom:
             configMapKeyRef:
@@ -37,23 +194,47 @@ spec:
         name: game-demo
         # An array of keys from the ConfigMap to create as files
         items:
-        - key: "game.properties"
-          path: "game.properties"
+        - key: "game.properties"                    # key from configmap 
+          path: "game.properties"                   # file name to store the configmap value of game.properties key(any name)
         - key: "user-interface.properties"
-          path: "user-interface.properties"
+          path: "user-interface.properties"         ## file name to store the configmap value of user-interface.properties key(any name)
+
+===================================================================================
+
+$ kubectl exec -it configmap-demo-pod /bin/sh
+
+/ # echo $PLAYER_INITIAL_LIVES
+3
+
+/ # echo $UI_PROPERTIES_FILE_NAME
+user-interface.properties
+
+/ # cd /config
+
+/config # ls
+game.properties            user-interface.properties
+
+/config # cat game.properties
+enemy.types=aliens,monsters
+player.maximum-lives=5
+
+/config # cat user-interface.properties
+color.good=purple
+color.bad=yellow
+allow.textmode=true
 
 
 
-kubectl apply -f samplecm.yaml
-kubectl get cm
-clear
-kubectl get cm
-kubectl get cm game-demo -o yaml
-clear
-kubectl get cm
+===================================== # Create Pod that reads ConfigMap =====================================
+vi nginx.txt
+hi nginx file
 
-# Create Pod that reads ConfigMap
+$ kubectl create cm myconfigmap --from-file nginx.txt
+
+
 vim readcmpod.yaml
+
+
 apiVersion: v1
 kind: Pod
 metadata:
@@ -71,10 +252,25 @@ spec:
     configMap:
       name: myconfigmap
 
+===========================================================================================================
+kubectl get cm myconfigmap -o yaml
+apiVersion: v1
+data:
+  nginx.txt: |
+    hi nginx
+kind: ConfigMap
+metadata:
+  creationTimestamp: "2022-06-20T13:37:50Z"
+  name: myconfigmap
+  namespace: default
+  resourceVersion: "2717736"
+  uid: c9b10a05-a0d6-4611-b9a6-875883c90cf6
 
+kubectl exec -it mypod /bin/sh
 
-kubectl apply -f readcmpod.yaml
-kubectl get pod
+# cd /etc/foo   
+# ls
+nginx.txt
+# cat nginx.txt
+hi nginx
 
-# Login to Pod and check variables & files
-kubectl exec --stdin --tty configmap-demo-pod -- /bin/sh

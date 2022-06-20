@@ -1,4 +1,5 @@
 https://kubernetes.io/docs/concepts/storage/volumes/
+https://www.tutorialspoint.com/kubernetes/kubernetes_volumes.htm
 
 Docker has a concept of volumes, though it is somewhat looser and less managed. A Docker volume is a directory on disk or in another container. Docker provides volume drivers, 
 but the functionality is somewhat limited.
@@ -96,3 +97,58 @@ kubectl apply -f mysqlpod.yaml
 kubectl describe pod dbpod
 clear
 kubectl delete pod dbpod
+
+================================= 
+
+https://www.tutorialspoint.com/kubernetes/kubernetes_volumes.htm
+
+Types of Kubernetes Volume
+Here is a list of some popular Kubernetes Volumes −
+
+=>emptyDir − It is a type of volume that is created when a Pod is first assigned to a Node. It remains active as long as the Pod is 
+running on that node. The volume is initially empty and the containers in the pod can read and write the files in the emptyDir volume. 
+Once the Pod is removed from the node, the data in the emptyDir is erased.
+
+=>hostPath − This type of volume mounts a file or directory from the host node’s filesystem into your pod.
+
+=>gcePersistentDisk − This type of volume mounts a Google Compute Engine (GCE) Persistent Disk into your Pod. The data in a 
+gcePersistentDisk remains intact when the Pod is removed from the node.
+
+=>secret − A secret volume is used to pass sensitive information, such as passwords, to pods.
+
+=>persistentVolumeClaim − A persistentVolumeClaim volume is used to mount a PersistentVolume into a pod. PersistentVolumes are a
+way for users to “claim” durable storage (such as a GCE PersistentDisk or an iSCSI volume) without knowing the details of the particular
+cloud environment.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

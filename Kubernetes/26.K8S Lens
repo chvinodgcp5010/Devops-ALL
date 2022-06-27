@@ -1,1 +1,66 @@
+https://k8slens.dev/
+
+download .exe on windows and install
+
+Thousands of businesses and people develop and operate their Kubernetes on Lens — The largest and most advanced Kubernetes platform 
+in the world
+ 
+https://k8slens.dev/desktop.html
+
+Remove Complexity
+Explore and navigate Kubernetes clusters without having to learn kubectl commands. Great for developers just getting started.
+
+Real Time Observability
+Inspect live statistics, events, and log streams in real-time. No spinners, refreshing or waiting for screens to update.
+
+Troubleshoot & Debug
+See errors and warnings on dashboard and click to see details. Click again to see logs or get a command line.
+
+Run on Your Desktop
+Standalone application for MacOS, Windows and Linux. 1-minute install. No need to install anything in cluster.
+
+Built on Open Source & Free
+Lens Desktop is built on open source with vibrant community and is backed by Kubernetes and cloud native ecosystem pioneers.
+
+Works with Any Kubernetes
+Using EKS, AKS, GKE, Minikube, Rancher, k0s, k3s, OpenShift... ? They all work. Simply import the kubeconfigs for the clusters you want to work with.
+
+
+
+============================== ERROR =================================
+
+020/09/21 19:40:29 http: proxy error: error executing access token command "/usr/lib/google-cloud-sdk/bin/gcloud config config-helper 
+--format=json": err=exec: "/usr/lib/google-cloud-sdk/bin/gcloud": file does not exist output= stderr=
+
+https://github.com/lensapp/lens/issues/944
+
+Fixed this by just updating the cmd-path to just gcloud (cmd-path: gcloud)
+
+Here is the kubeconfig snippet for reference:
+
+users:
+  - name: omitted
+    user:
+      auth-provider:
+        config:
+          cmd-args: config config-helper --format=json
+          cmd-path: gcloud
+          expiry-key: '{.credential.token_expiry}'
+          token-key: '{.credential.access_token}'
+        name: gcp
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 

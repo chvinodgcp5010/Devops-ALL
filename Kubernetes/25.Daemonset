@@ -101,8 +101,10 @@ Here if     key: node-role.kubernetes.io/control-plane
   
   taint ( on node ) toleration (on pods)
   
-  
-          
+=>kubectl get po --namespace kube-system
+
+fluentd-elasticsearch-gzzzn                            1/1     Running   0          22s
+fluentd-elasticsearch-mggnn                            1/1     Running   0          22s       
           
           
           

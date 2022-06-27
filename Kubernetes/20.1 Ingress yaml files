@@ -148,3 +148,13 @@ clear
 kubectl get ns
 kubectl delete -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v1.1.3/deploy/static/provider/aws/deploy.yaml
 
+
+
+
+
+
+
+
+
+
+

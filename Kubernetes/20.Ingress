@@ -1,1 +1,85 @@
+https://kubernetes.io/docs/concepts/services-networking/ingress/
 
+An API object that manages external access to the services in a cluster, typically HTTP. Ingress may provide load balancing, 
+SSL termination and name-based virtual hosting.
+
+->Ingress specifically for external access.
+
+->Lets say if you run your application (website) in pod , how user access it ?
+we have seen service nodeport and lb that is not enough
+->Because when you have many apps especially microservices and controlling different access from externally like access based on port 
+url, path etc.
+->all the rules can manage inside ingress so internally k8s will handle.
+
+What is Ingress?
+Ingress exposes HTTP and HTTPS routes from outside the cluster to services within the cluster. Traffic routing is controlled by rules defined on the Ingress resource.
+
+Here is a simple example where an Ingress sends all its traffic to one Service:
+
+you have pod on top of that service on top ingress
+
+Pod -> Service(ClusterIP) -> Ingress(LB)
+
+https://gspann.udemy.com/course/decodingdevops/learn/lecture/31765752#overview
+
+Client --> Ingress Managed LB -> Ingress -> routing rule -> Service(ClusterIP) --> pod
+                                                                               --> pod
+  
+  
+Service(ClusterIP) => Internal service
+Ingress            => expose this service to outside world
+
+
+Prerequisites:
+==============
+You must have an Ingress controller to satisfy an Ingress. Only creating an Ingress resource has no effect.
+You may need to deploy an Ingress controller such as ingress-nginx. 
+
+INGRESS CONTROLLER:
+===================
+
+https://kubernetes.io/docs/concepts/services-networking/ingress-controllers/
+
+MOSTLY USED: NGINX-INGRESS CONTROLLER
+
+https://www.nginx.com/products/nginx-ingress-controller/
+
+
+All different rules based on path ,port and domain can handle by ingress controller.
+
+
+nginx ingress -->/             --client (angular)
+              -->/api          -->nodejs(emart api) <=> mongodb 
+              -->/webapi       -->java (books api) <=> mysql sb
+              
+              
+Lets setup ingress controller 
+=============================
+
+https://kubernetes.github.io/ingress-nginx/deploy/
+
+for GCP:
+https://kubernetes.github.io/ingress-nginx/deploy/#gce-gke
+
+nginx-controller:
+==================
+where we set rules based on what request comes it route to specific service.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                                                                    
+                                                                    

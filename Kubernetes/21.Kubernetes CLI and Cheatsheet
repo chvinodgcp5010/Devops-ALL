@@ -1,0 +1,98 @@
+https://kubernetes.io/docs/reference/kubectl/cheatsheet/
+
+Use it regular
+
+Kubectl context and configuration
+
+kubectl config view
+
+# get the password for the e2e user
+kubectl config view -o jsonpath='{.users[?(@.name == "e2e")].user.password}'
+
+kubectl config view -o jsonpath='{.users[].name}'    # display the first user
+kubectl config view -o jsonpath='{.users[*].name}'   # get a list of users
+kubectl config get-contexts                          # display list of contexts
+kubectl config current-context                       # display the current-context
+kubectl config use-context my-cluster-name           # set the default context to my-cluster-name
+
+
+Kubectl apply
+apply manages applications through files defining Kubernetes resources. It creates and updates resources in a cluster through running kubectl apply. This is the recommended way of managing Kubernetes applications on production. See Kubectl Book.
+
+Creating objects
+Kubernetes manifests can be defined in YAML or JSON. The file extension .yaml, .yml, and .json can be used.
+
+kubectl apply -f ./my-manifest.yaml            # create resource(s)
+kubectl apply -f ./my1.yaml -f ./my2.yaml      # create from multiple files
+kubectl apply -f ./dir                         # create resource(s) in all manifest files in dir
+kubectl apply -f https://git.io/vPieo          # create resource(s) from url
+kubectl create deployment nginx --image=nginx  # start a single instance of nginx
+
+# create a Job which prints "Hello World"
+kubectl create job hello --image=busybox:1.28 -- echo "Hello World"
+
+
+========================================== Always follow declarative approach ================================================
+
+Above is imperative approach
+
+kubectl create deployment nginx --image=nginx --dry-run=client -o yaml >nginx.yml
+
+cat nginx.yml
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  creationTimestamp: null
+  labels:
+    app: nginx
+  name: nginx
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nginx
+  strategy: {}
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: nginx
+    spec:
+      containers:
+      - image: nginx
+        name: nginx
+        resources: {}
+status: {}
+
+
+create other deployment:
+=======================
+
+kubectl create deployment ngdep --image nginx --dry-run=client -o yaml >ng.yml
+
+open file and make necessary changes and apply it . This helpful in "k8s exam" and "if you don't want to check k8s official doc use 
+imperative approach".
+
+https://kubernetes.io/docs/reference/kubectl/cheatsheet/
+
+# Create a service for a replicated nginx, which serves on port 80 and connects to the containers on port 8000
+kubectl expose rc nginx --port=80 --target-port=8000
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

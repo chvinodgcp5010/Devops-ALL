@@ -1,0 +1,62 @@
+https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+https://kubernetes.io/docs/concepts/policy/limit-range/
+
+
+If you want to run a pod you want to reserve specific amount of memory and cpu to it then you have to mention resources and requests
+( i need this much mem and cpu only then this pod run )
+
+node not having that resources that pod will be in pending state.
+
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: frontend
+spec:
+  containers:
+  - name: app
+    image: images.my-company.example/app:v4
+    resources:
+      requests:
+        memory: "64Mi"
+        cpu: "250m"
+      limits:
+        memory: "128Mi"
+        cpu: "500m"
+  - name: log-aggregator
+    image: images.my-company.example/log-aggregator:v6
+    resources:
+      requests:
+        memory: "64Mi"
+        cpu: "250m"
+      limits:
+        memory: "128Mi"
+        cpu: "500m"
+        
+============================================
+
+request: -> reserving
+limits: -> restricting
+
+When you specify a Pod, you can optionally specify how much of each resource a container needs. The most common resources to specify 
+are CPU and memory (RAM); there are others.
+
+When you specify the resource request for containers in a Pod, the kube-scheduler uses this information to decide which node to place 
+the Pod on. When you specify a resource limit for a container, the kubelet enforces those limits so that the running container is not 
+allowed to use more of that resource than the limit you set. The kubelet also reserves at least the request amount of that system 
+resource specifically for that container to use.
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        

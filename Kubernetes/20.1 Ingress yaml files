@@ -2,15 +2,17 @@
 # Create Controller
 # Create Deployment
 # Create Service
-# Create DNS Cname Record for LB
+# Create DNS Cname Record for LB ( if you working in project this will be done already)
 # Create Ingress
 # Test
 
 # Create controller
 kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v1.1.3/deploy/static/provider/aws/deploy.yaml
 
+=========================================================================
 # Create Deployment
 vim vprodep.yaml
+
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -32,10 +34,11 @@ spec:
         - containerPort: 8080
 
 kubectl apply -f vprodep.yaml
-
+=========================================================================
 
 # Create service
 vim vprosvc.yaml
+
 apiVersion: v1
 kind: Service
 metadata:
@@ -54,6 +57,7 @@ kubectl apply -f vprosvc.yaml
 kubectl get svc
 kubectl describe svc my-app
 
+=========================================================================
 
 # Create DNS Cname Record for LB
 Go to your domain hosted records
@@ -83,6 +87,50 @@ spec:
             port:
               number: 8080
 
+
+
+=========================================================================
+
+Kind: ingress (means that rules that your going for service)
+
+  - host: vprofile.groophy.in
+    http:
+      paths:
+      - path: /login
+        pathType: Prefix
+        backend:
+            name: my-app
+            port:
+              number: 8080
+    
+
+when you hit vprofile.groophy.in/login it will hit to the n/w lb and hit to the service(clusterIP) "my-app"
+but it will only come to this service if you access this url/path: vprofile.groophy.in/login
+
+For host:
+
+  - host: vprofile.groophy.in
+ 
+we must have to purchase a new domain and create cname record 
+
+(A Canonical Name or CNAME record is a type of DNS record that maps an alias name to a true or canonical domain name. 
+CNAME records are typically used to map a subdomain such as www or mail to the domain hosting that subdomain's content.)
+
+copy dns name of lb in cloud (aws/gcp)
+you can goto "domain provider" =>godaddy
+
+on GODADDY and "create record"
+
+Type         Name                       value of lb ingress
+CNAME       vprofile (subdomain)
+
+we are creating this ingress rule for services.
+
+vprofile.groophy.in/login ===> it redirect to service (my-app)
+
+
+
+========================
 kubectl apply -f vproingress.yaml
 
 # Update Path in ingress from /login to /

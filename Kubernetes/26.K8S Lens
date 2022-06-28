@@ -118,6 +118,62 @@ users:
 
 
 
+==============================================
+How to connect or add prometheus to access lens
+
+once add the .kube/config file you will get all clusters in lens , click on specific project and "setting"
+->lens metrics
+
+enable all metrics below
+
+Lens Metrics
+PROMETHEUS
+Enable bundled Prometheus metrics stack
+Enable timeseries data visualization (Prometheus stack) for your cluster.
+KUBE STATE METRICS
+Enable bundled kube-state-metrics stack
+Enable Kubernetes API object metrics for your cluster. Enable this only if you don't have existing kube-state-metrics stack installed.
+NODE EXPORTER
+Enable bundled node-exporter stack
+Enable node level metrics for your cluster. Enable this only if you don't have existing node-exporter stack installed.
+
+
+Once you enabled all above it will create namespace on k8s cluster (lens-metrics) and will create pods and services like below
+
+
+kubectl get ns 
+
+NAME                   STATUS   AGE
+default                Active   3y186d
+kube-node-lease        Active   2y102d
+kube-public            Active   3y186d
+kube-system            Active   3y186d
+kubernetes-dashboard   Active   87d
+lens-metrics           Active   11h
+vnd                    Active   69d
+
+:~ (itrack-1652018)$ kubectl get po --namespace lens-metrics
+
+NAME                                  READY   STATUS    RESTARTS   AGE
+kube-state-metrics-6fff876d44-cx28q   1/1     Running   0          11h
+node-exporter-2jqgr                   1/1     Running   0          11h
+node-exporter-q2748                   1/1     Running   0          11h
+node-exporter-qbc2v                   1/1     Running   0          11h
+node-exporter-rx7g5                   1/1     Running   0          11h
+prometheus-0                          1/1     Running   0          11h
+
+
+services 
+
+kube-state-metrics	:    OK	Cluster IP	10.7.244.161 1/1	lens-metrics	itrack-dev	1	1	
+
+node-exporter:         	OK	Cluster IP	None4/4	lens-metrics	itrack-dev	4	4	
+
+prometheus:             	OK	Cluster IP	10.7.253.1741/1	lens-metrics	itrack-dev	1	1	
+
+
+
+
 
 
 

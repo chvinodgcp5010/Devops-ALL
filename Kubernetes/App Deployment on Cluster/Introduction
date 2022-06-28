@@ -2,6 +2,64 @@ install Intellij IDE to write yaml files easy to write .
 
 https://www.jetbrains.com/idea/download/#section=windows
 
+
+========================= Deploy web application on k8s cluster ===============
+
+web application is "containerised"  and tested and you want to host for web application
+
+we have multi tier web application stack
+containerised
+tested it
+want to host for production
+
+RUNNIG CONTAINERS FOR PRODUCTION : REQUIREMENT
+===============================================
+
+High availabilty ( containers dont go down and also HA on compute node)
+Fault tolerance ( if sth happens on container and not responding it should also autoheal)
+Easily scalable ( convenient to scale containers and resource which containers  are running)
+platform independant
+portable and flexible
+
+======================= JAVA STACK APPLICATION DEPLOY TO PRODUCTIN =====================
+
+1.k8s cluster
+2.containerised appn (vprofile) =>image
+
+we have mysql application and it stores data on "persisten data" for that we are creating "ebs volume" for DB pod
+label node with zone name ( we need to run EBS volume where the same zone node deployed)
+
+
+CREATE EBS VOLUME:
+=================
+
+aws ec2 create-volume --availability-zone=us-east-2a --size=3 --volume-type=gp2          #here size=3 (3 gb)
+
+save volume id "vol-674r4r888"
+
+CREATE A LABEL ON NODE:
+=======================
+
+kubectl get no --show-labels            (you have existing label if you want create new label)
+
+kubectl get no
+kubectl describe no node1 |grep -i us-east-2a
+kubectl label no node1 zone=us-east-2a
+
+========================================= CODE OVERVIEW ========================================
+
+https://github.com/chvinodgcp5010/vprofile-project/tree/kube-app/
+
+https://github.com/chvinodgcp5010/vprofile-project/tree/kube-app/kubernetes/vpro-app
+
+
+The below  images created using Dockerfile as below
+=====================================================
+
+branch :docker
+
+https://github.com/chvinodgcp5010/vprofile-project/tree/docker/Docker-files
+
 For containeration we need image path:
 
 https://hub.docker.com/r/vprofile/vprofileapp
@@ -10,11 +68,7 @@ https://hub.docker.com/r/vprofile/vprofileapp
 https://hub.docker.com/r/vprofile/vprofiledb
 =>docker pull vprofile/vprofiledb:V1
 
-The above images created using Dockerfile as below
-=====================================================
-https://github.com/chvinodgcp5010/vprofile-project/tree/docker/Docker-files
 
-branch :docker
 ================= Dockerfile (APP) =================
 
 FROM tomcat:8-jre11
@@ -28,7 +82,6 @@ EXPOSE 8080
 CMD ["catalina.sh", "run"]
 WORKDIR /usr/local/tomcat/
 VOLUME /usr/local/tomcat/webapps
-
 
 
 ================= Dockerfile (DB)  ================
@@ -49,14 +102,15 @@ ADD db_backup.sql docker-entrypoint-initdb.d/db_backup.sql
 
 NOTE:
 
-Here we have copied .war (artifact).This artifact is generated =====> target/vprofile-v2.war
+Here we have copied .war (artifact).
+This artifact is generated at target/vprofile-v2.war and it has application.properteis from our source code.
 
-=>it has application.properteis from our source code.
+COPY target/vprofile-v2.war /usr/local/tomcat/webapps/ROOT.war
 
 https://github.com/chvinodgcp5010/vprofile-project/tree/vpro-pro
 https://github.com/chvinodgcp5010/vprofile-project/blob/vpro-pro/src/main/resources/application.properties
 
-=>When continer comes up from the image it will have this application.properties file it look for the backend services with name
+=>When continer comes up from the image it will have this application.properties file. it looks for the backend services with name
 
 vprodb
 username: root

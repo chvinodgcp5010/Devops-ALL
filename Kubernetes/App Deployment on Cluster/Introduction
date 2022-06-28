@@ -1,1 +1,26 @@
+install Intellij IDE to wite yaml files easy to write .
+
+https://www.jetbrains.com/idea/download/#section=windows
+
+For containeration we need image path:
+
+https://hub.docker.com/r/vprofile/vprofileapp
+
+docker pull vprofile/vprofileapp:V1
+
+https://hub.docker.com/r/vprofile/vprofiledb
+
+docker pull vprofile/vprofiledb:V1
+
+
+The above images created using Dockerfile as below
+=====================================================
+https://github.com/devopshydclub/vprofile-project/blob/kube-app/kubernetes/vpro-app/vprodbdep.yml
+
+
+branch :docker
+
+
+
+
 

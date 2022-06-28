@@ -15,8 +15,7 @@ docker pull vprofile/vprofiledb:V1
 
 The above images created using Dockerfile as below
 =====================================================
-https://github.com/devopshydclub/vprofile-project/blob/kube-app/kubernetes/vpro-app/vprodbdep.yml
-
+https://github.com/chvinodgcp5010/vprofile-project/tree/docker/Docker-files
 
 branch :docker
 
@@ -44,8 +43,9 @@ NOTE:
 Here we have copied .war (artifact).This artifact is generated =====> target/vprofile-v2.war
 
 =>it has application.properteis from our source code.
-(https://github.com/devopshydclub/vprofile-project/tree/docker/src/main/resources)
 
+https://github.com/chvinodgcp5010/vprofile-project/tree/vpro-pro
+https://github.com/chvinodgcp5010/vprofile-project/blob/vpro-pro/src/main/resources/application.properties
 
 =>When continer comes up from the image it will have this application.properties file it look for the backend services with name
 
@@ -63,10 +63,8 @@ memcached:
 =========
 host=vprocache01
 
-
 Also notedown the port numbers , these are important information to collect before writing manifest files, because these information 
 we need to define these information so our applications can access to backend  services.
-
 
 Here we are mentioning sensitive information 
 
@@ -78,6 +76,7 @@ it will not be like ideal , put these pwd in to text format
 
 
 ====================================== CREATE SECRET =====================================
+https://github.com/chvinodgcp5010/vprofile-project/tree/kube-app/kubernetes/vpro-app
 
 app-secret.yml
 
@@ -97,11 +96,7 @@ dnByb2RicGFzcw==
 echo -n "guest" |base64
 Z3Vlc3Q=
 
-
 ============================================================================================
-
-
-
 
 https://github.com/devopshydclub/vprofile-project/blob/docker/src/main/resources/application.properties
 
@@ -146,8 +141,6 @@ ENV MYSQL_DATABASE="accounts"
 
 
 ADD db_backup.sql docker-entrypoint-initdb.d/db_backup.sql
-
-
 
 =========================================================
 

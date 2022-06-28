@@ -1,26 +1,20 @@
-install Intellij IDE to wite yaml files easy to write .
+install Intellij IDE to write yaml files easy to write .
 
 https://www.jetbrains.com/idea/download/#section=windows
 
 For containeration we need image path:
 
 https://hub.docker.com/r/vprofile/vprofileapp
-
-docker pull vprofile/vprofileapp:V1
+=>docker pull vprofile/vprofileapp:V1
 
 https://hub.docker.com/r/vprofile/vprofiledb
-
-docker pull vprofile/vprofiledb:V1
-
+=>docker pull vprofile/vprofiledb:V1
 
 The above images created using Dockerfile as below
 =====================================================
 https://github.com/chvinodgcp5010/vprofile-project/tree/docker/Docker-files
 
 branch :docker
-
-https://github.com/devopshydclub/vprofile-project/tree/docker/Docker-files
-
 ================= Dockerfile (APP) =================
 
 FROM tomcat:8-jre11
@@ -36,7 +30,22 @@ WORKDIR /usr/local/tomcat/
 VOLUME /usr/local/tomcat/webapps
 
 
-====================================================================================
+
+================= Dockerfile (DB)  ================
+
+
+FROM mysql:5.7.25
+LABEL "Project"="Vprofile"
+LABEL "Author"="Imran"
+
+ENV MYSQL_ROOT_PASSWORD="vprodbpass"
+ENV MYSQL_DATABASE="accounts"
+
+
+ADD db_backup.sql docker-entrypoint-initdb.d/db_backup.sql
+
+
+======================================== application.properties ============================================
 
 NOTE:
 
@@ -75,29 +84,6 @@ it will not be like ideal , put these pwd in to text format
 =>so fist you need to encode this password with secret and then from our pod definition we can access these encoded passwords.
 
 
-====================================== CREATE SECRET =====================================
-https://github.com/chvinodgcp5010/vprofile-project/tree/kube-app/kubernetes/vpro-app
-
-app-secret.yml
-
-apiVersion: v1
-kind: secret
-metadata: 
-  name: app-secret
-type: Opaque
-data:
-  db-pass: dnByb2RicGFzcw==
-  rmq:pass: Z3Vlc3Q=
-
-===============================================================================================
-echo -n "vprodbpass" |base64
-dnByb2RicGFzcw==
-
-echo -n "guest" |base64
-Z3Vlc3Q=
-
-============================================================================================
-
 https://github.com/devopshydclub/vprofile-project/blob/docker/src/main/resources/application.properties
 
 application.properties file
@@ -127,6 +113,40 @@ elasticsearch.host =vprosearch01
 elasticsearch.port =9300
 elasticsearch.cluster=vprofile
 elasticsearch.node=vprofilenode
+
+====================================== CREATE SECRET =====================================
+
+https://github.com/chvinodgcp5010/vprofile-project/tree/kube-app
+https://github.com/chvinodgcp5010/vprofile-project/tree/kube-app/kubernetes/vpro-app
+
+app-secret.yml
+
+apiVersion: v1
+kind: secret
+metadata: 
+  name: app-secret
+type: Opaque
+data:
+  db-pass: dnByb2RicGFzcw==
+  rmq:pass: Z3Vlc3Q=
+
+===============================================================================================
+echo -n "vprodbpass" |base64
+dnByb2RicGFzcw==
+
+echo -n "guest" |base64
+Z3Vlc3Q=
+
+======================================= DB Deployment =====================================================
+
+https://github.com/chvinodgcp5010/vprofile-project/blob/kube-app/kubernetes/vpro-app/vprodbdep.yml
+
+        env:
+         - name: MYSQL_ROOT_PASSWORD
+           valueFrom:
+             secretKeyRef:
+               name: app-secret
+               key: db-pass
 
 
 ================= Dockerfile (DB)  ================

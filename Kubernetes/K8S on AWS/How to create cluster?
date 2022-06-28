@@ -1,3 +1,71 @@
 Create IAM Role as per below doc and click on next to create cluster in aws(keep everything as default)
 
 https://docs.aws.amazon.com/eks/latest/userguide/service_IAM_role.html#create-service-role
+
+Once successfully create cluster (after 15 mnts)
+
+Next step: Provision compute capacity for your cluster by adding a Managed node group or creating a Fargate profile.
+
+Configure node group
+=>A node group is a group of EC2 instances that supply compute capacity to your Amazon EKS cluster. You can add multiple node groups to 
+your cluster.
+
+name: mindtree-node
+
+
+Node IAM role
+=>Select the IAM role that will be used by the nodes. To create a new role, go to the
+
+Doc to create role:
+------------------
+https://docs.aws.amazon.com/eks/latest/userguide/create-managed-node-group.html
+
+https://docs.aws.amazon.com/eks/latest/userguide/create-node-role.html#create-worker-node-role
+
+"AmazonEKSWorkerNodePolicy"
+This policy allows Amazon EKS worker nodes to connect to Amazon EKS Clusters.
+
+
+CREATE NODE ROLE:
+==============================
+
+Open the IAM console at https://console.aws.amazon.com/iam/.
+On the Roles page, choose Create role.
+In the Trusted entity type section, choose AWS service.
+Under Use case, choose EC2.
+Next
+On the Add permissions page, do the following:
+In the Filter policies box, enter AmazonEKSWorkerNodePolicy.
+Select the check box to the left of AmazonEKSWorkerNodePolicy in the search results.
+In the Filter policies box, enter AmazonEC2ContainerRegistryReadOnly.
+
+Choose Next.
+
+On the Name, review, and create page, do the following:
+For Role name, enter a unique name for your role, such as AmazonEKSNodeRole.
+For Description, replace the current text with descriptive text such as Amazon EKS - Node role.
+
+IAM User Guide
+
+Choose Create role.
+
+============================
+
+click on create node group by maintaining all as default values and create nodegroup
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

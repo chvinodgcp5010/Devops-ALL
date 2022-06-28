@@ -1,0 +1,3 @@
+Create IAM Role as per below doc and click on next to create cluster in aws(keep everything as default)
+
+https://docs.aws.amazon.com/eks/latest/userguide/service_IAM_role.html#create-service-role

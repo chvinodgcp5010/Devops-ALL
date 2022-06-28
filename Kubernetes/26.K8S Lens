@@ -2,6 +2,70 @@ https://k8slens.dev/
 
 download .exe on windows and install
 
+What k8s lens?
+
+https://lightrun.com/dev-tools/what-is-kubernetes-lens/
+https://docs.lenses.io/2.3/install_setup/deployment-options/kubernetes-deployment.html
+
+Lens is a standalone application and can be installed on macOS, Windows, and some Linux flavors. With Kubernetes Lens, you can talk to any Kubernetes cluster, anywhere.
+
+Kubernetes Lens is aimed at developers, SREs, and software engineers in general. It is most likely the only platform you will need to manage the cluster system of your Kubernetes. It is backed by a number of Kubernetes and cloud-native ecosystem pioneers such as Apple, Rakuten, Zendesk, Adobe, Google, and others.
+
+Why Kubernetes Lens?
+There are a variety of features that make Kubernetes Lens a highly attractive tool. Here is an overview of a few of them.
+
+Cluster Management
+====================
+Managing clusters in Kubernetes can be difficult, but with Kubernetes Lens, you can work on multiple clusters while maintaining context
+with each of them. Lens makes it possible to configure, change, and redirect clusters with one click, organizing and revealing the 
+entire working system in the cluster while providing metrics. With this information, you can easily and very quickly edit changes 
+and apply them confidently.
+
+Adding a Kubernetes cluster to Lens is easy. All you need to do is point the local/online kubeconfig file to Lens and it automatically 
+discovers and connects with it.
+
+With Lens, you can inspect all the resources running inside your cluster, ranging from simple Pods and Deployments to the custom types 
+added by your applications.
+
+Built-In Visualization and Metrics
+===================================
+Kubernetes Lens comes with a built-in Prometheus setup that has a multi-user feature that gives role-based access control (RBAC) 
+for each user. That means that, in a cluster, users can only access visualizations they have permission to access.
+
+In Lens, when you configure a Prometheus instance, it is able to display metrics and visualizations about the cluster. 
+To add Prometheus to Lens if it is not already installed, follow these steps:
+
+Right-click on the cluster icon in the upper left corner of the UI.
+Click Settings.
+Under Features, find and select the Metrics stack.
+Then click Install to install Prometheus stack (This may take a couple of seconds or minutes.)
+Prometheus stack
+
+After the installation, Lens autodetects Prometheus for that cluster and then begins to display cluster metrics and visualizations. You can also preview the Kubernetes manifests for Prometheus before you apply them.
+
+With Prometheus, you get access to real-time graphs, resource utilization charts, and usage metrics such as CPU, memory, network, requests, etc., which are integrated into the Lens dashboard. These graphs and metrics are shown in the context of the particular cluster that is viewed at that moment, in real time.
+
+
+Lens Extension
+===============
+Kubernetes Lens Extensions allows you to add new and custom features and visualizations to accelerate development workflows for all 
+the technologies and services that integrate with Kubernetes. To use Lens Extensions, go to File (or Lens on macOS) and then click 
+Extensions in the application menu. You can install extensions in three ways on Lens:
+
+Installing the extension as a .tgz file, then dragging and dropping it in the extension management page will install it for you.
+If the extension is hosted on the web, you can paste the URL and click Install, and Lens will download and install it.
+You can also move the extension into your ~/.k8slens/extensions (or C:\Users\.k8slens\extensions) folder and Lens will automatically 
+detect it and install the extension.
+
+
+===========================================
+
+The World’s Most Popular Kubernetes IDE
+Lens is the only IDE you’ll ever need to take control of all your Kubernetes clusters. It’s open source and free
+
+The tool unlocks situational awareness and enables users to easily manage, develop, debug, monitor, and troubleshoot their apps 
+across a fleet of clusters in real time. Provided as a desktop application for MacOS, Windows, and Linux, Lens lets you connect, 
+
 Thousands of businesses and people develop and operate their Kubernetes on Lens — The largest and most advanced Kubernetes platform 
 in the world
  
@@ -29,12 +93,15 @@ Using EKS, AKS, GKE, Minikube, Rancher, k0s, k3s, OpenShift... ? They all work. 
 
 ============================== ERROR =================================
 
+while adding cat .kube/config file on lens getting below error
+
 020/09/21 19:40:29 http: proxy error: error executing access token command "/usr/lib/google-cloud-sdk/bin/gcloud config config-helper 
 --format=json": err=exec: "/usr/lib/google-cloud-sdk/bin/gcloud": file does not exist output= stderr=
 
+Sol:
 https://github.com/lensapp/lens/issues/944
 
-Fixed this by just updating the cmd-path to just gcloud (cmd-path: gcloud)
+Fixed this by just updating the cmd-path to just gcloud (cmd-path: gcloud) instead of other one to fix the issue.
 
 Here is the kubeconfig snippet for reference:
 
@@ -44,17 +111,10 @@ users:
       auth-provider:
         config:
           cmd-args: config config-helper --format=json
-          cmd-path: gcloud
+          cmd-path: gcloud                                        ##############
           expiry-key: '{.credential.token_expiry}'
           token-key: '{.credential.access_token}'
         name: gcp
-
-
-
-
-
-
-
 
 
 

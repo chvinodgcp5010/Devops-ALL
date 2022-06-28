@@ -37,6 +37,103 @@ WORKDIR /usr/local/tomcat/
 VOLUME /usr/local/tomcat/webapps
 
 
+====================================================================================
+
+NOTE:
+
+Here we have copied .war (artifact).This artifact is generated =====> target/vprofile-v2.war
+
+=>it has application.properteis from our source code.
+(https://github.com/devopshydclub/vprofile-project/tree/docker/src/main/resources)
+
+
+=>When continer comes up from the image it will have this application.properties file it look for the backend services with name
+
+vprodb
+username: root
+password: vprodbpass
+
+rabbitmq:
+============
+address=vpromq01
+username=guest
+password=guest
+
+memcached:
+=========
+host=vprocache01
+
+
+Also notedown the port numbers , these are important information to collect before writing manifest files, because these information 
+we need to define these information so our applications can access to backend  services.
+
+
+Here we are mentioning sensitive information 
+
+rabbitmq.password=guest
+jdbc.password=vprodbpass
+
+it will not be like ideal , put these pwd in to text format 
+=>so fist you need to encode this password with secret and then from our pod definition we can access these encoded passwords.
+
+
+====================================== CREATE SECRET =====================================
+
+app-secret.yml
+
+apiVersion: v1
+kind: secret
+metadata: 
+  name: app-secret
+type: Opaque
+data:
+  db-pass: dnByb2RicGFzcw==
+  rmq:pass: Z3Vlc3Q=
+
+===============================================================================================
+echo -n "vprodbpass" |base64
+dnByb2RicGFzcw==
+
+echo -n "guest" |base64
+Z3Vlc3Q=
+
+
+============================================================================================
+
+
+
+
+https://github.com/devopshydclub/vprofile-project/blob/docker/src/main/resources/application.properties
+
+application.properties file
+
+#JDBC Configutation for Database Connection
+jdbc.driverClassName=com.mysql.jdbc.Driver
+jdbc.url=jdbc:mysql://vprodb:3306/accounts?useUnicode=true&characterEncoding=UTF-8&zeroDateTimeBehavior=convertToNull
+jdbc.username=root
+jdbc.password=vprodbpass
+
+#Memcached Configuration For Active and StandBy Host
+#For Active Host
+memcached.active.host=vprocache01
+memcached.active.port=11211
+#For StandBy Host
+memcached.standBy.host=vprocache02
+memcached.standBy.port=11211
+
+#RabbitMq Configuration
+rabbitmq.address=vpromq01
+rabbitmq.port=15672
+rabbitmq.username=guest
+rabbitmq.password=guest
+
+#Elasticesearch Configuration
+elasticsearch.host =vprosearch01
+elasticsearch.port =9300
+elasticsearch.cluster=vprofile
+elasticsearch.node=vprofilenode
+
+
 ================= Dockerfile (DB)  ================
 
 

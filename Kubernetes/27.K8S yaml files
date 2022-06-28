@@ -1,0 +1,89 @@
+Deployment
+===========
+
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: vproapp
+  labels:
+    app: vproapp
+spec:
+  containers:
+    - name: appcontainer
+      image: imranvisualpath/freshtomapp:V7
+      ports:
+        - name: vproapp-port
+          containerPort: 8080
+
+
+SERVICE: NODEPORT
+==================
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: helloworld-service
+spec:
+  ports:
+  - port: 8090
+    nodePort: 30001
+    targetPort: vproapp-port
+    protocol: TCP
+  selector: 
+       app: vproapp
+  type: NodePort
+  
+SERVICE: LOADBALANCER
+=====================
+  
+apiVersion: v1
+kind: Service
+metadata:
+  name: helloworld-service
+spec:
+  ports:
+  - port: 80
+    targetPort: vproapp-port
+    protocol: TCP
+  selector: 
+       app: vproapp
+  type: LoadBalancer
+
+ 
+REPLICATION CONTROLLER:
+=======================
+
+---
+apiVersion: v1
+kind: ReplicationController
+metadata:
+  name: vproapp-controller
+spec: 
+  replicas: 2
+  selector:
+     app: vproapp
+  template:
+    metadata:
+      labels:
+        app: vproapp
+    spec:
+     containers:
+      - name: appcontainer
+        image: imranvisualpath/freshtomapp:V7
+        ports:
+          - name: vproapp-port
+            containerPort: 8080
+
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  

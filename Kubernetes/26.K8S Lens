@@ -173,6 +173,19 @@ node-exporter:         	OK	Cluster IP	None4/4	lens-metrics	itrack-dev	4	4
 prometheus:             	OK	Cluster IP	10.7.253.1741/1	lens-metrics	itrack-dev	1	1	
 
 
+NOTE:
+=====
+
+In kubernetes lens on bottom of left side you will get + option you will get 
+
+1.Terminal session
+2.Create resource
+
+click on terminal session you will get terminal and you can perform any action like performed same in GKE cluster console CLI.
+
+
+
+
 
 
 

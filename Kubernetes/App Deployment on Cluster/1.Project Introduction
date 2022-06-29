@@ -192,20 +192,20 @@ application.properties file
 
 #JDBC Configutation for Database Connection
 jdbc.driverClassName=com.mysql.jdbc.Driver
-jdbc.url=jdbc:mysql://vprodb:3306/accounts?useUnicode=true&characterEncoding=UTF-8&zeroDateTimeBehavior=convertToNull
+jdbc.url=jdbc:mysql://vprodb:3306/accounts?useUnicode=true&characterEncoding=UTF-8&zeroDateTimeBehavior=convertToNull   # vprodb: db service
 jdbc.username=root
 jdbc.password=vprodbpass
 
 #Memcached Configuration For Active and StandBy Host
 #For Active Host
-memcached.active.host=vprocache01
+memcached.active.host=vprocache01                                 # memcache service "vprocache01"
 memcached.active.port=11211
 #For StandBy Host
 memcached.standBy.host=vprocache02
 memcached.standBy.port=11211
 
 #RabbitMq Configuration
-rabbitmq.address=vpromq01
+rabbitmq.address=vpromq01                                         #rabbitmq service "vpromq01   "
 rabbitmq.port=15672
 rabbitmq.username=guest
 rabbitmq.password=guest
@@ -232,26 +232,61 @@ data:
   db-pass: dnByb2RicGFzcw==
   rmq:pass: Z3Vlc3Q=
 
-===============================================================================================
+======================================
 echo -n "vprodbpass" |base64
 dnByb2RicGFzcw==
 
 echo -n "guest" |base64
 Z3Vlc3Q=
 
-======================================= DB Deployment ============================================
+======================================= DB Deployment & service yaml file ============================================
 
 https://github.com/chvinodgcp5010/vprofile-project/blob/kube-app/kubernetes/vpro-app/vprodbdep.yml
 
-        env:
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: vprodb
+  labels:
+    app: vprodb                            # label for service definition file (service routes with this label)
+spec:
+  selector:
+    matchLabels:
+      app: vprodb
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: vprodb
+    spec:
+      containers:
+      - name: vprodb
+        image: vprofile/vprofiledb:V1
+        args:
+         - "--ignore-db-dir=lost+found"                  
+        volumeMounts:
+        - mountPath: /var/lib/mysql
+          name: vpro-db-data
+        ports:
+        - name: vprodb-port
+          containerPort: 3306
+        env:                                               # env variable to pick mysql pwd
          - name: MYSQL_ROOT_PASSWORD
            valueFrom:
              secretKeyRef:
                name: app-secret
                key: db-pass
+      nodeSelector:                                        # because we have created EBS vlolume on this zone so mention same
+        zone: us-east-2b                                   # node running in this node we create label already (kubectl get no --show-labels)
+      volumes:
+        - name: vpro-db-data
+          # This AWS EBS volume must already exist.
+          awsElasticBlockStore:
+             volumeID: vol-0cf3d659eba6861d4
+             fsType: ext4       
 
 
-======================================= DB Service ============================================
+============= DB Service ===============
 
 apiVersion: v1
 kind: Service
@@ -267,13 +302,14 @@ spec:
   type: ClusterIP                          # by default k8s will create clusterip so no need to mention
 
 
-======================================= ======================================= ==================
+================================= Explanation of db yaml files ===============================
 
 metadata:
    name: vprodb
    
 # service name (vprodb) is important 
-all of this service defintion files is based on "application.properties" for an appn.
+
+**all of this service defintion files is based on "application.properties" for an appn.
 so service name should match application.properties
 
 https://github.com/chvinodgcp5010/vprofile-project/blob/kube-app/src/main/resources/application.properties
@@ -323,18 +359,53 @@ Service spec must match with DB deployment spec labels.
 #for better understanding we are providing same port for frontend and backend.
 
 
+====================================== Memcached deployment yaml file ============================================
 
+https://github.com/chvinodgcp5010/vprofile-project/blob/kube-app/kubernetes/vpro-app/mcdep.yml
 
-========================================= Referenece ======================================
-#https://github.com/chvinodgcp5010/vprofile-project/blob/kube-app/src/main/resources/application.properties
-
-
-#JDBC Configutation for Database Connection
-jdbc.driverClassName=com.mysql.jdbc.Driver
-jdbc.url=jdbc:mysql://vprodb:3306/accounts?useUnicode=true&characterEncoding=UTF-8&zeroDateTimeBehavior=convertToNull
-jdbc.username=root
-jdbc.password=vprodbpass
-
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: vpromc
+  labels:
+    app: vpromc
+spec:
+  selector:
+    matchLabels:
+      app: vpromc
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: vpromc
+    spec:
+      containers:
+      - name: vpromc
+        image: memcached
+        ports:
+        - name: vpromc-port
+          containerPort: 11211
+          
+================== Service ====================
+ 
+apiVersion: v1
+kind: Service
+metadata:
+  name: vprocache01                            # service name must match with application.properties file 
+spec:
+  ports:
+  - port: 11211
+    targetPort: vpromc-port
+    protocol: TCP
+  selector:
+    app: vpromc 
+  type: ClusterIP
+  
+  
+======================================================  
+  
+https://github.com/chvinodgcp5010/vprofile-project/blob/kube-app/src/main/resources/application.properties
+  
 #Memcached Configuration For Active and StandBy Host
 #For Active Host
 memcached.active.host=vprocache01
@@ -343,18 +414,218 @@ memcached.active.port=11211
 memcached.standBy.host=vprocache02
 memcached.standBy.port=11211
 
+
+metadata:
+  name: vprocache01                       #memcached.active.host=vprocache01
+
+service runnint with this name(vprocache01) and listening on request 11211 
+
+
+====================================== RABBITMQ DEPLOYMENT YAML FILE ======================================
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: vpromq01
+  labels:
+    app: vpromq01
+spec:
+  selector:
+    matchLabels:
+      app: vpromq01
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: vpromq01
+    spec:
+      containers:
+      - name: vpromq01
+        image: rabbitmq
+        ports:
+        - name: vpromq01-port
+          containerPort: 15672
+        env: 
+         - name: RABBITMQ_DEFAULT_PASS
+           valueFrom:
+             secretKeyRef:
+               name: app-secret
+               key: rmq-pass
+         - name: RABBITMQ_DEFAULT_USER
+           value: "guest"
+
+======================= Service yaml file =======================
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: vpromq01
+spec:
+  ports:
+  - port: 15672
+    targetPort: vpromq01-port
+    protocol: TCP
+  selector:
+    app: vpromq01
+  type: ClusterIP
+
+
+======================================================  
+  
+https://github.com/chvinodgcp5010/vprofile-project/blob/kube-app/src/main/resources/application.properties
+
 #RabbitMq Configuration
 rabbitmq.address=vpromq01
 rabbitmq.port=15672
 rabbitmq.username=guest
 rabbitmq.password=guest
 
-#Elasticesearch Configuration
-elasticsearch.host =vprosearch01
-elasticsearch.port =9300
-elasticsearch.cluster=vprofile
-elasticsearch.node=vprofilenode
 
+here in service name 
+
+metadata:
+  name: vpromq01                ===== > must match with "rabbitmq.address=vpromq01"
+
+
+
+
+
+
+=========================================== Vproapp deployment definition yaml (tomcat) ===========================================
+
+https://github.com/chvinodgcp5010/vprofile-project/blob/docker/Docker-files/web/Dockerfile
+
+https://hub.docker.com/r/vprofile/vprofileweb
+
+Dockerfile
+
+FROM nginx
+LABEL "Project"="Vprofile"
+LABEL "Author"="Imran"
+
+RUN rm -rf /etc/nginx/conf.d/default.conf
+COPY nginvproapp.conf /etc/nginx/conf.d/vproapp.conf
+
+
+======================== Deployment ====================
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: vproapp
+  labels: 
+    app: vproapp
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: vproapp
+  template:
+    metadata:
+      labels:
+        app: vproapp
+    spec:
+      containers:
+      - name: vproapp
+        image: vprofile/vprofileapp:V1 
+        ports:
+        - name: vproapp-port
+          containerPort: 8080
+      initContainers:
+      - name: init-mydb
+        image: busybox
+        command: ['sh', '-c', 'until nslookup vprodb; do echo waiting for mydb; sleep 2; done;']
+      - name: init-memcache
+        image: busybox
+        command: ['sh', '-c', 'until nslookup vprocache01; do echo waiting for mydb; sleep 2; done;']
+
+
+
+====================== EXPLANATION ===================
+      containers:
+      - name: vproapp
+        image: vprofile/vprofileapp:V1 
+        ports:
+        - name: vproapp-port
+          containerPort: 8080
+      initContainers:
+      - name: init-mydb
+        image: busybox
+        command: ['sh', '-c', 'until nslookup vprodb; do echo waiting for mydb; sleep 2; done;']
+      - name: init-memcache
+        image: busybox
+        command: ['sh', '-c', 'until nslookup vprocache01; do echo waiting for mydb; sleep 2; done;']
+        
+ 
+All deployments so far is single container in them , in this we have multi pod
+
+1 normal container will deploy with this image (vprofile/vprofileapp:V1) and other 2 giving "init container"
+
+I want the db container create first then only should create appn pod. 
+So i am writing shellscript to execute from busybox image it checks the db if its deployed then only exxectue main container.
+
+
+      initContainers:
+      - name: init-mydb
+        image: busybox
+        command: ['sh', '-c', 'until nslookup vprodb; do echo waiting for mydb; sleep 2; done;']
+      - name: init-memcache
+        image: busybox
+        command: ['sh', '-c', 'until nslookup vprocache01; do echo waiting for mydb; sleep 2; done;']
+ 
+
+I want Container should create from this image(busybox) and should run the command for me.
+
+Here 
+
+      initContainers:
+      - name: init-mydb
+        image: busybox
+        command: ['sh', '-c', 'until nslookup vprodb; do echo waiting for mydb; sleep 2; done;']
+  
+  
+It execute first "init container" , once the container work is complete the container will dead ,then it will launch 
+"vprofile/vprofileapp:V1 " container.
+Main container is halted as long as to finish the init container.
+
+Script:
+
+Executing bash "until" loop
+
+command: ['sh', '-c', 'until nslookup vprodb; do echo waiting for mydb; sleep 2; done;']
+
+until nslookup vprodb; do echo waiting for mydb
+
+=>This Init container work is to check db service  
+=>as long as the loop does not return "true"(means found vprodb service) this loop will continuously running , while its running 
+it it print a message "do echo waiting for mydb and sleep 2 seconds"
+
+Every 2 seconds it run " nslookup vprodb" if doesnot return any value ( like false) it will execute loop till it's true.
+
+
+Once the shell script of Init container is succssful then this "Init container will dead" and main container will be launch.
+
+
+
+Login with Lb-service and craete an account and check if it works (everything is working fine) like connecting to db and rabbitmq 
+etc.
+
+
+
+========================== LB- service =============================
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: vproapp-service
+spec:
+  ports:
+  - port: 80
+    targetPort: vproapp-port
+    protocol: TCP
+  selector:
+    app: vproapp
+  type: LoadBalancer
 
 ================= Dockerfile (DB)  ================
 

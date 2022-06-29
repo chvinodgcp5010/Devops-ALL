@@ -1,3 +1,4 @@
+https://docs.docker.com/get-started/
 https://docs.docker.com/
 
 Install on CentOs
@@ -44,7 +45,6 @@ Using non root user:
 $ docker run hello-world
 docker: Got permission denied while trying to connect to the Docker daemon socket at unix:///var/run/docker.sock: Post "http://%2Fvar%2Frun%2Fdocker.sock/v1.24/containers/create": dial unix /var/run/docker.sock: connect: permission denied.
 See 'docker run --help'.
-
 
 
 ================================== Manage Docker as a non-root user ===============================
@@ -100,6 +100,19 @@ $ docker run hello-world
 REPOSITORY    TAG       IMAGE ID       CREATED        SIZE
 hello-world   latest    feb5d9fea6a5   9 months ago   13.3kB
 
+5. check id of user ( it should be in docker group )
+
+=>[vinodch501@instance-1-vnd ~]$ id vinodch501
+uid=1000(vinodch501) gid=1001(vinodch501) groups=1001(vinodch501),4(adm),39(video),994(docker)
+
+
+6. Try logout and login 
+
+[vinodch501@instance-1-vnd ~]$ docker images
+REPOSITORY    TAG       IMAGE ID       CREATED        SIZE
+hello-world   latest    feb5d9fea6a5   9 months ago   13.3kB
+
+
 Configure Docker to start on boot
 ====================================
 Most current Linux distributions (RHEL, CentOS, Fedora, Debian, Ubuntu 16.04 and higher) use systemd to manage which services start when the system boots. On Debian and Ubuntu, the Docker service is configured to start on boot by default. To automatically start Docker and Containerd on boot for other distros, use the commands below:
@@ -108,24 +121,60 @@ Most current Linux distributions (RHEL, CentOS, Fedora, Debian, Ubuntu 16.04 and
 2.sudo systemctl enable containerd.service
 
 
+$docker rmi hello-world
+
+Once run docker run hello-world it performs below all steps:
+------------------------------------------------------------
+
+What it's perform is "pull image from dockerhub" if not found on local  and execute all "Hello from Docker! and instructions below"
+run a script that prints a message.
+
+$[vinodch501@instance-1-vnd ~]$ docker run hello-world
+
+Unable to find image 'hello-world:latest' locally
+latest: Pulling from library/hello-world                               
+2db29710123e: Pull complete 
+Digest: sha256:13e367d31ae85359f42d637adf6da428f76d75dc9afeb3c21faea0d976f5c651
+Status: Downloaded newer image for hello-world:latest
+
+Hello from Docker!
+This message shows that your installation appears to be working correctly.
+
+To generate this message, Docker took the following steps:
+ 1. The Docker client contacted the Docker daemon.
+ 2. The Docker daemon pulled the "hello-world" image from the Docker Hub.
+    (amd64)
+ 3. The Docker daemon created a new container from that image which runs the
+    executable that produces the output you are currently reading.
+ 4. The Docker daemon streamed that output to the Docker client, which sent it
+    to your terminal.
+
+To try something more ambitious, you can run an Ubuntu container with:
+ $ docker run -it ubuntu bash
+
+Share images, automate workflows, and more with a free Docker ID:
+ https://hub.docker.com/
+
+For more examples and ideas, visit:
+ https://docs.docker.com/get-started/
 
 
+[vinodch501@instance-1-vnd ~]$ docker ps -a
+CONTAINER ID   IMAGE         COMMAND    CREATED       STATUS                   PORTS     NAMES
+c5723845f896   hello-world   "/hello"   2 hours ago   Exited (0) 2 hours ago             dreamy_buck
 
 
+the output of "hello-world" message is to execute some script and dead the container 
 
+here COMMAND : /hello
 
+you want to archive logs and send to logging dashboard elk or splunk => its a short activity you need to have container does that work 
+and stops
+----------------------
 
+https://docs.docker.com/get-started/
 
-
-
-
-
-
-
-
-
-
-
+https://youtu.be/iqqDU2crIEQ
 
 
 

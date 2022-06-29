@@ -487,10 +487,6 @@ metadata:
   name: vpromq01                ===== > must match with "rabbitmq.address=vpromq01"
 
 
-
-
-
-
 =========================================== Vproapp deployment definition yaml (tomcat) ===========================================
 
 https://github.com/chvinodgcp5010/vprofile-project/blob/docker/Docker-files/web/Dockerfile
@@ -609,6 +605,12 @@ Once the shell script of Init container is succssful then this "Init container w
 
 Login with Lb-service and craete an account and check if it works (everything is working fine) like connecting to db and rabbitmq 
 etc.
+
+Once you login it verify with db and login successful.
+check rabbitmq on "UI" , "all users"from memcache 
+
+
+Hence production grade k8s cluster is completed
 
 
 

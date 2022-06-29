@@ -239,7 +239,7 @@ dnByb2RicGFzcw==
 echo -n "guest" |base64
 Z3Vlc3Q=
 
-======================================= DB Deployment =====================================================
+======================================= DB Deployment ============================================
 
 https://github.com/chvinodgcp5010/vprofile-project/blob/kube-app/kubernetes/vpro-app/vprodbdep.yml
 
@@ -249,6 +249,111 @@ https://github.com/chvinodgcp5010/vprofile-project/blob/kube-app/kubernetes/vpro
              secretKeyRef:
                name: app-secret
                key: db-pass
+
+
+======================================= DB Service ============================================
+
+apiVersion: v1
+kind: Service
+metadata:                                 
+   name: vprodb        
+spec:
+  selector:
+     app: vprodb                           
+  ports:
+   - protol: TCP
+     port: 3306                            
+     targetPort:  3306                     
+  type: ClusterIP                          # by default k8s will create clusterip so no need to mention
+
+
+======================================= ======================================= ==================
+
+metadata:
+   name: vprodb
+   
+# service name (vprodb) is important 
+all of this service defintion files is based on "application.properties" for an appn.
+so service name should match application.properties
+
+https://github.com/chvinodgcp5010/vprofile-project/blob/kube-app/src/main/resources/application.properties
+
+jdbc.url=jdbc:mysql://vprodb:3306/accounts?useUnicode=true&characterEncoding=UTF-8&zeroDateTimeBehavior=convertToNull
+
+here vprodb:3306 
+
+# as per the application.properties service name must be "vprodb" if name is different you need to change in application.properties files.
+
+vprodb : name of the service of db
+
+service should accept the request using name of service and port and send it to the db pod.
+
+Service Spec 
+=============
+
+spec:
+  selector:
+     app: vprodb  
+     
+Deployment spec:
+=================
+https://github.com/chvinodgcp5010/vprofile-project/blob/kube-app/kubernetes/vpro-app/vprodbdep.yml
+
+spec:
+  selector:
+    matchLabels:
+      app: vprodb
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: vprodb
+
+
+Service spec must match with DB deployment spec labels.
+
+=========================================
+#port: 3306 
+
+#vprodb-port mentioned in deployment, you can give any name mentioned in deployment or port mentioned in deployment.
+#"port" will accept request from 3306 and send its backend to "targetPort":  3306 
+
+# you can provide any port for "port" but targetPort must be same mentioned in deployment.
+
+#for better understanding we are providing same port for frontend and backend.
+
+
+
+
+========================================= Referenece ======================================
+#https://github.com/chvinodgcp5010/vprofile-project/blob/kube-app/src/main/resources/application.properties
+
+
+#JDBC Configutation for Database Connection
+jdbc.driverClassName=com.mysql.jdbc.Driver
+jdbc.url=jdbc:mysql://vprodb:3306/accounts?useUnicode=true&characterEncoding=UTF-8&zeroDateTimeBehavior=convertToNull
+jdbc.username=root
+jdbc.password=vprodbpass
+
+#Memcached Configuration For Active and StandBy Host
+#For Active Host
+memcached.active.host=vprocache01
+memcached.active.port=11211
+#For StandBy Host
+memcached.standBy.host=vprocache02
+memcached.standBy.port=11211
+
+#RabbitMq Configuration
+rabbitmq.address=vpromq01
+rabbitmq.port=15672
+rabbitmq.username=guest
+rabbitmq.password=guest
+
+#Elasticesearch Configuration
+elasticsearch.host =vprosearch01
+elasticsearch.port =9300
+elasticsearch.cluster=vprofile
+elasticsearch.node=vprofilenode
 
 
 ================= Dockerfile (DB)  ================

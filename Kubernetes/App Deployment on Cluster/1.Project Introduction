@@ -3,7 +3,7 @@ install Intellij IDE to write yaml files easy to write .
 https://www.jetbrains.com/idea/download/#section=windows
 
 
-========================= Deploy web application on k8s cluster ===============
+========================= Deploy web application on EKS k8s cluster (AWS) ===============
 
 web application is "containerised"  and tested and you want to host for web application
 
@@ -21,7 +21,7 @@ Easily scalable ( convenient to scale containers and resource which containers  
 platform independant
 portable and flexible
 
-======================= JAVA STACK APPLICATION DEPLOY TO PRODUCTIN =====================
+=============JAVA STACK APPLICATION DEPLOY TO PRODUCTIN ================
 
 1.k8s cluster
 2.containerised appn (vprofile) =>image
@@ -30,55 +30,14 @@ we have mysql application and it stores data on "persisten data" for that we are
 label node with zone name ( we need to run EBS volume where the same zone node deployed)
 
 
+============================================ IN AWS ===================================================
+
 CREATE EBS VOLUME:
 =================
 
-OFFICIAL DOCUMENTATION:
-========================
 https://kubernetes.io/docs/concepts/storage/volumes/
 
-awsElasticBlockStore (deprecated)
-FEATURE STATE: Kubernetes v1.17 [deprecated]
-An awsElasticBlockStore volume mounts an Amazon Web Services (AWS) EBS volume into your pod. Unlike emptyDir, which is erased when a 
-pod is removed, the contents of an EBS volume are persisted and the volume is unmounted. This means that an EBS volume can be 
-pre-populated with data, and that data can be shared between pods.
-
-There are some restrictions when using an awsElasticBlockStore volume:
-
-the nodes on which pods are running must be AWS EC2 instances
-those instances need to be in the same region and availability zone as the EBS volume
-EBS only supports a single EC2 instance mounting a volume
-
-Note: You must create an EBS volume by using aws ec2 create-volume or the AWS API before you can use it.
-
-
-Creating an AWS EBS volume
-Before you can use an EBS volume with a pod, you need to create it.
-
-aws ec2 create-volume --availability-zone=eu-west-1a --size=10 --volume-type=gp2
-
-
-Make sure the zone matches the zone you brought up your cluster in. Check that the size and EBS volume type are suitable for your use.
-
-AWS EBS configuration example
-apiVersion: v1
-kind: Pod
-metadata:
-  name: test-ebs
-spec:
-  containers:
-  - image: k8s.gcr.io/test-webserver
-    name: test-container
-    volumeMounts:
-    - mountPath: /test-ebs
-      name: test-volume
-  volumes:
-  - name: test-volume
-    # This AWS EBS volume must already exist.
-    awsElasticBlockStore:
-      volumeID: "<volume id>"
-      fsType: ext4
-======================== ======================== ======================== ========================
+awsElasticBlockStore
 
 =>aws ec2 create-volume --availability-zone=us-east-2a --size=3 --volume-type=gp2          #here size=3 (3 gb)
 
@@ -188,7 +147,7 @@ it will not be like ideal , put these pwd in to text format
 
 https://github.com/devopshydclub/vprofile-project/blob/docker/src/main/resources/application.properties
 
-application.properties file
+===================== application.properties =============================
 
 #JDBC Configutation for Database Connection
 jdbc.driverClassName=com.mysql.jdbc.Driver
@@ -216,7 +175,7 @@ elasticsearch.port =9300
 elasticsearch.cluster=vprofile
 elasticsearch.node=vprofilenode
 
-====================================== CREATE SECRET =====================================
+====================================== 1.CREATE SECRET =====================================
 
 https://github.com/chvinodgcp5010/vprofile-project/tree/kube-app
 https://github.com/chvinodgcp5010/vprofile-project/tree/kube-app/kubernetes/vpro-app
@@ -224,13 +183,13 @@ https://github.com/chvinodgcp5010/vprofile-project/tree/kube-app/kubernetes/vpro
 app-secret.yml
 
 apiVersion: v1
-kind: secret
-metadata: 
+kind: Secret
+metadata:
   name: app-secret
 type: Opaque
 data:
-  db-pass: dnByb2RicGFzcw==
-  rmq:pass: Z3Vlc3Q=
+  db-pass: dnByb2RicGFzcw== 
+  rmq-pass: Z3Vlc3Q=
 
 ======================================
 echo -n "vprodbpass" |base64
@@ -239,7 +198,41 @@ dnByb2RicGFzcw==
 echo -n "guest" |base64
 Z3Vlc3Q=
 
-======================================= DB Deployment & service yaml file ============================================
+
+=================================== 2.CREATE PVC ==========================================
+
+https://kubernetes.io/docs/concepts/storage/persistent-volumes/
+PersistentVolumeClaims
+
+kubectl get storageclass
+
+NAME                 PROVISIONER             RECLAIMPOLICY   VOLUMEBINDINGMODE      ALLOWVOLUMEEXPANSION   AGE
+premium-rwo          pd.csi.storage.gke.io   Delete          WaitForFirstConsumer   true                   13d
+standard (default)   kubernetes.io/gce-pd    Delete          Immediate              true                   13d
+standard-rwo         pd.csi.storage.gke.io   Delete          WaitForFirstConsumer   true                   13d
+
+
+
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: my-pvclaim
+spec:
+  accessModes:
+    - ReadWriteOnce
+  volumeMode: Filesystem
+  resources:
+    requests:
+      storage: 8Gi
+  storageClassName: standard
+
+
+kubectl get pvc
+
+NAME         STATUS   VOLUME                                     CAPACITY   ACCESS MODES   STORAGECLASS   AGE
+my-pvclaim   Bound    pvc-0a7fbf1a-0f0a-4f72-bfad-7fb74118dd89   8Gi        RWO            standard       62s
+
+======================================= 3.DB Deployment & service yaml file ==========================================
 
 https://github.com/chvinodgcp5010/vprofile-project/blob/kube-app/kubernetes/vpro-app/vprodbdep.yml
 
@@ -276,14 +269,17 @@ spec:
              secretKeyRef:
                name: app-secret
                key: db-pass
-      nodeSelector:                                        # because we have created EBS vlolume on this zone so mention same
-        zone: us-east-2b                                   # node running in this node we create label already (kubectl get no --show-labels)
+      #nodeSelector:                                        # because we have created EBS vlolume on this zone so mention same
+      #  zone: us-east-2b                                   # node running in this node we create label already (kubectl get no --show-labels)
       volumes:
-        - name: vpro-db-data
-          # This AWS EBS volume must already exist.
-          awsElasticBlockStore:
-             volumeID: vol-0cf3d659eba6861d4
-             fsType: ext4       
+         - name: vpro-db-data
+           persistentVolumeClaim:
+              claimName: my-pvclaim
+        
+        # This AWS EBS volume must already exist.
+        #  awsElasticBlockStore:
+        #     volumeID: vol-0cf3d659eba6861d4
+        #     fsType: ext4       
 
 
 ============= DB Service ===============
@@ -296,7 +292,7 @@ spec:
   selector:
      app: vprodb                           
   ports:
-   - protol: TCP
+   - protocol: TCP
      port: 3306                            
      targetPort:  3306                     
   type: ClusterIP                          # by default k8s will create clusterip so no need to mention
@@ -359,7 +355,7 @@ Service spec must match with DB deployment spec labels.
 #for better understanding we are providing same port for frontend and backend.
 
 
-====================================== Memcached deployment yaml file ============================================
+====================================== 4. Memcached deployment yaml file ============================================
 
 https://github.com/chvinodgcp5010/vprofile-project/blob/kube-app/kubernetes/vpro-app/mcdep.yml
 
@@ -421,7 +417,7 @@ metadata:
 service runnint with this name(vprocache01) and listening on request 11211 
 
 
-====================================== RABBITMQ DEPLOYMENT YAML FILE ======================================
+====================================== 5. RABBITMQ DEPLOYMENT YAML FILE ======================================
 
 apiVersion: apps/v1
 kind: Deployment
@@ -487,7 +483,7 @@ metadata:
   name: vpromq01                ===== > must match with "rabbitmq.address=vpromq01"
 
 
-=========================================== Vproapp deployment definition yaml (tomcat) ===========================================
+===========================================6. Vproapp deployment definition yaml (tomcat) ===========================================
 
 https://github.com/chvinodgcp5010/vprofile-project/blob/docker/Docker-files/web/Dockerfile
 

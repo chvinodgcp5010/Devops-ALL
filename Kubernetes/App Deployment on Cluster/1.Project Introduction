@@ -7,7 +7,7 @@ https://www.jetbrains.com/idea/download/#section=windows
 
 web application is "containerised"  and tested and you want to host for web application
 
-we have multi tier web application stack
+we have multi-tier web application stack
 containerised
 tested it
 want to host for production
@@ -33,7 +33,54 @@ label node with zone name ( we need to run EBS volume where the same zone node d
 CREATE EBS VOLUME:
 =================
 
-aws ec2 create-volume --availability-zone=us-east-2a --size=3 --volume-type=gp2          #here size=3 (3 gb)
+OFFICIAL DOCUMENTATION:
+========================
+https://kubernetes.io/docs/concepts/storage/volumes/
+
+awsElasticBlockStore (deprecated)
+FEATURE STATE: Kubernetes v1.17 [deprecated]
+An awsElasticBlockStore volume mounts an Amazon Web Services (AWS) EBS volume into your pod. Unlike emptyDir, which is erased when a 
+pod is removed, the contents of an EBS volume are persisted and the volume is unmounted. This means that an EBS volume can be 
+pre-populated with data, and that data can be shared between pods.
+
+There are some restrictions when using an awsElasticBlockStore volume:
+
+the nodes on which pods are running must be AWS EC2 instances
+those instances need to be in the same region and availability zone as the EBS volume
+EBS only supports a single EC2 instance mounting a volume
+
+Note: You must create an EBS volume by using aws ec2 create-volume or the AWS API before you can use it.
+
+
+Creating an AWS EBS volume
+Before you can use an EBS volume with a pod, you need to create it.
+
+aws ec2 create-volume --availability-zone=eu-west-1a --size=10 --volume-type=gp2
+
+
+Make sure the zone matches the zone you brought up your cluster in. Check that the size and EBS volume type are suitable for your use.
+
+AWS EBS configuration example
+apiVersion: v1
+kind: Pod
+metadata:
+  name: test-ebs
+spec:
+  containers:
+  - image: k8s.gcr.io/test-webserver
+    name: test-container
+    volumeMounts:
+    - mountPath: /test-ebs
+      name: test-volume
+  volumes:
+  - name: test-volume
+    # This AWS EBS volume must already exist.
+    awsElasticBlockStore:
+      volumeID: "<volume id>"
+      fsType: ext4
+======================== ======================== ======================== ========================
+
+=>aws ec2 create-volume --availability-zone=us-east-2a --size=3 --volume-type=gp2          #here size=3 (3 gb)
 
 save volume id "vol-674r4r888"
 
@@ -100,15 +147,16 @@ ADD db_backup.sql docker-entrypoint-initdb.d/db_backup.sql
 
 ======================================== application.properties ============================================
 
+https://github.com/chvinodgcp5010/vprofile-project/tree/kube-app
+
+https://github.com/chvinodgcp5010/vprofile-project/tree/kube-app/src/main/resources/application.properteis
+
 NOTE:
 
 Here we have copied .war (artifact).
 This artifact is generated at target/vprofile-v2.war and it has application.properteis from our source code.
 
 COPY target/vprofile-v2.war /usr/local/tomcat/webapps/ROOT.war
-
-https://github.com/chvinodgcp5010/vprofile-project/tree/vpro-pro
-https://github.com/chvinodgcp5010/vprofile-project/blob/vpro-pro/src/main/resources/application.properties
 
 =>When continer comes up from the image it will have this application.properties file. it looks for the backend services with name
 
@@ -123,7 +171,7 @@ username=guest
 password=guest
 
 memcached:
-=========
+==========
 host=vprocache01
 
 Also notedown the port numbers , these are important information to collect before writing manifest files, because these information 

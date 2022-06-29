@@ -1,0 +1,47 @@
+https://docs.docker.com/
+
+Install on CentOs
+https://docs.docker.com/engine/install/centos/
+
+=>sudo yum install -y yum-utils
+
+=>sudo yum-config-manager \
+    --add-repo \
+    https://download.docker.com/linux/centos/docker-ce.repo
+
+Install the latest version of Docker Engine, containerd, and Docker Compose or go to the next step to install a specific version:
+
+=>sudo yum install docker-ce docker-ce-cli containerd.io docker-compose-plugin
+ 
+docker -v
+Docker version 20.10.17, build 100c701
+ 
+ OR
+
+Install specific version
+========================
+
+yum list docker-ce --showduplicates | sort -r
+
+sudo yum install docker-ce-<VERSION_STRING> docker-ce-cli-<VERSION_STRING> containerd.io docker-compose-plugin
+
+sudo systemctl start docker
+
+sudo docker run hello-world
+
+
+
+========================================
+
+debian:
+https://docs.docker.com/engine/install/debian/
+
+https://docs.docker.com/engine/install/rhel/
+
+https://docs.docker.com/engine/install/ubuntu/
+
+
+
+
+
+

@@ -533,6 +533,38 @@ spec:
 
 
 
+========================================================================
+deployed db deployment but not deployed service of "vprodb" or "vprocache01" and deploy above vproapp and observe 
+
+NAME                        READY   STATUS     RESTARTS   AGE
+vproapp-cd7c56d4f-p959h     0/1     Init:0/2   0          3m50s
+vprodb-7f48679c86-ztqbs     1/1     Running    0          10m
+
+
+kubectl get po
+vproapp-cd7c56d4f-rdmj2     0/1     Init:0/2   0          4s
+
+kubectl logs -f vproapp-cd7c56d4f-rdmj2
+
+Defaulted container "vproapp" out of: vproapp, init-mydb (init), init-memcache (init)
+Error from server (BadRequest): container "vproapp" in pod "vproapp-cd7c56d4f-p959h" is waiting to start: PodInitializing
+
+kubectl describe po vproapp-cd7c56d4f-rdmj2
+
+  Type    Reason     Age    From               Message
+  ----    ------     ----   ----               -------
+  Normal  Scheduled  2m35s  default-scheduler  Successfully assigned default/vproapp-cd7c56d4f-p959h to gke-tcscluster-default-pool-0decad12-s926
+  Normal  Pulling    2m35s  kubelet            Pulling image "busybox"
+  Normal  Pulled     2m35s  kubelet            Successfully pulled image "busybox" in 143.650275ms
+  Normal  Created    2m35s  kubelet            Created container init-mydb
+  Normal  Started    2m35s  kubelet            Started container init-mydb
+  
+  
+ it is executed script and checking for "vprodb" service and other service :
+ 
+ If any of the service is not deployed it will not execute further step ( it checks only service not deployment)
+  
+  
 ====================== EXPLANATION ===================
       containers:
       - name: vproapp

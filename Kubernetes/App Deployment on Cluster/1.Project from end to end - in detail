@@ -532,6 +532,20 @@ spec:
         command: ['sh', '-c', 'until nslookup vprocache01; do echo waiting for mydb; sleep 2; done;']
 
 
+========================== LB- service =============================
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: vproapp-service
+spec:
+  ports:
+  - port: 80
+    targetPort: vproapp-port
+    protocol: TCP
+  selector:
+    app: vproapp
+  type: LoadBalancer
 
 ========================================================================
 deployed db deployment but not deployed service of "vprodb" or "vprocache01" and deploy above vproapp and observe 
@@ -641,21 +655,18 @@ check rabbitmq on "UI" , "all users"from memcache
 Hence production grade k8s cluster is completed
 
 
+created user 
+vinodkumarch
+pwd: 12345678 
 
-========================== LB- service =============================
 
-apiVersion: v1
-kind: Service
-metadata:
-  name: vproapp-service
-spec:
-  ports:
-  - port: 80
-    targetPort: vproapp-port
-    protocol: TCP
-  selector:
-    app: vproapp
-  type: LoadBalancer
+able to login as well using username and pwd ( means its storing user data and pwd on DB )
+
+delete db pod and try to login "you will not able to login" you will get some exceptions "Your username and password is invalid."
+
+try to add db deployment and check with user details to login " able to login" means user data stroing in db 
+(application is connecting to db) and able to login.
+
 
 ================= Dockerfile (DB)  ================
 

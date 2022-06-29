@@ -101,10 +101,22 @@ $ docker run hello-world
 REPOSITORY    TAG       IMAGE ID       CREATED        SIZE
 hello-world   latest    feb5d9fea6a5   9 months ago   13.3kB
 
+5. check id of user ( it should be in docker group )
+
+=>[vinodch501@instance-1-vnd ~]$ id vinodch501
+uid=1000(vinodch501) gid=1001(vinodch501) groups=1001(vinodch501),4(adm),39(video),994(docker)
+
+
+6. Try logout and login 
+
+[vinodch501@instance-1-vnd ~]$ docker images
+REPOSITORY    TAG       IMAGE ID       CREATED        SIZE
+hello-world   latest    feb5d9fea6a5   9 months ago   13.3kB
+
+
 Configure Docker to start on boot
 ====================================
 Most current Linux distributions (RHEL, CentOS, Fedora, Debian, Ubuntu 16.04 and higher) use systemd to manage which services start when the system boots. On Debian and Ubuntu, the Docker service is configured to start on boot by default. To automatically start Docker and Containerd on boot for other distros, use the commands below:
 
 1.sudo systemctl enable docker.service
 2.sudo systemctl enable containerd.service
-

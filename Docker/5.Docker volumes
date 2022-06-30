@@ -1,0 +1,234 @@
+https://docs.docker.com/storage/volumes/
+
+Docker volume:
+--------------
+Persistent storage for volatile containers
+
+what if you use stateful container like mysql?
+
+all data will store and read , if you replace container with other container all data will be gone. for that we have container volume.
+
+By default data will not persist on container for longer time 
+
+DOCKER HAS 2 OPTIONS FOR CONTAINERS TO STORE FILES IN HOST MACHINE(Persistent data)
+-----------------------------------------------------------------------------------
+1.volumes:
+---------
+(it is a wrapper where in the docker volumes directory , it will create directory and then you can atatach that to container
+whatever container data will save on the volumes directory in host machine (safe in host machine)
+
+managed by docker : /var/lib/docker/volumes
+
+2.bindmount:
+-----------
+same as vagrant sync directory . where you can any directory in host and map it to conatainer directory.
+
+mostly:
+you want to make changes in container data you can do it from "hostmachine dir" that will reflect in container directory.
+so you can take any directory from host machine and map it.
+
+Volume also similar but volume managed by the docker.
+
+
+======================================= Volume usage =========================================
+
+https://hub.docker.com/_/mysql?tab=description
+
+syntax:
+docker run --name some-mysql -e MYSQL_ROOT_PASSWORD=my-secret-pw -d mysql:tag
+
+without adding volume:
+
+=>docker run --name vnd-mysql -e MYSQL_ROOT_PASSWORD=mysecretpw -d mysql
+
+( you need to set -e MYSQL_ROOT_PASSWORD=mysecretpw (as env var) otherwise container will stop)
+
+
+
+======================================= CREATE A CONTAINER USING VOLUME (Bindmount) =====================================
+
+USE OF BINDMOUNT:
+=================
+Mostly developers used to inject data from host machine to container (like code developers are writing , while containers are running
+developers can do all code changes on hostmachine that will reflect on container)
+
+it stores data on hostmachine at any directory specfied.
+
+https://hub.docker.com/_/mysql?tab=description
+
+goto bottom of above url:
+Caveats
+Where to Store Data
+
+Create a data directory on a suitable volume on your host system, e.g. /my/own/datadir. ( if you not create any directory and execute 
+command it will automatically create directoy and store data to it)
+
+Start your mysql container like this:
+
+===>
+$ docker run --name some-mysql -v /my/own/datadir:/var/lib/mysql -e MYSQL_ROOT_PASSWORD=my-secret-pw -d mysql:tag
+
+The -v /my/own/datadir:/var/lib/mysql part of the command mounts the /my/own/datadir directory from the underlying host system as 
+/var/lib/mysql inside the container, where MySQL by default will write its data files.
+
+By default "mysql" will store data on this directory "/var/lib/mysql" (from official image)
+if its unofficial may be directory will chanage .
+
+Check the directory path of mysql data & at what port the process is running using " docker inspect <image>" 
+
+=>docker inspect mysql
+
+            "Cmd": [
+                "/bin/sh",
+                "-c",
+                "#(nop) ",
+                "CMD [\"mysqld\"]"
+            ],
+            "Image": "sha256:4fe46a55132b666f3d5bdf82a33a5655c732791b26d5ec44304aa059ad5e8f10",
+            "Volumes": {
+                "/var/lib/mysql": {}
+            },
+            "WorkingDir": "",
+            "Entrypoint": [
+                "docker-entrypoint.sh"
+
+            "ExposedPorts": {
+                "3306/tcp": {},
+                "33060/tcp": {}
+
+
+Entrypoint and CMD run togehter or sometime individually , if you see both "entry point" have higher prioity than "CMD" and 
+execute script
+
+=====>
+->docker run --name vproifledb -v /my/own/datadir:/var/lib/mysql -p 3030:3306 -e MYSQL_ROOT_PASSWORD=Dell@123 -d mysql
+
+OR
+
+create a directory on host and check (mkdir vprofile)
+
+->docker run --name vproifledb1 -v /home/vprofile:/var/lib/mysql -p 3030:3306 -e MYSQL_ROOT_PASSWORD=Dell@123 -d mysql
+---
+check:
+
+@instance-1-vnd datadir]$ docker ps
+CONTAINER ID   IMAGE     COMMAND                  CREATED          STATUS          PORTS                                                                                        NAMES
+a2e95bf6ae38   mysql     "docker-entrypoint.s…"   3 minutes ago    Up 3 minutes    33060/tcp, 0.0.0.0:3030->3306/tcp, :::3030->3306/tcp                                         vproifledb
+
+once command is executed it will automatically create a directory (/my/own/datadir) on host machine and store the data of 
+(/var/lib/mysql) entire data here.
+
+cd /my/own/datadir
+ls
+
+auto.cnf       binlog.index  client-cert.pem    #ib_16384_1.dblwr  ib_logfile0  #innodb_temp  performance_schema  server-cert.pem  undo_001
+binlog.000001  ca-key.pem    client-key.pem     ib_buffer_pool     ib_logfile1  mysql         private_key.pem     server-key.pem   undo_002
+binlog.000002  ca.pem        #ib_16384_0.dblwr  ibdata1            ibtmp1       mysql.ibd     public_key.pem      sys              
+
+
+NOTE:
+whatever we have data on container it stores it on /my/own/datadir
+
+Login to container and add some files on /var/lib/mysql and check it exist on (/my/own/datadir) host or not.
+--------------------------------------------------------------------------------------------------------------
+
+CREATE DIRECTORY  "devops-dir" ON MYSQL CONTAINER AND CHECK IT ON HOST
+
+@instance-1-vnd datadir]$ docker exec -it a2e95bf6ae38 /bin/sh
+# cd /var/lib/mysql
+# ls
+'#ib_16384_0.dblwr'   auto.cnf        binlog.index   client-cert.pem   ib_logfile0   ibtmp1      performance_schema   server-cert.pem   undo_001
+'#ib_16384_1.dblwr'   binlog.000001   ca-key.pem     client-key.pem    ib_logfile1   mysql       private_key.pem      server-key.pem    undo_002
+'#innodb_temp'        binlog.000002   ca.pem         ib_buffer_pool    ibdata1       mysql.ibd   public_key.pem       sys
+
+# mkdir devops-dir
+# ls
+'#ib_16384_0.dblwr'   auto.cnf        binlog.index   client-cert.pem   ib_logfile0   ibtmp1      performance_schema   server-cert.pem   undo_001
+'#ib_16384_1.dblwr'   binlog.000001   ca-key.pem     client-key.pem    ib_logfile1   mysql       private_key.pem      server-key.pem    undo_002
+'#innodb_temp'        binlog.000002   ca.pem         ib_buffer_pool    ibdata1       mysql.ibd   public_key.pem       sys               devops-dir
+
+cntrl+d
+
+on host enter cd /my/own/datadir and check directory exist or not.
+
+
+[vinodch501@instance-1-vnd datadir]$ ls
+auto.cnf       binlog.index  client-cert.pem    #ib_16384_1.dblwr  ib_logfile0  #innodb_temp  performance_schema  server-cert.pem  undo_001
+binlog.000001  ca-key.pem    client-key.pem     ib_buffer_pool     ib_logfile1  mysql         private_key.pem     server-key.pem   undo_002
+binlog.000002  ca.pem        #ib_16384_0.dblwr  ibdata1            ibtmp1       mysql.ibd     public_key.pem      sys              devops-dir
+[vinodch501@instance-1-vnd datadir]$ 
+
+
+**************************************************
+CREATE FILE ON HOST(/my/own/datadir) AND CHECK FILES EXISTS ON CONTAINER OR NOT
+
+=>$ docker run --name vproifledb -v /my/own/datadir:/var/lib/mysql -p 3030:3306 -e MYSQL_ROOT_PASSWORD=Dell@123 -d mysql
+cc776258db930a97835af097defcea2ed92c65d38507b97fb7fbf9ed1fa13f7f
+
+=>[@instance-1-vnd ~]$ cd /my/own/datadir
+
+[@instance-1-vnd datadir]$ ls
+auto.cnf       ca-key.pem       client-key.pem     ib_buffer_pool  ib_logfile1   mysql               private_key.pem  server-key.pem  undo_002
+binlog.000001  ca.pem           #ib_16384_0.dblwr  ibdata1         ibtmp1        mysql.ibd           public_key.pem   sys
+binlog.index   client-cert.pem  #ib_16384_1.dblwr  ib_logfile0     #innodb_temp  performance_schema  server-cert.pem  undo_001
+
+create files on host check on container 
+
+[@instance-1-vnd datadir]$ sudo touch dell  epson
+
+[@instance-1-vnd datadir]$ docker ps
+CONTAINER ID   IMAGE     COMMAND                  CREATED          STATUS          PORTS                                                  NAMES
+cc776258db93   mysql     "docker-entrypoint.s…"   39 seconds ago   Up 38 seconds   33060/tcp, 0.0.0.0:3030->3306/tcp, :::3030->3306/tcp 
+vproifledb
+
+[@instance-1-vnd datadir]$ docker exec -it cc776258db93 /bin/sh
+# cd /var/lib/mysql
+# ls
+'#ib_16384_0.dblwr'   auto.cnf        binlog.index   client-cert.pem   ib_buffer_pool   ibdata1    mysql                private_key.pem   server-key.pem   undo_001
+'#ib_16384_1.dblwr'   binlog.000001   ca-key.pem     client-key.pem    ib_logfile0      ibtmp1     mysql.ibd            public_key.pem    sys              undo_002
+'#innodb_temp'        binlog.000002   ca.pem         dell             ib_logfile1      performance_schema   server-cert.pem   epson 
+
+
+
+CHECK:
+
+remove container and check directory data exists or not 
+=====================================================
+=>docker stop <cont>
+=>docker rm <cont>
+
+=>cd /my/own/datadir
+=>ls
+
+'#ib_16384_0.dblwr'   auto.cnf        binlog.index   client-cert.pem   ib_buffer_pool   ibdata1    mysql                private_key.pem   server-key.pem   undo_001
+'#ib_16384_1.dblwr'   binlog.000001   ca-key.pem     client-key.pem    ib_logfile0      ibtmp1     mysql.ibd            public_key.pem    sys              undo_002
+'#innodb_temp'        binlog.000002   ca.pem         dell             ib_logfile1      performance_schema   server-cert.pem   epson 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

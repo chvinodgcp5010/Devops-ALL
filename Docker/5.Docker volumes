@@ -49,8 +49,10 @@ without adding volume:
 
 USE OF BINDMOUNT:
 =================
-Mostly developers used to inject data from host machine to container (like code developers are writing , while containers are running
+Mostly developers used to inject data from "host machine" to "container" (like code developers are writing , while containers are running
 developers can do all code changes on hostmachine that will reflect on container)
+
+but for preserving data purpose you can use "volumes"
 
 it stores data on hostmachine at any directory specfied.
 
@@ -205,22 +207,243 @@ remove container and check directory data exists or not
 '#innodb_temp'        binlog.000002   ca.pem         dell             ib_logfile1      performance_schema   server-cert.pem   epson 
 
 
+USE OF BINDMOUNT:
+=================
+Mostly developers used to inject data from "host machine" to "container" (like code developers are writing , while containers are running
+developers can do all code changes on hostmachine that will reflect on container)
+
+but for preserving data purpose you can use "volumes"
+
+
+================================================= DOCKER VOLUMES =============================================
+
+https://docs.docker.com/storage/volumes/
+
+Create and manage volumes
+Unlike a bind mount, you can create and manage volumes outside the scope of any container.
+
+Create a volume:
+=>docker volume create my-vol
+
+List volumes:
+=>docker volume ls
+
+HANDS-ON
+---------
+
+=>docker volume create my-vol
+my-vol
+
+=>docker volume ls
+DRIVER    VOLUME NAME
+local     1d27d4141727cc726112491f37b7ac1bb72365d5d7969e860717316da692cc32
+local     6b6c5088d3c868ec165bc83d03efd568d0571169a33bc964fc0beaaf7ab73024
+local     f4b0001d95d414e3975b3b0c4a2666b45321b3b5121d2dad834b7c73658caccd
+local     my-vol
+
+CHECK WHERE THE VOLUMES ARE STORED
+===================================
+[vinodch501@instance-1-vnd containerd]$ sudo cd /var/lib/docker/
+[vinodch501@instance-1-vnd containerd]$ ls
+ls: cannot open directory .: Permission denied
+
+LOGIN AS ROOT USER
+---------------------
+[vinodch501@instance-1-vnd containerd]$ sudo su -
+Last login: Thu Jun 30 04:27:56 UTC 2022 on pts/0
+
+[root@instance-1-vnd ~]# cd /var/lib/docker/
+[root@instance-1-vnd docker]# ls
+buildkit  containers  image  network  overlay2  plugins  runtimes  swarm  tmp  trust  volumes
+
+[root@instance-1-vnd docker]# cd volumes/
+[root@instance-1-vnd volumes]# ls
+1d27d4141727cc726112491f37b7ac1bb72365d5d7969e860717316da692cc32  backingFsBlockDev           metadata.db
+6b6c5088d3c868ec165bc83d03efd568d0571169a33bc964fc0beaaf7ab73024   my-vol
+
+cd my-vol
+ls
+_data
+cd _data
+ls
+
+
+$ docker inspect my-vol
+[
+    {
+        "CreatedAt": "2022-06-30T11:45:49Z",
+        "Driver": "local",
+        "Labels": {},
+        "Mountpoint": "/var/lib/docker/volumes/my-vol/_data",
+        "Name": "my-vol",
+        "Options": {},
+        "Scope": "local"
+    }
+]
+
+
+===============================Start a container with a volume================================
+https://docs.docker.com/storage/volumes/
+
+Start a container with a volume
+If you start a container with a volume that does not yet exist, Docker creates the volume for you. The following example mounts 
+the volume myvol2 into /app/ in the container.
+
+The -v and --mount examples below produce the same result. You can’t run them both unless you remove the devtest container and the 
+myvol2 volume after running the first one.
+
+ docker run -d \
+  --name devtest \
+  -v myvol2:/app \
+  nginx:latest
+
+
+https://hub.docker.com/_/mysql?tab=description
+
+$ docker run --name vproifle-google -v my-vol:/var/lib/mysql -p 3030:3306 -e MYSQL_ROOT_PASSWORD=Dell@123 -d mysql
+16c7923a831eef2c668d6f8fa61ea5fa68003295b0000d3e64c6b4c3d414c470
+
+[vinodch501@instance-1-vnd lib]$ docker ps
+CONTAINER ID   IMAGE     COMMAND                  CREATED         STATUS         PORTS                                                  NAMES
+16c7923a831e   mysql     "docker-entrypoint.s…"   4 seconds ago   Up 3 seconds   33060/tcp, 0.0.0.0:3030->3306/tcp, :::3030->3306/tcp   vproifle-google
+
+[vinodch501@instance-1-vnd lib]$ sudo su -                                 # only sudo user can access the dir (/var/lib/docker/)
+Last login: Thu Jun 30 11:56:20 UTC 2022 on pts/0
+
+[root@instance-1-vnd ~]# cd /var/lib/docker/volumes/my-vol/_data/
+
+[root@instance-1-vnd _data]# ls
+auto.cnf       binlog.000003  ca.pem           #ib_16384_0.dblwr  ibdata1      ibtmp1        mysql.ibd           public_key.pem   sys
+binlog.000001  binlog.index   client-cert.pem  #ib_16384_1.dblwr  ib_logfile0  #innodb_temp  performance_schema  server-cert.pem  undo_001
+binlog.000002  ca-key.pem     client-key.pem   ib_buffer_pool     ib_logfile1  mysql         private_key.pem     server-key.pem   undo_002
 
 
 
+Whatever the data stored on container it replicate in volume directory.
 
 
+======================================== Inspect container =============================================
+
+docker inspect 16c7923a831e
+
+check output below.
+
+https://github.com/chvinodgcp5010/Devops-ALL/blob/main/Docker/6.docker%20inspect%20%3Ccontainer-id%3E
+
+        "HostConfig": {
+            "Binds": [
+                "my-vol:/var/lib/mysql"
+            ],
+            "ContainerIDFile": "",
+            "LogConfig": {
+                "Type": "json-file",
+                "Config": {}
+            },
+            "NetworkMode": "default",
+            "PortBindings": {
+                "3306/tcp": [
+                    {
+                        "HostIp": "",
+                        "HostPort": "3030"
+                    }
+                ]
+            },
+            
+            
+=>"my-vol:/var/lib/mysql"  above 
+my-vol (volume) is bind with "var/lib/mysql"
+            
+and port binding (3306) is mapped with HostPort": "3030" 
+
+Volumes:
+========
+========================================================
+        "Mounts": [
+            {
+                "Type": "volume",
+                "Name": "my-vol",
+                "Source": "/var/lib/docker/volumes/my-vol/_data",
+                "Destination": "/var/lib/mysql",
+                "Driver": "local",
+                "Mode": "z",
+                "RW": true,
+                "Propagation": ""
+            }
+        ],
+========================================================
+
+Name": "my-vol",                                       => name of the volume
+"Source": "/var/lib/docker/volumes/my-vol/_data",      => Where it is storing volume data
 
 
+================================================
+          "ExposedPorts": {
+                "3306/tcp": {},
+                "33060/tcp": {}
+            },
+            "Tty": false,
+            "OpenStdin": false,
+            "StdinOnce": false,
+            "Env": [
+                "MYSQL_ROOT_PASSWORD=Dell@123",
+                "PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+                "GOSU_VERSION=1.14",
+                "MYSQL_MAJOR=8.0",
+                "MYSQL_VERSION=8.0.29-1debian10"
+
+==================================================
+
+Exposed ports and environment variables
+
+            "Env": [
+                "MYSQL_ROOT_PASSWORD=Dell@123",
+
+==================================================
+            "Cmd": [
+                "mysqld"
+            ],
+            "Image": "mysql",
+            "Volumes": {
+                "/var/lib/mysql": {}
+            },
+            "WorkingDir": "",
+            "Entrypoint": [
+                "docker-entrypoint.sh"
+
+==================================================
+
+entrypoint (the script that it's runs first and execute ) next cmd 
+
+when we execute docker run 
+
+first it execute "ENTRYPOINT" and pass this as an argument to "CMD"
 
 
+=====================================================
 
+            "Networks": {
+                "bridge": {
+                    "IPAMConfig": null,
+                    "Links": null,
+                    "Aliases": null,
+                    "NetworkID": "6c4e8fef3de986f1fd75c5a1daae56801dfd679d06b76aa60820f6b4a54f6d67",
+                    "EndpointID": "a1cfa77996bde6bad551fc3390472d2e5c6ce94bbb07745e1016f88bf54b5a8a",
+                    "Gateway": "172.17.0.1",
+                    "IPAddress": "172.17.0.2",
 
+=====================================================
 
+you can really ping to the ip address 
 
+$ping 172.17.0.2
 
+PING 172.17.0.2 (172.17.0.2) 56(84) bytes of data.
+64 bytes from 172.17.0.2: icmp_seq=1 ttl=64 time=0.178 ms
+64 bytes from 172.17.0.2: icmp_seq=2 ttl=64 time=0.069 ms
+64 bytes from 172.17.0.2: icmp_seq=3 ttl=64 time=0.067 ms
+64 bytes from 172.17.0.2: icmp_seq=4 ttl=64 time=0.068 ms
 
-
+This ip you will not able to access outside , If you already on host machine you can connect to "mysql" container also
 
 
 

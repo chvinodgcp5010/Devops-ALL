@@ -1,0 +1,10 @@
+docker logs <container-name or id>
+
+->docker pull nginx
+->docker images
+REPOSITORY   TAG       IMAGE ID       CREATED      SIZE
+nginx        latest    55f4b40fe486   7 days ago   142MB
+
+-> we can see detailed information about image
+
+[vinodch501@instance-1-vnd ~]$ docker inspect nginx

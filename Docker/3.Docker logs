@@ -7,4 +7,238 @@ nginx        latest    55f4b40fe486   7 days ago   142MB
 
 -> we can see detailed information about image
 
-[vinodch501@instance-1-vnd ~]$ docker inspect nginx
+[vinodch501@instance-1-vnd ~]$ docker inspect nginx         
+
+see entire logs
+
+https://github.com/chvinodgcp5010/Devops-ALL/blob/main/Docker/4.docker%20inspect%20%3Cimage%3E
+
+few logs here focusing on (CMD & entrypoint)
+=================================================
+
+            "Cmd": [
+                "/bin/sh",
+                "-c",
+                "#(nop) ",
+                "CMD [\"nginx\" \"-g\" \"daemon off;\"]"
+            ],
+            "Image": "sha256:68fcb2c97661ad9e6dc7852dcd586464dcfe7237180e8ab1e95bb391ea063a14",
+            "Volumes": null,
+            "WorkingDir": "",
+            "Entrypoint": [
+                "/docker-entrypoint.sh"
+
+=================================================
+
+when you hit 
+->docker run <imagename>
+
+first it will execute script /docker-entrypoint.sh" which in  "ENTRYPOING" and then "CMD"
+
+whenever we execute any command it returns output , if we use -d we dont see waht happening on background.
+
+docker run -d <imagename>
+
+docker run -d -P nginx                    (Here -P(portmapping) automatically it pickup "hostport" no need to mention host and cont port.
+
+
+docker run -d -P nginx 
+a8adc322e86ae9371463f651705abb01b7332bcc1de67a83cfc9a9bfe8d7be88
+
+[vinodch501@instance-1-vnd ~]$ docker ps 
+CONTAINER ID   IMAGE     COMMAND                  CREATED         STATUS         PORTS                                     NAMES
+a8adc322e86a   nginx     "/docker-entrypoint.…"   4 seconds ago   Up 3 seconds   0.0.0.0:49153->80/tcp, :::49153->80/tcp   zen_kapitsa
+
+
+see here 49153->80 (it automatically added port mapping as hostport (49153) container port (80) and it executed commands
+like ENTRYPOINT and CMD but here we cannot see the output using -d (it execute on background)
+
+We can see the output using "docker logs <cont-name>
+
+[vinodch501@instance-1-vnd ~]$ docker logs a8adc322e86a
+
+O/P
+
+/docker-entrypoint.sh: /docker-entrypoint.d/ is not empty, will attempt to perform configuration
+/docker-entrypoint.sh: Looking for shell scripts in /docker-entrypoint.d/
+/docker-entrypoint.sh: Launching /docker-entrypoint.d/10-listen-on-ipv6-by-default.sh
+10-listen-on-ipv6-by-default.sh: info: Getting the checksum of /etc/nginx/conf.d/default.conf
+10-listen-on-ipv6-by-default.sh: info: Enabled listen on IPv6 in /etc/nginx/conf.d/default.conf
+/docker-entrypoint.sh: Launching /docker-entrypoint.d/20-envsubst-on-templates.sh
+/docker-entrypoint.sh: Launching /docker-entrypoint.d/30-tune-worker-processes.sh
+/docker-entrypoint.sh: Configuration complete; ready for start up
+2022/06/30 07:04:17 [notice] 1#1: using the "epoll" event method
+2022/06/30 07:04:17 [notice] 1#1: nginx/1.23.0
+2022/06/30 07:04:17 [notice] 1#1: built by gcc 10.2.1 20210110 (Debian 10.2.1-6) 
+2022/06/30 07:04:17 [notice] 1#1: OS: Linux 3.10.0-1160.62.1.el7.x86_64
+2022/06/30 07:04:17 [notice] 1#1: getrlimit(RLIMIT_NOFILE): 1048576:1048576
+2022/06/30 07:04:17 [notice] 1#1: start worker processes
+2022/06/30 07:04:17 [notice] 1#1: start worker process 32
+2022/06/30 07:04:17 [notice] 1#1: start worker process 33
+
+Logs :
+ouptut of the command executed in container.
+
+
+
+
+You can see the output its executing "/docker-entrypoint.sh" first and then CMD
+-------------------------------------------------------------------------------
+
+/docker-entrypoint.sh: /docker-entrypoint.d/ is not empty, will attempt to perform configuration
+/docker-entrypoint.sh: Looking for shell scripts in /docker-entrypoint.d/
+/docker-entrypoint.sh: Launching /docker-entrypoint.d/10-listen-on-ipv6-by-default.sh
+10-listen-on-ipv6-by-default.sh: info: Getting the checksum of /etc/nginx/conf.d/default.conf
+10-listen-on-ipv6-by-default.sh: info: Enabled listen on IPv6 in /etc/nginx/conf.d/default.conf
+/docker-entrypoint.sh: Launching /docker-entrypoint.d/20-envsubst-on-templates.sh
+/docker-entrypoint.sh: Launching /docker-entrypoint.d/30-tune-worker-processes.sh
+/docker-entrypoint.sh: Configuration complete; ready for start up
+
+
+and other command "CMD [\"nginx\" \"-g\" \"daemon off;\"]" and output
+
+2022/06/30 07:04:17 [notice] 1#1: using the "epoll" event method
+2022/06/30 07:04:17 [notice] 1#1: nginx/1.23.0
+2022/06/30 07:04:17 [notice] 1#1: built by gcc 10.2.1 20210110 (Debian 10.2.1-6) 
+2022/06/30 07:04:17 [notice] 1#1: OS: Linux 3.10.0-1160.62.1.el7.x86_64
+2022/06/30 07:04:17 [notice] 1#1: getrlimit(RLIMIT_NOFILE): 1048576:1048576
+2022/06/30 07:04:17 [notice] 1#1: start worker processes
+2022/06/30 07:04:17 [notice] 1#1: start worker process 32
+2022/06/30 07:04:17 [notice] 1#1: start worker process 33
+
+
+
+NOTE:
+
+->If you not provide -d and execute docker run <img> it provides o/p on foreground and display on screen , it is a continuous process
+it's taken shell 
+
+->if you exit from shell you need to execute cntrl+c ( if you exit it kill the process) and container will exit state . so use 
+-d to get o/p on background only.
+
+[vinodch501@instance-1-vnd ~]$ docker run -P nginx
+/docker-entrypoint.sh: /docker-entrypoint.d/ is not empty, will attempt to perform configuration
+/docker-entrypoint.sh: Looking for shell scripts in /docker-entrypoint.d/
+/docker-entrypoint.sh: Launching /docker-entrypoint.d/10-listen-on-ipv6-by-default.sh
+10-listen-on-ipv6-by-default.sh: info: Getting the checksum of /etc/nginx/conf.d/default.conf
+10-listen-on-ipv6-by-default.sh: info: Enabled listen on IPv6 in /etc/nginx/conf.d/default.conf
+/docker-entrypoint.sh: Launching /docker-entrypoint.d/20-envsubst-on-templates.sh
+/docker-entrypoint.sh: Launching /docker-entrypoint.d/30-tune-worker-processes.sh
+/docker-entrypoint.sh: Configuration complete; ready for start up
+2022/06/30 07:12:23 [notice] 1#1: using the "epoll" event method
+2022/06/30 07:12:23 [notice] 1#1: nginx/1.23.0
+2022/06/30 07:12:23 [notice] 1#1: built by gcc 10.2.1 20210110 (Debian 10.2.1-6) 
+2022/06/30 07:12:23 [notice] 1#1: OS: Linux 3.10.0-1160.62.1.el7.x86_64
+2022/06/30 07:12:23 [notice] 1#1: getrlimit(RLIMIT_NOFILE): 1048576:1048576
+2022/06/30 07:12:23 [notice] 1#1: start worker processes
+2022/06/30 07:12:23 [notice] 1#1: start worker process 31
+2022/06/30 07:12:23 [notice] 1#1: start worker process 32
+
+exit the container 
+CNTRL+C
+
+2022/06/30 07:14:31 [notice] 31#31: exiting
+2022/06/30 07:14:31 [notice] 31#31: exit
+2022/06/30 07:14:31 [notice] 32#32: exiting
+2022/06/30 07:14:31 [notice] 32#32: exit
+2022/06/30 07:14:31 [notice] 1#1: signal 17 (SIGCHLD) received from 31
+2022/06/30 07:14:31 [notice] 1#1: worker process 31 exited with code 0
+2022/06/30 07:14:31 [notice] 1#1: worker process 32 exited with code 0
+2022/06/30 07:14:31 [notice] 1#1: exit
+
+[vinodch501@instance-1-vnd ~]$ docker ps -a
+CONTAINER ID   IMAGE     COMMAND                  CREATED          STATUS                      PORTS                                     NAMES
+83c8c57c1aed   nginx     "/docker-entrypoint.…"   2 minutes ago    Exited (0) 23 seconds ago                                             elated_lalande
+
+
+=============================== Running container Mysql (faulty image) ==================================
+
+https://hub.docker.com/_/mysql?tab=tags
+
+docker run -d -P mysql 
+
+$ docker ps  -a
+CONTAINER ID   IMAGE       COMMAND                  CREATED          STATUS                      PORTS                                     NAMES
+b107551703c4   mysql:5.7   "docker-entrypoint.s…"   12 seconds ago   Exited (1) 10 seconds ago                                             objective_engelbart
+
+HERE
+container is exited why?
+
+check logs
+
+==>docker logs b107551703c4
+
+2022-06-30 07:20:02+00:00 [Note] [Entrypoint]: Entrypoint script for MySQL Server 5.7.38-1debian10 started.
+2022-06-30 07:20:02+00:00 [Note] [Entrypoint]: Switching to dedicated user 'mysql'
+2022-06-30 07:20:02+00:00 [Note] [Entrypoint]: Entrypoint script for MySQL Server 5.7.38-1debian10 started.
+2022-06-30 07:20:02+00:00 [ERROR] [Entrypoint]: Database is uninitialized and password option is not specified
+    You need to specify one of the following:
+    - MYSQL_ROOT_PASSWORD
+    - MYSQL_ALLOW_EMPTY_PASSWORD
+    - MYSQL_RANDOM_ROOT_PASSWORD
+
+
+here  error is ( need to specify one of the following to make container up)
+
+[ERROR] [Entrypoint]: Database is uninitialized and password option is not specified
+    You need to specify one of the following:
+    - MYSQL_ROOT_PASSWORD
+    - MYSQL_ALLOW_EMPTY_PASSWORD
+    - MYSQL_RANDOM_ROOT_PASSWORD
+
+
+-----------
+
+=>docker run -d -e MYSQL_ROOT_PASSWORD=mypass -P mysql 
+
+=>docker ps
+CONTAINER ID   IMAGE     COMMAND                  CREATED          STATUS          PORTS                                                                                        NAMES
+0ebd17a4261d   mysql     "docker-entrypoint.s…"   7 seconds ago    Up 5 seconds    0.0.0.0:49158->3306/tcp, :::49158->3306/tcp, 0.0.0.0:49157->33060/tcp, :::49157->33060
+
+
+ONCE UP CHECK LOGS OF CONTAINER:
+--------------------------------
+
+[vinodch501@instance-1-vnd ~]$ docker logs 0ebd17a4261d
+
+2022-06-30 07:23:13+00:00 [Note] [Entrypoint]: Entrypoint script for MySQL Server 8.0.29-1debian10 started.
+2022-06-30 07:23:13+00:00 [Note] [Entrypoint]: Switching to dedicated user 'mysql'
+2022-06-30 07:23:13+00:00 [Note] [Entrypoint]: Entrypoint script for MySQL Server 8.0.29-1debian10 started.
+2022-06-30 07:23:13+00:00 [Note] [Entrypoint]: Initializing database files
+2022-06-30T07:23:13.809965Z 0 [System] [MY-013169] [Server] /usr/sbin/mysqld (mysqld 8.0.29) initializing of server in progress as process 41
+2022-06-30T07:23:13.818254Z 1 [System] [MY-013576] [InnoDB] InnoDB initialization has started.
+2022-06-30T07:23:14.313142Z 1 [System] [MY-013577] [InnoDB] InnoDB initialization has ended.
+2022-06-30T07:23:15.792918Z 6 [Warning] [MY-010453] [Server] root@localhost is created with an empty password ! Please consider switching off the --initialize-insecure option.
+2022-06-30 07:23:18+00:00 [Note] [Entrypoint]: Database files initialized
+2022-06-30 07:23:18+00:00 [Note] [Entrypoint]: Starting temporary server
+2022-06-30T07:23:19.100109Z 0 [System] [MY-010116] [Server] /usr/sbin/mysqld (mysqld 8.0.29) starting as process 88
+2022-06-30T07:23:19.117733Z 1 [System] [MY-013576] [InnoDB] InnoDB initialization has started.
+2022-06-30T07:23:19.313546Z 1 [System] [MY-013577] [InnoDB] InnoDB initialization has ended.
+2022-06-30T07:23:19.564039Z 0 [Warning] [MY-010068] [Server] CA certificate ca.pem is self signed.
+2022-06-30T07:23:19.564097Z 0 [System] [MY-013602] [Server] Channel mysql_main configured to support TLS. Encrypted connections are now supported for this channel.
+2022-06-30T07:23:19.565872Z 0 [Warning] [MY-011810] [Server] Insecure configuration for --pid-file: Location '/var/run/mysqld' in the path is accessible to all OS users. Consider choosing a different directory.
+2022-06-30T07:23:19.587105Z 0 [System] [MY-011323] [Server] X Plugin ready for connections. Socket: /var/run/mysqld/mysqlx.sock
+2022-06-30T07:23:19.587126Z 0 [System] [MY-010931] [Server] /usr/sbin/mysqld: ready for connections. Version: '8.0.29'  socket: '/var/run/mysqld/mysqld.sock'  port: 0  MySQL Community Server - GPL.
+2022-06-30 07:23:19+00:00 [Note] [Entrypoint]: Temporary server started.
+Warning: Unable to load '/usr/share/zoneinfo/iso3166.tab' as time zone. Skipping it.
+Warning: Unable to load '/usr/share/zoneinfo/leap-seconds.list' as time zone. Skipping it.
+Warning: Unable to load '/usr/share/zoneinfo/zone.tab' as time zone. Skipping it.
+Warning: Unable to load '/usr/share/zoneinfo/zone1970.tab' as time zone. Skipping it.
+
+2022-06-30 07:23:22+00:00 [Note] [Entrypoint]: Stopping temporary server
+2022-06-30T07:23:22.608349Z 10 [System] [MY-013172] [Server] Received SHUTDOWN from user root. Shutting down mysqld (Version: 8.0.29).
+2022-06-30T07:23:24.304500Z 0 [System] [MY-010910] [Server] /usr/sbin/mysqld: Shutdown complete (mysqld 8.0.29)  MySQL Community Server - GPL.
+2022-06-30 07:23:24+00:00 [Note] [Entrypoint]: Temporary server stopped
+
+2022-06-30 07:23:24+00:00 [Note] [Entrypoint]: MySQL init process done. Ready for start up.
+
+2022-06-30T07:23:24.877444Z 0 [System] [MY-010116] [Server] /usr/sbin/mysqld (mysqld 8.0.29) starting as process 1
+2022-06-30T07:23:24.887179Z 1 [System] [MY-013576] [InnoDB] InnoDB initialization has started.
+2022-06-30T07:23:25.078591Z 1 [System] [MY-013577] [InnoDB] InnoDB initialization has ended.
+2022-06-30T07:23:25.261421Z 0 [Warning] [MY-010068] [Server] CA certificate ca.pem is self signed.
+2022-06-30T07:23:25.261488Z 0 [System] [MY-013602] [Server] Channel mysql_main configured to support TLS. Encrypted connections are now supported for this channel.
+2022-06-30T07:23:25.263828Z 0 [Warning] [MY-011810] [Server] Insecure configuration for --pid-file: Location '/var/run/mysqld' in the path is accessible to all OS users. Consider choosing a different directory.
+2022-06-30T07:23:25.284754Z 0 [System] [MY-011323] [Server] X Plugin ready for connections. Bind-address: '::' port: 33060, socket: /var/run/mysqld/mysqlx.sock
+2022-06-30T07:23:25.284846Z 0 [System] [MY-010931] [Server] /usr/sbin/mysqld: ready for connections. Version: '8.0.29'  socket: '/var/run/mysqld/mysqld.sock'  port: 3306  MySQL Community Server - GPL.
+
+

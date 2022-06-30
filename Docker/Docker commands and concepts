@@ -11,9 +11,7 @@ An app will be bundled an image
 container runs from images
 images are called repo in registry
 
-
 Images become containers when they run in docker engine.
-
 
 DOCKER REGISTRIES:
 -----------------
@@ -31,14 +29,13 @@ Inhouse or local registry
 2.jfrog
 3.dtr (docker trusted registry)
 
-
-container: is a thin read/write layer
+->container: is a thin read/write layer
 
 ==================================
 https://hub.docker.com/_/nginx?tab=description
 
-docker pull nginx
-docker pull nginx:stable-perl
+->docker pull nginx
+->docker pull nginx:stable-perl
 
 [vinodch501@instance-1-vnd ~]$ docker images
 REPOSITORY    TAG           IMAGE ID       CREATED        SIZE
@@ -46,9 +43,7 @@ nginx         stable-perl   0b26ebf24738   6 days ago     188MB
 nginx         latest        55f4b40fe486   6 days ago     142MB
 hello-world   latest        feb5d9fea6a5   9 months ago   13.3kB
 
-
-
-docker run --name myweb  -d nginx                 ( -d it runs on background ) without -d it runs on foreground ( run on shell)
+->docker run --name myweb  -d nginx                 ( -d it runs on background ) without -d it runs on foreground ( run on shell)
 
 without detachement 
 
@@ -66,8 +61,8 @@ docker run nginx
 /docker-entrypoint.sh: Configuration complete; ready for start up
 2022/06/29 16:23:03 [notice] 1#1: using the "epoll" event method
 
+======================================== nginx image =============================
 
-=====================================================================
 https://hub.docker.com/_/nginx?tab=description
 
 ->with -d ( it runs on background not on screen )
@@ -75,24 +70,25 @@ https://hub.docker.com/_/nginx?tab=description
 [vinodch501@instance-1-vnd ~]$ docker run -d nginx
 6f472c629795f9ba53bceb91cdd16d9cf63c2b36ba806456a15b89679df51ef3
 
-by default nginx container will run on 80 port ,so you can map a "hostport" to access it outside world. you cannot access 
+->by default nginx container will run on 80 port ,so you can map a "hostport" to access it outside world. you cannot access 
 container directly
-(container running on pvt network (subnet). if you want to run it on outside world you can map it to  hostport)
+->(container running on pvt network in the host  (like pvt subnet). if you want to run it on outside world you can map it to  hostport)
 
-you can access the host on that port then it route to container.
+->you can access the host on that port then it route request to container.
 
 $ docker run --name some-nginx -d -p 8080:80 some-content-nginx
 
-portmapping or hostport
+portmapping or port forwarding: (map hostport with container port) --> host port any , container port is based on appn
+-------------------------------------------------------------------
 
-[vinodch501@instance-1-vnd ~]$ docker run --name nginx1 -d -p 7777:80 nginx                #7777:80  (7777:hostport) 80 : nginx port
+[vinodch501@instance-1-vnd ~]$ docker run --name nginx1 -d -p 7777:80 nginx                          #7777:80  (7777:hostport) 80 : nginx port
 6b47d4c6e15ccb8c8628e03ed2ef04e0b04cb016f9bcc9cb4caadcff10434d8a
 
 [vinodch501@instance-1-vnd ~]$ docker ps
 CONTAINER ID   IMAGE     COMMAND                  CREATED         STATUS         PORTS                                   NAMES
 6b47d4c6e15c   nginx     "/docker-entrypoint.…"   5 seconds ago   Up 4 seconds   0.0.0.0:7777->80/tcp, :::7777->80/tcp   nginx1
 
-you can access outside using "VM public ip" with "hostport" exposed outside world.
+->you can access outside using "VM public ip" with "hostport" exposed outside world.
 
 eg:
 http://34.125.152.130:7777/
@@ -111,6 +107,234 @@ docker stop 6b47d4c6e15c                   (6b47d4c6e15c: container id)
 [vinodch501@instance-1-vnd ~]$ docker ps -a
 CONTAINER ID   IMAGE         COMMAND                  CREATED          STATUS                      PORTS     NAMES
 6b47d4c6e15c   nginx         "/docker-entrypoint.…"   6 minutes ago    Exited (0) 59 seconds ago             nginx1
+
+====================================== INVESTIGATION ON HOST MACHINE ===========================================
+
+->docker ps -a
+->docker start 6b47d4c6e15c
+or
+docker run --name nginx1 -d -p 7777:80 nginx  
+
+=>Container is just a process "running from directory".
+
+ps -ef |grep 
+
+last few comments
+root      1582  1040  0 04:23 ?        00:00:00 /usr/bin/docker-proxy -proto tcp -host-ip 0.0.0.0 -host-port 777
+root      1589  1040  0 04:23 ?        00:00:00 /usr/bin/docker-proxy -proto tcp -host-ip :: -host-port 7777 -co
+root      1602     1  0 04:23 ?        00:00:00 /usr/bin/containerd-shim-runc-v2 -namespace moby -id 6b47d4c6e15
+root      1622  1602  0 04:23 ?        00:00:00 nginx: master process nginx -g daemon off;
+101       1665  1622  0 04:23 ?        00:00:00 nginx: worker process
+101       1666  1622  0 04:23 ?        00:00:00 nginx: worker process
+
+It executed 2 processes
+
+root      1622  1602  0 04:23 ?        00:00:00 nginx: master process nginx -g daemon off;
+101       1665  1622  0 04:23 ?        00:00:00 nginx: worker process
+
+NOTE:
+
+As mentioned container is run from directory
+================================================
+
+vinodch501@instance-1-vnd ~]$ cd /var/lib/docker/
+-bash: cd: /var/lib/docker/: Permission denied
+
+[vinodch501@instance-1-vnd ~]$ sudo su -
+Last login: Wed Jun 29 15:17:53 UTC 2022 on pts/0
+
+[root@instance-1-vnd ~]# cd /var/lib/docker/
+
+[root@instance-1-vnd docker]# ls
+buildkit  containers  image  network  overlay2  plugins  runtimes  swarm  tmp  trust  volumes
+
+[root@instance-1-vnd docker]# cd containers/
+
+=>Here we have total 4 containers so we have 4 directories (check matach with container with directory)
+
+[root@instance-1-vnd containers]# docker ps -a
+CONTAINER ID   IMAGE         COMMAND                  CREATED        STATUS                    PORTS                                   NAMES
+6b47d4c6e15c   nginx         "/docker-entrypoint.…"   12 hours ago   Up 5 minutes              0.0.0.0:7777->80/tcp, :::7777->80/tcp   nginx1
+6f472c629795   nginx         "/docker-entrypoint.…"   12 hours ago   Exited (0) 12 hours ago                                           nifty_mayer
+9f810df5d936   nginx         "/docker-entrypoint.…"   12 hours ago   Exited (0) 12 hours ago                                           hungry_brahmagupta
+c5723845f896   hello-world   "/hello"                 15 hours ago   Exited (0) 15 hours ago                                           dreamy_buck
+
+[root@instance-1-vnd containers]# ls
+6b47d4c6e15ccb8c8628e03ed2ef04e0b04cb016f9bcc9cb4caadcff10434d8a  9f810df5d9365263bef507574f464310e64ed05f283342e503be039736f15111
+6f472c629795f9ba53bceb91cdd16d9cf63c2b36ba806456a15b89679df51ef3  c5723845f896b9bc9fc95df7bf52ac4c547ab26c5f369a41455706430587f3c0
+
+[root@instance-1-vnd containers]# cd 6b47d4c6e15ccb8c8628e03ed2ef04e0b04cb016f9bcc9cb4caadcff10434d8a
+
+[root@instance-1-vnd 6b47d4c6e15ccb8c8628e03ed2ef04e0b04cb016f9bcc9cb4caadcff10434d8a]# ls
+6b47d4c6e15ccb8c8628e03ed2ef04e0b04cb016f9bcc9cb4caadcff10434d8a-json.log  config.v2.json   hostname  mounts       resolv.conf.hash
+checkpoints                                                                hostconfig.json  hosts     resolv.conf
+
+=> container run directly from images , page we have seen on web it's coming from image . container doesnot have any data 
+(mostlywe are storing anything)
+
+=>check directory of container size (we see only 36k ,only configuration files and data is coming from image only)
+
+[root@instance-1-vnd containers]# du -sh 6b47d4c6e15ccb8c8628e03ed2ef04e0b04cb016f9bcc9cb4caadcff10434d8a
+36K     6b47d4c6e15ccb8c8628e03ed2ef04e0b04cb016f9bcc9cb4caadcff10434d8a
+
+
+=>cd /var/lib/docker
+[root@instance-1-vnd docker]# ls
+buildkit  containers  image  network  overlay2  plugins  runtimes  swarm  tmp  trust  volumes
+
+=>[root@instance-1-vnd docker]# cd image/overlay2/
+
+[root@instance-1-vnd overlay2]# ll
+total 4
+drwx------. 4 root root  58 Jun 29 12:35 distribution
+drwx------. 4 root root  37 Jun 29 12:33 imagedb
+drwx------. 5 root root  45 Jun 29 12:35 layerdb
+-rw-------. 1 root root 790 Jun 29 16:19 repositories.json
+
+-> container is just a process running from directory and all the data coming from image.
+-> container can store data .
+we can have "dynamic containers" and "stateful containers" (will store data and read data)
+
+If you want to store data on  container(stateful) you need to connect "volumes" to it.
+
+-> container is a process , how to login to container?
+
+->docker exec 8ab050376752 ls /
+bin
+boot
+dev
+docker-entrypoint.d
+docker-entrypoint.sh
+etc
+home
+lib
+lib64
+media
+mnt
+opt
+proc
+root
+run
+sbin
+srv
+sys
+tmp
+usr
+var
+
+->docker exec  8ab050376752 /bin/bash
+->docker exec -it 8ab050376752 /bin/bash           here (-it interactive , terminal(tty) run the command and attach to process)
+->root@8ab050376752:/# ps -ef
+bash: ps: command not found
+
+-> install ps (https://stackoverflow.com/questions/26982274/ps-command-doesnt-work-in-docker-container_
+
+ps is not installed in the base wheezy image. Try this from within the container:
+
+#apt-get update && apt-get install procps
+
+# ps -ef
+UID        PID  PPID  C STIME TTY          TIME CMD
+root         1     0  0 04:52 ?        00:00:00 nginx: master process nginx -g daemon off;
+nginx       24     1  0 04:52 ?        00:00:00 nginx: worker process
+nginx       25     1  0 04:52 ?        00:00:00 nginx: worker process
+root       627     0  0 05:09 pts/0    00:00:00 /bin/sh
+root       634   627  0 05:09 pts/0    00:00:00 ps -ef
+
+[vinodch501@instance-1-vnd ~]$ docker rmi nginx
+Error response from daemon: conflict: unable to remove repository reference "nginx" (must force) - container 8ab050376752 is using its referenced image 55f4b40fe486
+
+container runs from image, if i try to remove the images first stop the container and remove it.
+
+$docker pull ubuntu
+
+[vinodch501@instance-1-vnd ~]$ docker rmi ubuntu
+Untagged: ubuntu:latest
+Untagged: ubuntu@sha256:b6b83d3c331794420340093eb706a6f152d9c1fa51b262d9bf34594887c2c7ac
+Deleted: sha256:27941809078cc9b2802deb2b0bb6feed6c236cde01e487f200e24653533701ee
+Deleted: sha256:a790f937a6aea2600982de54a5fb995c681dd74f26968d6b74286e06839e4fb3
+
+Here i have not created any container from image so i able to remove directly.
+
+
+[vinodch501@instance-1-vnd ~]$ docker run ubuntu
+
+[vinodch501@instance-1-vnd ~]$ docker ps  -a
+CONTAINER ID   IMAGE         COMMAND                  CREATED          STATUS                     PORTS                                   NAMES
+a6e20281b117   ubuntu        "bash"                   7 seconds ago    Exited (0) 6 seconds ago                                           inspiring_jackson
+
+you see container is in exited state , it started and its dead because its running bash shell, if you interact with bash 
+shell you can use.
+
+( you need to interact with bash shell otherwise it will dead after the exit )
+
+
+[vinodch501@instance-1-vnd ~]$ docker run -it ubuntu /bin/sh               //(ps command will work on ubuntu image)
+# ps -ef
+UID        PID  PPID  C STIME TTY          TIME CMD
+root         1     0  0 05:19 pts/0    00:00:00 /bin/sh
+root         7     1  0 05:19 pts/0    00:00:00 ps -ef
+
+# exit
+
+[vinodch501@instance-1-vnd ~]$ docker ps -a
+CONTAINER ID   IMAGE         COMMAND                  CREATED              STATUS                     PORTS                                   NAMES
+86e70d71d893   ubuntu        "/bin/sh"                About a minute ago   Exited (0) 3 seconds ago                                           trusting_mcclintoc
+
+(here after exiting /bin/sh shell it will dead the process)
+Once exit it kill the process (/bin/sh --> 1) if process exits the container will exit.
+
+executed shell command 
+/bin/sh once command is exited container will also exit state.
+
+# ps -ef
+UID        PID  PPID  C STIME TTY          TIME CMD
+root         1     0  0 05:19 pts/0    00:00:00 /bin/sh
+
+PID ->1 is actually the container process.
+
+
+==================================== run nginx image =====================================
+
+[vinodch501@instance-1-vnd ~]$ docker run --name nginx1 -d -p 7777:80 nginx
+
+docker exec -it 085fee272ea1 /bin/sh
+# ps -ef
+/bin/sh: 1: ps: not found
+# apt-get update && apt-get install procps
+
+# ps -ef
+UID        PID  PPID  C STIME TTY          TIME CMD
+root         1     0  0 05:29 ?        00:00:00 nginx: master process nginx -g daemon off;
+nginx       31     1  0 05:29 ?        00:00:00 nginx: worker process
+nginx       32     1  0 05:29 ?        00:00:00 nginx: worker process
+root        33     0  0 05:30 pts/0    00:00:00 /bin/sh
+root       376    33  0 05:30 pts/0    00:00:00 ps -ef
+
+root         1     0  0 05:29 ?        00:00:00 nginx: master process nginx -g daemon off;
+
+(PID ->1 is process of nginx container)
+
+[vinodch501@instance-1-vnd ~]$ docker ps
+CONTAINER ID   IMAGE     COMMAND                  CREATED          STATUS             PORTS                                   NAMES
+085fee272ea1   nginx     "/docker-entrypoint.…"   4 minutes ago    Up 4 minutes       0.0.0.0:7757->80/tcp, :::7757->80/tcp   nginx4
+
+
+==========================
+
+[vinodch501@instance-1-vnd ~]$ docker run -it nginx /bin/sh 
+# 
+[vinodch501@instance-1-vnd ~]$ docker ps -a
+CONTAINER ID   IMAGE         COMMAND                  CREATED          STATUS                      PORTS                                   NAMES
+c9976889827d   nginx         "/docker-entrypoint.…"   9 seconds ago    Exited (0) 4 seconds ago                                            heuristic_khorana
+
+HERE
+
+Exited why?
+
+we have given command as /bin/sh once we exited from shell it stops the process and dead the container 
+
+
 
 
 

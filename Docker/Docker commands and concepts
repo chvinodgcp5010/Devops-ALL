@@ -287,6 +287,7 @@ Once exit it kill the process (/bin/sh --> 1) if process exits the container wil
 executed shell command 
 /bin/sh once command is exited container will also exit state.
 
+
 # ps -ef
 UID        PID  PPID  C STIME TTY          TIME CMD
 root         1     0  0 05:19 pts/0    00:00:00 /bin/sh
@@ -336,7 +337,71 @@ we have given command as /bin/sh once we exited from shell it stops the process 
 
 
 
+============================= cleanup resources ===============================
 
+https://www.digitalocean.com/community/tutorials/how-to-remove-docker-images-containers-and-volumes
+
+Docker provides a single command that will clean up any resources — images, containers, volumes, and networks — that are 
+dangling (not tagged or associated with a container):
+
+->docker system prune
+
+To additionally remove any stopped containers and all unused images (not just dangling images), add the -a flag to the command:
+
+->docker system prune -a
+
+=>$ docker system prune
+
+WARNING! This will remove:
+  - all stopped containers
+  - all networks not used by at least one container
+  - all dangling images
+  - all dangling build cache
+
+Are you sure you want to continue? [y/N] y
+Deleted Containers:
+c9976889827ddebf7b8a5f3e3423281bdb25e3d7a3922d5d8d2eb0f445deb180
+18d28d00cb058bb94f36e46beaf0ff3ca31c96b9d4b40c897b12b2d4d7eb530d
+1f4d1cb4beeb5068598ed3e2c68338e0c9eda43ecb87133617acc6181b48bc1d
+ed066134f22aadb896d767fceb2a2bdee47871c481aa29a63986f2a0d868600d
+86e70d71d89326da18a8a644afd1b33aa49f65cebc5b943a32ceaf20b10f6ffe
+a6e20281b1170ddf349c30d5fbf559cff46327ae670b71ef82dfc2c2c42e15c1
+6f472c629795f9ba53bceb91cdd16d9cf63c2b36ba806456a15b89679df51ef3
+9f810df5d9365263bef507574f464310e64ed05f283342e503be039736f15111
+c5723845f896b9bc9fc95df7bf52ac4c547ab26c5f369a41455706430587f3c0
+
+Total reclaimed space: 3.279kB
+
+
+====
+
+[vinodch501@instance-1-vnd ~]$ docker system prune -a
+WARNING! This will remove:
+  - all stopped containers
+  - all networks not used by at least one container
+  - all images without at least one container associated to them
+  - all build cache
+
+Are you sure you want to continue? [y/N] y
+Deleted Images:
+untagged: hello-world:latest
+untagged: hello-world@sha256:13e367d31ae85359f42d637adf6da428f76d75dc9afeb3c21faea0d976f5c651
+deleted: sha256:feb5d9fea6a5e9606aa995e879d862b825965ba48de054caab5ef356dc6b3412
+deleted: sha256:e07ee1baac5fae6a26f30cabfe54a36d3402f96afda318fe0a96cec4ca393359
+untagged: ubuntu:latest
+untagged: ubuntu@sha256:b6b83d3c331794420340093eb706a6f152d9c1fa51b262d9bf34594887c2c7ac
+deleted: sha256:27941809078cc9b2802deb2b0bb6feed6c236cde01e487f200e24653533701ee
+deleted: sha256:a790f937a6aea2600982de54a5fb995c681dd74f26968d6b74286e06839e4fb3
+untagged: nginx:stable-perl
+untagged: nginx@sha256:103cf1d74ffabc0ff9fb082c7360ee4c90733e07dbc79278c7b16c843e7ad2fd
+deleted: sha256:0b26ebf24738009cfa87d172327a6daf789abe1787519a98e4895a0c69cfcf1b
+deleted: sha256:3cd0cdc009802771034610dc089cb0cc8c6208e1e429bcf38ecdef2638122203
+deleted: sha256:8b264d9d33a171039c2aa101ed464e088cd72b6ccdf17bc8cb4ec4d030fbdbb6
+deleted: sha256:220191759971694b080d08baece7d87f5bd90d19e3b1e67ec9dbdd5c1a3810a9
+deleted: sha256:acab9601beb3fd77e57901b9be045995436328f8e4d7c1ba24c568357cbd2de9
+deleted: sha256:5f4990f72bfc0912080e4a7dd7218defd6b1c7ef4b1f706d2dec9db5661ca423
+
+Total reclaimed space: 185MB
 
 
 

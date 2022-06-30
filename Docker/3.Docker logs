@@ -189,6 +189,8 @@ here  error is ( need to specify one of the following to make container up)
 
 -----------
 
+here -e :  export variables
+
 =>docker run -d -e MYSQL_ROOT_PASSWORD=mypass -P mysql 
 
 =>docker ps

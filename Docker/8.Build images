@@ -1,0 +1,31 @@
+"Dockerfile" contains information to build images.
+
+Just like "pom.xml" file in maven it will build artifact file. here "Dockerfile" going to build an image for that.
+
+
+WHAT CONTIANS IN DOCKERFILE:
+---------------------------
+it contains set of instructions and values.
+
+1.FROM
+2.LABELS
+3.RUN
+4.ADD/COPY
+
+
+
+FROM                          : Specity base image take from dockerhub (take base image and on top of that do customization)
+LABELS                        : like key and value pairs  => add metadata to an image (like tags in aws) 
+                                like project name and "author name"
+RUN                           : Instruct going to make changes (install a package or create a directory)
+                                whatever the command you want to execute or make changes that we mention through RUN instruction.
+ADD/COPY                      : COPY/ADD files and folders in to image while you are building (like config file and archive)
+
+                       ADD: you can provide link an archive ,it can download from a link and put in image or it can unarchive.
+                       COPY: take a file and dump it 
+
+CMD                           : Run binaries/command when docker run . (will set "what binary is executed when docker run")
+ENTRYPOINT                    : Similar to CMD but it have "higher priority" . if you mention both together you can mention
+                                command in "ENTRYPOINT" and Argument to that command using "CMD"
+                                
+                                

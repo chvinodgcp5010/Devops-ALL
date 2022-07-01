@@ -1,3 +1,5 @@
+https://docs.docker.com/engine/reference/builder/
+
 "Dockerfile" contains information to build images.
 
 Just like "pom.xml" file in maven it will build artifact file. here "Dockerfile" going to build an image for that.
@@ -14,7 +16,14 @@ it contains set of instructions and values.
 5.CMD
 6.ENTRYPOINT
 7.VOLUME
+8.EXPOSE
+9.ENV
+10.WORKDIR
+11.ARG
+12.ONBUILD 
 
+
+************************************************************************************************************************
 
 FROM                          : Specity base image take from dockerhub (take base image and on top of that do customization)
 
@@ -38,7 +47,22 @@ ENTRYPOINT                    : Similar to CMD but it have "higher priority" . i
 VOLUME                        : which volume would You like to export ( like in mysql =>/var/lib/mysql)
                               : Creates a mountpoint and marks it as 
       
-      
+EXPOSE                        : container listens at specific port at runtime(lets say nginx 80)
+                                mentioning your binary on CMD and "ENTRYPOINT"  binray will create a process and process can bind to 
+  port number (like nginx 80 , mysql 3306)so whatever prot process binding to you have to give same on expose.
+  Then you can do portmapping when performing docker run.
+  
+ ENV                           : set env variable
+ USER                          : set user name (or UID) to specify what user to running the process
+ WORKDIR                       :  set the working directory( when you run docker exec -it <cont> )command that command can run on this WORKDIR
+ ARG                           : Defines a variable that users can pass at build time
+ ONBUILD                        : adds a image to trigger a instruction to be executed at later time.
+  
+  
+  ************************************************************************************************************************
+  
+
+
       
       
       

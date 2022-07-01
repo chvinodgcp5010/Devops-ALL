@@ -11,7 +11,9 @@ it contains set of instructions and values.
 2.LABELS
 3.RUN
 4.ADD/COPY
-
+5.CMD
+6.ENTRYPOINT
+7.VOLUME
 
 
 FROM                          : Specity base image take from dockerhub (take base image and on top of that do customization)
@@ -27,5 +29,30 @@ ADD/COPY                      : COPY/ADD files and folders in to image while you
 CMD                           : Run binaries/command when docker run . (will set "what binary is executed when docker run")
 ENTRYPOINT                    : Similar to CMD but it have "higher priority" . if you mention both together you can mention
                                 command in "ENTRYPOINT" and Argument to that command using "CMD"
+                                Allows you to configure an container that will run as executable.
                                 
+VOLUME                        : which volume would You like to export ( like in mysql =>/var/lib/mysql)
+                              : Creates a mountpoint and marks it as 
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
                                 

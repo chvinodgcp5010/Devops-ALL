@@ -4,83 +4,104 @@ https://docs.docker.com/engine/reference/builder/
 
 Just like "pom.xml" file in maven it will build artifact file. here "Dockerfile" going to build an image for that.
 
+==================================================== Dockerfile =================================================
 
-WHAT CONTIANS IN DOCKERFILE:
----------------------------
-it contains set of instructions and values.
-
-1.FROM
-2.LABELS
-3.RUN
-4.ADD/COPY
-5.CMD
-6.ENTRYPOINT
-7.VOLUME
-8.EXPOSE
-9.ENV
-10.WORKDIR
-11.ARG
-12.ONBUILD 
+lets take a webiste template from "tooplate.com" and wil host it on "apache2 service" running an ubuntu container
 
 
-************************************************************************************************************************
+==================================== TEMPLATE DOWNLOAD ============================
 
-FROM                          : Specity base image take from dockerhub (take base image and on top of that do customization)
+https://www.tooplate.com/view/2113-earth ( on bottom click on downloads you will get .zip foder)
 
-LABELS                        : like key and value pairs  => add metadata to an image (like tags in aws) 
-                                like project name and "author name"
-                                
-RUN                           : Instruct going to make changes (install a package or create a directory)
-                                whatever the command you want to execute or make changes that we mention through RUN instruction.
-                                
-ADD/COPY                      : COPY/ADD files and folders in to image while you are building (like config file and archive)
+or you can download directly using "wget" command.
 
-                       ADD: you can provide link an archive ,it can download from a link and put in image or it can unarchive.
-                       COPY: take a file and dump it 
+HOW TO GET .ZIP FILE?
 
-CMD                           : Run binaries/command when docker run . (will set "what binary is executed when docker run")
+tooplate.com
+-------------
+click on any template and open "inspect"(on riht click of mouse on page )
 
-ENTRYPOINT                    : Similar to CMD but it have "higher priority" . if you mention both together you can mention
-                                command in "ENTRYPOINT" and Argument to that command using "CMD"
-                                Allows you to configure an container that will run as executable.
-                                
-VOLUME                        : which volume would You like to export ( like in mysql =>/var/lib/mysql)
-                              : Creates a mountpoint and marks it as 
-      
-EXPOSE                        : container listens at specific port at runtime(lets say nginx 80)
-                                mentioning your binary on CMD and "ENTRYPOINT"  binray will create a process and process can bind to 
-  port number (like nginx 80 , mysql 3306)so whatever prot process binding to you have to give same on expose.
-  Then you can do portmapping when performing docker run.
-  
- ENV                           : set env variable
- USER                          : set user name (or UID) to specify what user to running the process
- WORKDIR                       :  set the working directory( when you run docker exec -it <cont> )command that command can run on this WORKDIR
- ARG                           : Defines a variable that users can pass at build time
- ONBUILD                        : adds a image to trigger a instruction to be executed at later time.
-  
-  
-  ************************************************************************************************************************
-  
+inspect -> network ->doc ->click on download of template (tooplate.com) -> you will get .zip file on inspect (like below)
+
+https://www.tooplate.com/zip-templates/2113_earth.zip
+
+wget https://www.tooplate.com/zip-templates/2113_earth.zip
+
+CREATE A DIRECTORY ON VM (INSTALL ON DOCKER)
+
+ubuntu@ip-172-31-93-221:~$ mkdir docker-vnd
+ubuntu@ip-172-31-93-221:~$ cd docker-vnd/
+ubuntu@ip-172-31-93-221:~/docker-vnd$ wget https://www.tooplate.com/zip-templates/2113_earth.zip
+ubuntu@ip-172-31-93-221:~/docker-vnd$ unzip 2113_earth.zip
+
+ubuntu@ip-172-31-93-221:~/docker-vnd$ ls
+2113_earth  2113_earth.zip
+
+ubuntu@ip-172-31-93-221:~/docker-vnd$ cd 2113_earth/
+
+ubuntu@ip-172-31-93-221:~/docker-vnd/2113_earth$ ll
+total 36
+drwxrwxr-x 4 ubuntu ubuntu  4096 Feb 20  2019  ./
+drwxrwxr-x 3 ubuntu ubuntu  4096 Jul  1 13:53  ../
+-rw-rw-r-- 1 ubuntu ubuntu   453 Oct 19  2018 'ABOUT THIS TEMPLATE.txt'
+drwxrwxr-x 6 ubuntu ubuntu  4096 Jan  7  2019  assets/
+-rw-rw-r-- 1 ubuntu ubuntu 16028 Feb 20  2019  index.html
+drwxrwxr-x 4 ubuntu ubuntu  4096 Jan  7  2019  vendor/
 
 
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-                                
+===========================================================================================
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

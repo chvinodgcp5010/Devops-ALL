@@ -4,6 +4,9 @@ https://docs.docker.com/
 Install on CentOs
 https://docs.docker.com/engine/install/centos/
 
+Ubuntu:
+https://docs.docker.com/engine/install/ubuntu/
+
 1.sudo yum install -y yum-utils
 
 2.sudo yum-config-manager \

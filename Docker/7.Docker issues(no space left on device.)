@@ -1,0 +1,73 @@
+Problem:
+
+docker: failed to register layer: Error processing tar file(exit status 1): write /usr/sbin/mysqld: no space left on device.
+
+ubuntu@ip-172-31-93-221:~$  docker run --name vproifle-google -v my-vol:/var/lib/mysql -p 3030:3306 -e MYSQL_ROOT_PASSWORD=Dell@123 -d mysql
+Unable to find image 'mysql:latest' locally
+latest: Pulling from library/mysql
+824b15f81d65: Pull complete
+c559dd1913db: Pull complete
+e201c19614e6: Pull complete
+f4247e8f6125: Pull complete
+dc9fefd8cfb5: Pull complete
+af3787edd16d: Pull complete
+b6bb40f875d3: Pull complete
+75f6b647ddb1: Pull complete
+a09ca0f0cb24: Extracting [==================================================>]  109.1MB/109.1MB
+9e223e3cd2fd: Download complete
+2b038d826c65: Download complete
+d33ac6052fc9: Download complete
+docker: failed to register layer: Error processing tar file(exit status 1): write /usr/sbin/mysqld: no space left on device.
+See 'docker run --help'.
+ubuntu@ip-172-31-93-221:~$ ^C
+
+
+Error processing tar file(exit status 1): write /usr/sbin/mysqld: no space left on device.
+See 'docker run --help'.
+
+SOl:
+https://stackoverflow.com/questions/30604846/docker-error-no-space-left-on-device
+
+
+ubuntu@ip-172-31-93-221:~$ docker system df
+TYPE            TOTAL     ACTIVE    SIZE      RECLAIMABLE
+Images          6         2         1.447GB   1.305GB (90%)
+Containers      2         0         1.093kB   1.093kB (100%)
+Local Volumes   1         0         0B        0B
+Build Cache     0         0         0B        0B
+
+
+docker rmi $(docker images -q)
+
+Try to execute and run the same command 
+
+ docker run --name vproifle-google -v my-vol:/var/lib/mysql -p 3030:3306 -e MYSQL_ROOT_PASSWORD=Dell@123 -d mysql
+Unable to find image 'mysql:latest' locally
+latest: Pulling from library/mysql
+824b15f81d65: Pull complete
+c559dd1913db: Pull complete
+e201c19614e6: Pull complete
+f4247e8f6125: Pull complete
+dc9fefd8cfb5: Pull complete
+af3787edd16d: Pull complete
+b6bb40f875d3: Pull complete
+75f6b647ddb1: Pull complete
+a09ca0f0cb24: Pull complete
+9e223e3cd2fd: Pull complete
+2b038d826c65: Pull complete
+d33ac6052fc9: Pull complete
+Digest: sha256:a840244706a5fdc3c704b15a3700bfda39fdc069262d7753fa09de2d9faf5f83
+Status: Downloaded newer image for mysql:latest
+82eb9401fe5d82b2c2e7c5dc75858a8b36d9e21a8e4aa4c917b6d4190250a48c
+
+
+
+
+
+
+
+
+
+
+
+

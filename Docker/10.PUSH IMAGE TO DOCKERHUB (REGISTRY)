@@ -52,8 +52,11 @@ REPOSITORY                                                   TAG       IMAGE ID 
 vinod501/template-image                                      latest    60c6422e2f2a   About an hour ago   251MB
 vinod501/web-serverimage2022                                 latest    60c6422e2f2a   About an hour ago   251MB
 
+Tag version and push to docker hub and check docker image pushed or not (https://hub.docker.com/repositorie)
+======================================================================
+ubuntu@ip-172-31-93-221:~/docker-vnd/2113_earth$ docker build -t vinod501/web-serverimage2022:v1 .
 
-
+docker push vinod501/web-serverimage2022:v1
 
 
 

@@ -1,19 +1,170 @@
 cat CMD/Dockerfile
+================================== 1.CMD Dockerfile ================================
 
-FROM ubuntu                         ======>docker run printer
-CMD ["echo hi"]
 
-======================================================
+
+FROM ubuntu                         #=>docker run printer
+CMD ["echo", "hi"]
+
+
+
+
 cat ENTRYPOINT/Dockerfile
+===================================2.ENTRYPOINT Dockerfile==================================================
+
 
 FROM ubuntu
-ENTRYPOINT ["echo"]               =======>docker run printer hi
+ENTRYPOINT ["echo"]               #=>docker run printer hi
 
 
-======================================================
 
 cat CMDENTYPOINT/Dockerfile
+==================================3.CMD & ENTRYPOINT Dockerfile====================================================
+
+
 
 FROM ubuntu
-ENTRYPOINT ["echo"]               =======> docker run printer
-CMD ["hello"]                     =======> docker run printer hello
+ENTRYPOINT ["echo"]               #=> docker run printer
+CMD ["hello"]                     #=> docker run printer hello
+
+
+
+
+************************************************* CMD DOCKERFILE explanation ********************************************************
+
+cat CMD/Dockerfile
+-------------------
+
+FROM ubuntu                        
+CMD ["echo", "hi"]
+
+=>docker build -t cmddockerimage .
+
+----------------------------------------------------------------
+ubuntu@ip-172-31-93-221:~/cmd$ docker build -t cmdprinter:v1 .
+OR
+docker build -t cmdprinter:v1 cmd/Dockerfile
+
+
+Sending build context to Docker daemon  2.048kB
+Step 1/2 : FROM ubuntu
+ ---> 27941809078c
+Step 2/2 : CMD ["echo", "hi"]
+ ---> Running in 1b7c05eff330
+Removing intermediate container 1b7c05eff330
+ ---> b481ba8ba720
+Successfully built b481ba8ba720
+Successfully tagged cmddockerimage:latest
+
+
+ubuntu@ip-172-31-93-221:~/cmd$ docker images
+REPOSITORY                                                   TAG       IMAGE ID       CREATED         SIZE
+cmddockerimage                                               latest    b481ba8ba720   4 seconds ago   77.8MB
+                                                    8-jre11   f1191d755a83   4 weeks ago     326MB
+                                                    
+ubuntu@ip-172-31-93-221:~/cmd$ docker run cmddockerimage
+hi
+
+ubuntu@ip-172-31-93-221:~/cmd$ docker ps -a
+CONTAINER ID   IMAGE                             COMMAND                  CREATED         STATUS                     PORTS                                   NAMES
+55add1651b85   cmddockerimage                    "echo hi"                3 seconds ago   Exited (0) 2 seconds ago  
+
+
+
+************************************************* ENTRYPOINT DOCKERFILE *************************************************
+vi Dockerfile
+--------------
+
+FROM ubuntu
+ENTRYPOINT ["echo"]
+
+=>docker build -t entrypointdockerimage:v1 .
+
+-----------------------------------------------------------------------
+ubuntu@ip-172-31-93-221:~/entrypoint$ docker build -t entrypointdockerimage:v1 .
+
+Sending build context to Docker daemon  2.048kB
+Step 1/2 : FROM ubuntu
+ ---> 27941809078c
+Step 2/2 : ENTRYPOINT ["echo"]
+ ---> Running in 23a465eced1b
+Removing intermediate container 23a465eced1b
+ ---> cc2275c901eb
+Successfully built cc2275c901eb
+Successfully tagged entrypointdockerimage:v1
+
+
+
+ubuntu@ip-172-31-93-221:~/entrypoint$ docker images
+REPOSITORY                                                   TAG       IMAGE ID       CREATED         SIZE
+entrypointdockerimage                                        latest    c5bfb43c26a2   4 seconds ago   77.8MB
+
+ubuntu@ip-172-31-93-221:~/entrypoint$ docker run entrypointdockerimage:v1
+
+ubuntu@ip-172-31-93-221:~/entrypoint$
+
+ubuntu@ip-172-31-93-221:~/entrypoint$ docker ps -a
+CONTAINER ID   IMAGE                             COMMAND                  CREATED          STATUS                      PORTS                                   NAMES
+a03e0096c25f   entrypointdockerimage:v1          "echo"                   14 seconds ago   Exited (0) 12 seconds ago  
+
+ubuntu@ip-172-31-93-221:~/entrypoint$ docker run entrypointdockerimage:v1 hello
+hello
+
+ubuntu@ip-172-31-93-221:~/entrypoint$ docker ps -a
+CONTAINER ID   IMAGE                             COMMAND                  CREATED          STATUS                      PORTS                                   NAMES
+d5933a4b7e9e   entrypointdockerimage:v1          "echo hello"             13 seconds ago   Exited (0) 12 seconds ago  
+
+
+RUN COMMAND below
+-----------------
+ubuntu@ip-172-31-93-221:~/entrypoint$ docker run entrypointdockerimage hi
+hi
+
+
+NOTE:
+
+
+
+*************************************************CMD & ENTRYPOINT DOCKERFILE *************************************************
+
+FROM ubuntu
+ENTRYPOINT ["echo"]               
+CMD ["hello"]                     
+
+
+ubuntu@ip-172-31-93-221:~/cmd-entrypoint$ docker build -t cmdentry:v1 .
+Sending build context to Docker daemon  2.048kB
+Step 1/3 : FROM ubuntu
+ ---> 27941809078c
+Step 2/3 : ENTRYPOINT ["echo"]
+ ---> Using cache
+ ---> c5bfb43c26a2
+Step 3/3 : CMD ["hello"]
+ ---> Running in 2b65737deaf4
+Removing intermediate container 2b65737deaf4
+ ---> 40086a45ef93
+Successfully built 40086a45ef93
+Successfully tagged cmdentry:latest
+
+
+ubuntu@ip-172-31-93-221:~/cmd-entrypoint$ docker run cmdentry:v1
+hello
+
+ubuntu@ip-172-31-93-221:~/cmd-entrypoint$ docker ps -a
+CONTAINER ID   IMAGE                             COMMAND                  CREATED              STATUS                          PORTS                                   NAMES
+4ea938dac7b7   cmdentry:v1                       "echo hello"             13 seconds ago       Exited (0) 12 seconds ago 
+
+
+ubuntu@ip-172-31-93-221:~/cmd-entrypoint$ docker run cmdentry:v1 hi
+hi
+
+
+ubuntu@ip-172-31-93-221:~/cmd-entrypoint$ docker run cmdentry:v1 hello world
+hello world
+
+
+
+
+
+
+

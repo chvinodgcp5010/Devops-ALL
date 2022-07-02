@@ -1,0 +1,19 @@
+cat CMD/Dockerfile
+
+FROM ubuntu                         ======>docker run printer
+CMD ["echo hi"]
+
+======================================================
+cat ENTRYPOINT/Dockerfile
+
+FROM ubuntu
+ENTRYPOINT ["echo"]               =======>docker run printer hi
+
+
+======================================================
+
+cat CMDENTYPOINT/Dockerfile
+
+FROM ubuntu
+ENTRYPOINT ["echo"]               =======> docker run printer
+CMD ["hello"]                     =======> docker run printer hello

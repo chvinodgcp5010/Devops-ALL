@@ -32,6 +32,23 @@ CMD ["hello"]                     #=> docker run printer hello
 
 ************************************************* CMD DOCKERFILE explanation ********************************************************
 
+CMD : 
+the place where we will give binary or command which will start the container process.
+
+here 
+
+CMD ["echo", "hi"]
+
+echo -> command (shell command)
+hi   -> argument ( arg to that command)
+
+
+docker run cmddockerimage
+hi
+
+Note:
+i.e in cmd "command and argument both
+
 cat CMD/Dockerfile
 -------------------
 
@@ -57,19 +74,23 @@ Successfully built b481ba8ba720
 Successfully tagged cmddockerimage:latest
 
 
-ubuntu@ip-172-31-93-221:~/cmd$ docker images
+=>$ docker images
 REPOSITORY                                                   TAG       IMAGE ID       CREATED         SIZE
 cmddockerimage                                               latest    b481ba8ba720   4 seconds ago   77.8MB
                                                     8-jre11   f1191d755a83   4 weeks ago     326MB
                                                     
-ubuntu@ip-172-31-93-221:~/cmd$ docker run cmddockerimage
+=>$ docker run cmddockerimage
 hi
 
 ubuntu@ip-172-31-93-221:~/cmd$ docker ps -a
 CONTAINER ID   IMAGE                             COMMAND                  CREATED         STATUS                     PORTS                                   NAMES
 55add1651b85   cmddockerimage                    "echo hi"                3 seconds ago   Exited (0) 2 seconds ago  
 
-
+LIKE CMDENTRYPOINT DOCKERFILE
+---------------------------------
+ubuntu@ip-172-31-93-221:~$ docker run cmddockerimage hi
+docker: Error response from daemon: failed to create shim task: OCI runtime create failed: runc create failed: unable to start 
+container process: exec: "hi": executable file not found in $PATH: unknown.
 
 ************************************************* ENTRYPOINT DOCKERFILE *************************************************
 vi Dockerfile
@@ -77,6 +98,10 @@ vi Dockerfile
 
 FROM ubuntu
 ENTRYPOINT ["echo"]
+
+
+Here we have just instruction "ENTRYPOINT" only 
+mentioned only "command" but not any argument.
 
 =>docker build -t entrypointdockerimage:v1 .
 
@@ -95,22 +120,36 @@ Successfully tagged entrypointdockerimage:v1
 
 
 
-ubuntu@ip-172-31-93-221:~/entrypoint$ docker images
+=>$ docker images
 REPOSITORY                                                   TAG       IMAGE ID       CREATED         SIZE
 entrypointdockerimage                                        latest    c5bfb43c26a2   4 seconds ago   77.8MB
 
-ubuntu@ip-172-31-93-221:~/entrypoint$ docker run entrypointdockerimage:v1
+
+NOTE:
+-----
+Here If i run the command below it will only execute command "echo" but there is no argument to it . 
+If we just print empty "echo" it will print only empty line
+
+=>$ docker run entrypointdockerimage:v1
 
 ubuntu@ip-172-31-93-221:~/entrypoint$
 
-ubuntu@ip-172-31-93-221:~/entrypoint$ docker ps -a
+=>$ docker ps -a
 CONTAINER ID   IMAGE                             COMMAND                  CREATED          STATUS                      PORTS                                   NAMES
 a03e0096c25f   entrypointdockerimage:v1          "echo"                   14 seconds ago   Exited (0) 12 seconds ago  
 
-ubuntu@ip-172-31-93-221:~/entrypoint$ docker run entrypointdockerimage:v1 hello
+
+But if you have command in "ENTRYPOINT" and do not have any argument , means that user has to pass the argument.
+now its going to run "echo hello" (using below command).
+
+In Dockerfile or When you inspect any image and you see entrypoint has only command but not any argument. that means user needs to pass
+an argument.
+
+
+=>$ docker run entrypointdockerimage:v1 hello
 hello
 
-ubuntu@ip-172-31-93-221:~/entrypoint$ docker ps -a
+=>$ docker ps -a
 CONTAINER ID   IMAGE                             COMMAND                  CREATED          STATUS                      PORTS                                   NAMES
 d5933a4b7e9e   entrypointdockerimage:v1          "echo hello"             13 seconds ago   Exited (0) 12 seconds ago  
 
@@ -127,10 +166,37 @@ NOTE:
 
 *************************************************CMD & ENTRYPOINT DOCKERFILE *************************************************
 
+Here ENTRYPOINT we have "command" and CMD has an "argument" together.
+If used togehter for 2 purpose.
+
+1. ENTRYPOINT will have "command and CMD has an "argument" using both together.
+2. you may be need to have some script and the will execute and "intialise" something and you want to run in first that you will give 
+in "ENTRYPOINT"
+& 
+then your actual command to "start container process" will be in "CMD"
+
+Same like in "CMD" our fist dockerfile. 
+
+DIFFERENCE:
+----------
+
+I can overwrite the argument, so argument is hello but I can overwrite with "hi" or "hello world"
+and If I donot give any argument it will just run the defautl "argument"
+
+If ENTRYPOINT and CMD used together then "CMD" have default argument which user can overwrite.
+
+NOTE:
+
+ENTRYPOINT will have higher priority than "CMD"
+
+vi Dockerfile
+
+------------------------------
 FROM ubuntu
 ENTRYPOINT ["echo"]               
 CMD ["hello"]                     
 
+------------------------------
 
 ubuntu@ip-172-31-93-221:~/cmd-entrypoint$ docker build -t cmdentry:v1 .
 Sending build context to Docker daemon  2.048kB
@@ -147,16 +213,23 @@ Successfully built 40086a45ef93
 Successfully tagged cmdentry:latest
 
 
-ubuntu@ip-172-31-93-221:~/cmd-entrypoint$ docker run cmdentry:v1
+=>$ docker run cmdentry:v1
 hello
 
-ubuntu@ip-172-31-93-221:~/cmd-entrypoint$ docker ps -a
+=>$ docker ps -a
 CONTAINER ID   IMAGE                             COMMAND                  CREATED              STATUS                          PORTS                                   NAMES
 4ea938dac7b7   cmdentry:v1                       "echo hello"             13 seconds ago       Exited (0) 12 seconds ago 
 
+Note:
+If I donot give any argument it will just run the defautl "argument"
 
 ubuntu@ip-172-31-93-221:~/cmd-entrypoint$ docker run cmdentry:v1 hi
 hi
+
+Note:
+
+I can overwrite the argument, so argument is hello but I can overwrite with "hi" or "hello world"
+and If I donot give any argument it will just run the defautl "argument"
 
 
 ubuntu@ip-172-31-93-221:~/cmd-entrypoint$ docker run cmdentry:v1 hello world

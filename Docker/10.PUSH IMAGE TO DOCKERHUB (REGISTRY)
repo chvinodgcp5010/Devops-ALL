@@ -1,0 +1,63 @@
+FROM CLI(VM where install docker) execute 
+
+1. Login to DOCKERHUB
+
+=>docker login 
+
+ubuntu@ip-172-31-93-221:~$ docker login
+Login with your Docker ID to push and pull images from Docker Hub. If you don't have a Docker ID, head over to https://hub.docker.com to create one.
+Username: vinod501
+Password: *********
+WARNING! Your password will be stored unencrypted in /home/ubuntu/.docker/config.json.
+Configure a credential helper to remove this warning. See
+https://docs.docker.com/engine/reference/commandline/login/#credentials-store
+
+Login Succeeded
+
+2. PUSH IMAGE
+
+=>docker push vinod501/template-image
+
+Note:
+build name of image should be like
+
+vinod501/template-image
+(repo name)/imagename
+
+
+ubuntu@ip-172-31-93-221:~$ docker push vinod501/template-image
+Using default tag: latest
+The push refers to repository [docker.io/vinod501/template-image]
+e64d04cc8dc8: Pushed
+80909a6a03a6: Pushed
+a790f937a6ae: Mounted from library/ubuntu
+latest: digest: sha256:1dda4cf46d5bb86e4efbb1a668e385010ef00011c66770b8a423034d3c2ec6f8 size: 952
+
+
+how to rename the image 
+
+https://www.janbasktraining.com/community/devops/how-to-rename-docker-images-without-rebuilding-it#:~:text=You%20can%20rename%20your%20docker,given%20command%20to%20do%20that.&text=To%20rename%20docker%20container%2C%20use,to%20a%20new%20name%20disc_app.
+===========================================
+
+docker tag OldName:tag NewName:tag
+
+docker tag vinod501/template-image:vinod501/web-serverimage2022
+
+docker push vinod501/web-serverimage2022
+
+ubuntu@ip-172-31-93-221:~/docker-vnd/2113_earth$ docker tag vinod501/template-image vinod501/web-serverimage2022
+
+ubuntu@ip-172-31-93-221:~/docker-vnd/2113_earth$ docker images
+REPOSITORY                                                   TAG       IMAGE ID       CREATED             SIZE
+vinod501/template-image                                      latest    60c6422e2f2a   About an hour ago   251MB
+vinod501/web-serverimage2022                                 latest    60c6422e2f2a   About an hour ago   251MB
+
+
+
+
+
+
+
+
+
+

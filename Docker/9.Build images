@@ -51,19 +51,83 @@ drwxrwxr-x 4 ubuntu ubuntu  4096 Jan  7  2019  vendor/
 
 ===========================================================================================
 
+ubuntu@ip-172-31-93-221:~/docker-vnd/2113_earth$ ls
+'ABOUT THIS TEMPLATE.txt'   assets   index.html   nano-project.tar.gz   vendor
+
+ubuntu@ip-172-31-93-221:~/docker-vnd/2113_earth$ pwd
+/home/ubuntu/docker-vnd/2113_earth
 
 
+COMPRESS ALL FILES IN TO TAR.GZ FILE
+
+ubuntu@ip-172-31-93-221:~/docker-vnd/2113_earth$ tar cvzf nano-project.tar.gz *
+
+-> tar cvzf nano-project.tar.gz *
+
+ubuntu@ip-172-31-93-221:~/docker-vnd/2113_earth$ ls
+'ABOUT THIS TEMPLATE.txt'   assets   index.html   nano-project.tar.gz   vendor
 
 
+=================================== CREATE A DOCEKRFILE:======================================
+vi Dockerfile
+
+FROM ubuntu:latest                                               
+LABEL "Author"="vinod"                                           
+LABEL "Project"="mindtree"
+RUN apt update && apt install apache2 git -y                     
+CMD ["/usr/sbin/apache2ctl", "-D", "FOREGROUND"]                                #OR CMD ["apache2-foreground"]
+EXPOSE 80                                                        
+WORKDIR /var/www/html                                         
+VOLUME /var/log/apache2                                        
+ADD nano-project.tar.gz /var/www/html                                   
+#COPY nano-project.tar.gz /var/www/html  
 
 
+====================================== EXPLANATION ============================================================
+nginx Dockerfile ref:
+----------------------
+https://hub.docker.com/layers/apache2/ubuntu/apache2/latest/images/sha256-d1091cbf7af2affc3bf47da49acf9c06f55ae73cd14464c8d0a625735f7c2e88?context=explore
+
+CREATE A DOCEKRFILE:
+
+FROM ubuntu:latest                                               # base image
+LABEL "Author"="vinod"                                           # we can give any labels as many as we want
+LABEL "Project"="mindtree"
+RUN apt update && apt install apache2 git -y                     # need to install any pkg or create directory any 
+CMD ["/usr/sbin/apache2ctl", "-D", "FOREGROUND"]
+EXPOSE 80                                                        #when we run the command it run on process 80, we have to add EXPOSE 80
+WORKDIR /var/www/html                                            #if you attach WORKDIR you will access default the dir once login container(like docker exec)
+VOLUME /var/log/apache2                                          #we dont want to lose logs if we delete the container
+ADD nano.tar.gz /var/www/html                                    # ADD is untar(extract) the content and dump in to specific directory
+#COPY nano.tar.gz /var/www/html                                  #but COPY directly dump the .tar.gz directory
 
 
+#Every run instruction will create a new layer so reduce as many as layers.
+#CMD [""] : you cannot user "systemctl status nginx" like this , 
+
+#you want to start apache2 and the binary location of apache2 is CMD ["/usr/sbin/apache2ctl", "-D", "-FOREGROUND"]
 
 
+=============
 
+BUILD IMAGE:
+-----------
+->docker build -t vinod501/template-image .
 
+->docker images
 
+RUN CONTAINER:
+-------------
+docker run -d --name nanowebsite -p 9090:80 vinod501/template-image
+
+ubuntu@ip-172-31-93-221:~/docker-vnd/2113_earth$ docker run -d --name nanowebsite -p 9090:80 vinod501/template-image
+65b098e6b53f98ccce736c5842d96a9b1277453af12bac78b14cba55e8a28145
+ubuntu@ip-172-31-93-221:~/docker-vnd/2113_earth$ docker ps
+CONTAINER ID   IMAGE                     COMMAND                  CREATED         STATUS         PORTS                                   NAMES
+65b098e6b53f   vinod501/template-image   "/usr/sbin/apache2ct…"   4 seconds ago   Up 3 seconds   0.0.0.0:9090->80/tcp, :::9090->80/tcp   nanowebsite
+
+Here application exposed externally on port 9090 , check public ip of service <ip>:9090 (able to access website UI or not)
+you able to access webiste page.
 
 
 

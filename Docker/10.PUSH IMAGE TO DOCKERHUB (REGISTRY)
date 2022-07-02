@@ -1,3 +1,14 @@
+COMMNADS:
+=========
+1.docker login 
+2.docker push vinod501/template-image
+3.docker tag vinod501/template-image vinod501/web-serverimage2022:v1
+4.docker push vinod501/web-serverimage2022:v1
+5.docker pull vinod501/web-serverimage2022:v1
+6.docker run -d --name google-cont -p 9191:80 vinod501/web-serverimage2022:v1
+
+================================== LOGIN TO DOCKERHUB =================================
+
 FROM CLI(VM where install docker) execute 
 
 1. Login to DOCKERHUB
@@ -41,7 +52,7 @@ https://www.janbasktraining.com/community/devops/how-to-rename-docker-images-wit
 
 docker tag OldName:tag NewName:tag
 
-docker tag vinod501/template-image:vinod501/web-serverimage2022
+docker tag vinod501/template-image vinod501/web-serverimage2022
 
 docker push vinod501/web-serverimage2022
 
@@ -59,7 +70,42 @@ ubuntu@ip-172-31-93-221:~/docker-vnd/2113_earth$ docker build -t vinod501/web-se
 docker push vinod501/web-serverimage2022:v1
 
 
+========================== PULL IMAGE LOCALLY ============================
 
+docker pull vinod501/web-serverimage2022:v1
+
+ubuntu@ip-172-31-93-221:~/docker-vnd/2113_earth$ docker pull vinod501/web-serverimage2022:v1
+
+v1: Pulling from vinod501/web-serverimage2022
+405f018f9d1d: Already exists
+8be042f58134: Pull complete
+f89390857787: Pull complete
+Digest: sha256:945ddbe8bb9a6552a952872ab737b8dca075a77a959c951eb59a9f72e92b6df1
+Status: Downloaded newer image for vinod501/web-serverimage2022:v1
+docker.io/vinod501/web-serverimage2022:v1
+
+
+ubuntu@ip-172-31-93-221:~/docker-vnd/2113_earth$ docker images
+REPOSITORY                                                   TAG       IMAGE ID       CREATED             SIZE
+vinod501/web-serverimage2022                                 v1        be5e48eecef0   4 minutes ago       251MB
+
+===============================Remove all images and container and check docker run ====================================
+
+it will check on local ,if not found it will check it on remote(Dockerhub)
+
+
+=>docker run -d --name google-cont -p 9191:80 vinod501/web-serverimage2022:v1
+
+
+ubuntu@ip-172-31-93-221:~/docker-vnd/2113_earth$ docker run -d --name google-cont -p 9191:80 vinod501/web-serverimage2022:v1
+Unable to find image 'vinod501/web-serverimage2022:v1' locally
+v1: Pulling from vinod501/web-serverimage2022
+405f018f9d1d: Already exists
+8be042f58134: Pull complete
+f89390857787: Pull complete
+Digest: sha256:945ddbe8bb9a6552a952872ab737b8dca075a77a959c951eb59a9f72e92b6df1
+Status: Downloaded newer image for vinod501/web-serverimage2022:v1
+9f6daac83284ac52c18f9981f45deeb3d71f7c564899bf14dda1c7548daf228f
 
 
 

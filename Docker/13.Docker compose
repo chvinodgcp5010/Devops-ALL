@@ -1,0 +1,125 @@
+https://docs.docker.com/compose/install/
+
+https://docs.docker.com/compose/gettingstarted/
+
+Now, Docker Compose is another utility. Like we have docker engine which is to run our container.
+And when we install docker engine,we get docker engine, docker CLI.
+But Docker Compose is a separate utility that you have to install.
+
+========================================== Docker compose ========================================
+
+docker Compose is a tool to run multicontainers together.
+
+Like our view profile project.We will be containerizing it.We will be writing docker files for those.
+And when we run the container, we know our project containers needs to talk to each other.(Like we had multiple VMs or multiple EC,
+two instances or multiple AWS services that talk to each other in the same network.)
+
+Like that when the container is, we will have multiple containers and we need a tool which can run them together and we can manage it 
+centrally.
+
+And Docker Compose does that very well.You have multiple containers, you don't need to do docker run docker P, E.(There are so many 
+options that we specify while we run the container.And if you have like that six, seven containers to run together, there is a huge 
+chance you will make mistakes while running the container.)
+
+Docker Compose, you have a YAML file where you mentioned all the container information and you
+said Docker compose up just like vagrant up.(Yes, we can compare Docker Compose with Vagrant, what vagrant is for VMs, same
+way Docker Compose is for containers.
+
+Yes, we can compare Docker Compose with Vagrant, what vagrant is for VMs, same way Docker Compose is for containers.
+
+https://docs.docker.com/compose/
+
+-------------------------- docker-compose.yml -----------------------
+
+version: "3.9"  # optional since v1.27.0
+services:
+  web:
+    build: .                                      #build instruction it will build an image 
+    ports:
+      - "8000:5000"
+    volumes:
+      - .:/code                                    #bindmount
+      - logvolume01:/var/log                       #(Volume mapped here) mount volume to /var/log to container (web)
+    links:
+      - redis
+  redis:
+    image: redis
+volumes:
+  logvolume01: {}                                 #creating volume
+  
+ -------------------------- ---------------------------------------------
+ 
+Instead of runnig commands (like docker run , docker volume) you are adding in compose and installng 
+  
+We have a version here, 
+services: We have services means containers. So we have two containers here, "web" and "Redis".
+
+Now Redis container, there is an image called Redis.So it will be same as we say 
+"docker run -d redis", 
+
+which will run a container from the image Redis with the name redis.
+
+But then we have a "web" container here.You have an option of build and there is a path dot in current working directory.
+So this is expecting a docker file in the same directory where you have the compose file.
+
+This "docker-compose.yaml" file in the same place you should have a docker file.
+So Build Instruction will build an image from the dockerfile and it will run the container with the name web.
+It's going to map the port 8000 with the port 5000 of the container.
+
+And there is a volumes option here.And its value is a list.
+------------------------------------------------------------
+Two volumes we have, the first one is the "bind mount". 
+dot is the host directory.That means the current working directory will be mapped with the container directory /code. 
+That's bind mount 
+
+But we have seen volumes where we create volumes separately.And then we map with the container volume.
+Like that you have here volumes section where you create a volume with name logvolume01, which creates a volume.
+
+And this volume is mapped here.Now this is the same thing what we do in command line, docker run, docker volumes, those same commands.
+
+Instead of running commands imperative, we are going to put it in all that in docker compose file declarative benefits.
+
+1. first thing is we can avoid a lot of human error.
+2.Second, this docker compose file will be part of your repository.
+
+So developer can use this docker compost file to run containers locally or wherever they want.And it will be version control.
+Whatever changes you make, everything will be tracked.
+
+Infrastructure as a code.Now there is a very neat exercise with docker compose in the Getting started section here.
+  
+https://docs.docker.com/compose/gettingstarted/
+
+But before that you have to install the compose. So let's go to install compose.
+
+  
+=========================================== INSTALL DOCKER COMPOSE =============================================
+
+https://docs.docker.com/compose/install/
+https://docs.docker.com/engine/install/#server
+
+My Server is "ubuntu"
+
+https://docs.docker.com/engine/install/ubuntu/
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  

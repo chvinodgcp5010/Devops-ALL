@@ -1,3 +1,22 @@
+DOCKER COMPOSE & DOCKER SWARM
+-------------------------------
+Docker Compose is used for "configuring and starting multiple Docker containers on the same host" so you don't have to start each 
+container separately. 
+
+You don’t want to deploy each individual container, configure it and then configure everything else to talk to it as well. 
+That will get tedious with even three containers. Docker-Compose lets you automate the deployment of multiple containers.
+
+Docker swarm :
+------------
+is a "container orchestration tool" that allows you to "run and connect containers on multiple hosts".
+
+Kubernetes:
+-----------
+
+is a container orchestration tool that is similar to Docker swarm, but has a wider appeal due to its ease of automation and ability to 
+handle higher demand.
+
+
 https://docs.docker.com/compose/install/
 
 https://docs.docker.com/compose/gettingstarted/
@@ -7,6 +26,19 @@ And when we install docker engine,we get docker engine, docker CLI.
 But Docker Compose is a separate utility that you have to install.
 
 ========================================== Docker compose ========================================
+
+Here I have installed docker on ubuntu vm so installing on same.
+
+https://docs.docker.com/engine/install/ubuntu/
+
+Install Compose plugin:
+
+(Mac, Win, Linux) Docker Desktop: 
+If you have Desktop installed then you already have the Compose plugin installed.
+
+Linux systems: To install the Docker CLI’s Compose plugins use one of these methods of installation:
+=>Using the convenience scripts offered per Linux distro from the Engine install section.
+=>Setting up Docker’s repository and using it to install the compose plugin package.
 
 docker Compose is a tool to run multicontainers together.
 
@@ -121,20 +153,145 @@ for docker compose:
 =>docker compose version
 Docker Compose version v2.6.0
 
+=>docker compose --help
+    
+============================= Get started with Docker Compose =======================================   
+
+https://docs.docker.com/compose/gettingstarted/
+
+Step 1: Setup
+==============
+Define the application dependencies.
+
+Create a directory for the project:
+
+=>mkdir composetest
+=>cd composetest
+
+2.Create a file called app.py in your project directory and paste this in:
+
+vi app.py
+===========
+
+import time
+
+import redis
+from flask import Flask
+
+app = Flask(__name__)
+cache = redis.Redis(host='redis', port=6379)
+
+def get_hit_count():
+    retries = 5
+    while True:
+        try:
+            return cache.incr('hits')
+        except redis.exceptions.ConnectionError as exc:
+            if retries == 0:
+                raise exc
+            retries -= 1
+            time.sleep(0.5)
+
+@app.route('/')
+def hello():
+    count = get_hit_count()
+    return 'Hello World! I have been seen {} times.\n'.format(count)
+    
+-------------------------------------------------------------------------------------
+
+In this example, redis is the hostname of the redis container on the application’s network. We use the default port for Redis, 6379.
+
+Handling transient errors
+
+Note the way the get_hit_count function is written. This basic retry loop lets us attempt our request multiple times if the redis service is not available. This is useful at startup while the application comes online, but also makes our application more resilient if the Redis service needs to be restarted anytime during the app’s lifetime. In a cluster, this also helps handling momentary connection drops between nodes.
+
+3.Create another file called requirements.txt in your project directory and paste this in:
+
+vi requirements.txt
+====================
+
+flask
+redis
+  
+
+Step 2: Create a Dockerfile
+============================
+
+In this step, you write a Dockerfile that builds a Docker image. The image contains all the dependencies the Python application requires,
+including Python itself.
+
+In your project directory, create a file named Dockerfile and paste the following:
+
+vi Dockerfile
+==============
+
+# syntax=docker/dockerfile:1
+FROM python:3.7-alpine
+WORKDIR /code
+ENV FLASK_APP=app.py
+ENV FLASK_RUN_HOST=0.0.0.0
+RUN apk add --no-cache gcc musl-dev linux-headers
+COPY requirements.txt requirements.txt
+RUN pip install -r requirements.txt
+EXPOSE 5000
+COPY . .
+CMD ["flask", "run"]
+
+========================================================
+
+This tells Docker to:
+
+Build an image starting with the Python 3.7 image.
+Set the working directory to /code.
+Set environment variables used by the flask command.
+Install gcc and other dependencies
+Copy requirements.txt and install the Python dependencies.
+Add metadata to the image to describe that the container is listening on port 5000
+Copy the current directory . in the project to the workdir . in the image.
+Set the default command for the container to flask run.
+For more information on how to write Dockerfiles, see the Docker user guide and the Dockerfile reference.
+  
+
+Step 3: Define services in a Compose file
+=========================================
+
+Create a file called docker-compose.yml in your project directory and paste the following:
+
+vi docker-compose.yml
+------------------------
+
+version: "3.9"
+services:
+  web:
+    build: .
+    ports:
+      - "8000:5000"
+  redis:
+    image: "redis:alpine"
+    
+============================================
+
+This Compose file defines two services: web and redis.
+
+Web service
+The web service uses an image that’s built from the Dockerfile in the current directory. It then binds the container and the host machine to the exposed port, 8000. This example service uses the default port for the Flask web server, 5000.
   
   
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
+Redis service
+The redis service uses a public Redis image pulled from the Docker Hub registry.
+
+Step 4: Build and run your app with Compose
+===============================================
+From your project directory, start up your application by running docker-compose up.
+
+ docker-compose up
+
+How to stop container running from Compose.
+-------------------------------------------
+ubuntu@ip-172-31-93-221:~/composetest$ docker compose stop
+[+] Running 1/2
+ ⠿ Container composetest-redis-1  Stopped                                                                                        0.2s
+ ⠴ Container composetest-web-1    Stopping                                                                                       8.6s
   
   
   

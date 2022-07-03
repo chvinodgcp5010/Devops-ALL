@@ -97,11 +97,30 @@ But before that you have to install the compose. So let's go to install compose.
 https://docs.docker.com/compose/install/
 https://docs.docker.com/engine/install/#server
 
+ubuntu@ip-172-31-93-221:~$ cat /etc/os-release
+NAME="Ubuntu"
+VERSION="18.04.6 LTS (Bionic Beaver)"
+ID=ubuntu
+ID_LIKE=debian
+PRETTY_NAME="Ubuntu 18.04.6 LTS"
+VERSION_ID="18.04
+
+
 My Server is "ubuntu"
 
 https://docs.docker.com/engine/install/ubuntu/
+https://docs.docker.com/compose/install/compose-plugin/
+
+install docker and then docker compose
+
+for docker compose:
+
+=>sudo apt-get update
+=>sudo apt-get install docker-compose-plugin
   
-  
+=>docker compose version
+Docker Compose version v2.6.0
+
   
   
   

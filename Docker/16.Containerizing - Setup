@@ -239,7 +239,11 @@ Enabling the firewall and allowing port 8080 to access the tomcat
 # firewall-cmd --get-active-zones
 # firewall-cmd --zone=public --add-port=8080/tcp --permanent
 # firewall-cmd --reload
-CODE BUILD & DEPLOY (app01)
+
+
+====================================== CODE BUILD & DEPLOY (app01) =================================================
+
+
 Download Source code
 # git clone -b local-setup https://github.com/devopshydclub/vprofile-project.git
 Update configuration

@@ -17,3 +17,61 @@ Source(Dockerfile) --->Build (Docker build) -->test (docker compose) --->Store (
 
 So I'm on GitHub on our repository vprofile project I'm on branch "local-setup" in this branch there is a vagrant directory and we have 
 manual provisioning and there's a PDF to set up our services.
+
+
+============================================= FLOW ===============================================
+
+PROVISIONING
+Services
+1. Nginx:
+Web Service
+2. Tomcat
+Application Server
+3. RabbitMQ
+Broker/Queuing Agent
+4. Memcache
+DB Caching
+5. ElasticSearch
+Indexing/Search service
+6. MySQL
+SQL Database
+
+
+Setup should be done in below mentioned order
+1. MySQL (Database SVC)
+2. Memcache (DB Caching SVC)
+3. RabbitMQ (Broker/Queue SVC)
+4. Tomcat (Application SVC)
+5. Nginx (Web SVC)
+
+
+======================================================================
+
+https://docs.docker.com/engine/reference/builder/
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

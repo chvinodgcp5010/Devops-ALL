@@ -1,1 +1,19 @@
+First we're going to write docker file for the services that need customized sowe have Nginx, Tomcat and MySQL. 
 
+So we have to write 3 docker files once we have written docker file in our source code then we are going to use a "docker build" command 
+which will get executed on our docker engine.
+
+In our docker file we should have mentioned the base image.This "base images" will be pulled from Docker Hub
+so Tomcat, Nginx and MySQL these are three images that we are going to pull and customize them.
+So docker build command is going to read the docker file, build our image.
+
+Once our images are ready we're going to use a docker compose, we'll mention all the containers with the images 
+and then we are going to test it.
+
+Once it checks out fine then we are going to push our docker images, the customized docker images to Docker Hub in our own account 
+so that's the entire docker workflow that we are going to do.
+
+Source(Dockerfile) --->Build (Docker build) -->test (docker compose) --->Store (docker push) (dockerhub)
+
+So I'm on GitHub on our repository vprofile project I'm on branch "local-setup" in this branch there is a vagrant directory and we have 
+manual provisioning and there's a PDF to set up our services.

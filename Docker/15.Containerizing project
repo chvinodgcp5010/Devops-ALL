@@ -45,31 +45,75 @@ Setup should be done in below mentioned order
 5. Nginx (Web SVC)
 
 
-======================================================================
+======================================= tomcat dockerfile===============================
 Build docker
+
+dockerfile reference:
+----------------------
 https://docs.docker.com/engine/reference/builder/
 
 https://github.com/chvinodgcp5010/vprofile-project/blob/local-setup/vagrant/Manual_provisioning/VprofileProjectSetup.pdf
 
 
+tomcat image (docker hub path)
+
+https://hub.docker.com/_/tomcat
+
+Dockerfile
+------------
+
+FROM tomcat:8-jre8
+RUN rm -rf /usr/local/tomcat/webapss/*
+COPY targte/vprofile-v2.war /usr/local/tomcat/webapps/ROOT.war
+EXPOSE 8080
+CMD ["catalina.sh", "run"]
+VOLUME /usr/local/tomcat/webapps
 
 
 
+======================================= DB(Mysql) dockerfile===============================
+
+https://hub.docker.com/_/mysql?tab=tags
+
+For this we'll be using MySQL. MySQL tag five,six, or five seven we can use, not eight. It doesn't work with our application.
+So we can go with five dot seven if we can also go with five dot. Six
+
+Dockerfile
+------------
+
+FROM mysql:5.7.25
+ENV MYSQL_ROOT_PASSWORD="vprodbpass"
+ENV MYSQL_DATABASE="accounts"
+
+ADD db_backup.sql /docker-entrypoint-initdb.d/db_backup.sql
 
 
 
+======================================= Nginx dockerfile===============================
+
+Dockerfile
+-------------
+
+FROM nginx
+LABEL "Project"="Vprofile"
+LABEL "Author"="User"
+RUN rm -rf /etc/nginx/conf.d/default.conf
+COPY nginxvproapp.conf  /etc/nginx/conf.d/vproapp.conf
 
 
+nvvproapp.conf
+-------------
 
-
-
-
-
-
-
-
-
-
+upstream vproapp{
+ server vproapp:8080;
+}
+server {
+  listen 80;
+location / {
+  proxy_pass http://vproapp;
+ }
+}
+  
 
 
 

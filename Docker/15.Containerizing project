@@ -46,10 +46,10 @@ Setup should be done in below mentioned order
 
 
 ======================================================================
-
+Build docker
 https://docs.docker.com/engine/reference/builder/
 
-
+https://github.com/chvinodgcp5010/vprofile-project/blob/local-setup/vagrant/Manual_provisioning/VprofileProjectSetup.pdf
 
 
 

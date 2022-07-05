@@ -15,6 +15,13 @@ RUN npm run build -- --c staging
 FROM nginx:1.17.1-alpine
 COPY --from=build src/app/dist/pre-boarding-UI /usr/share/nginx/html
 
+DOCKER COMMANDS:
+----------------
+docker build -t vnd123 -f src/main/Docker/Dockerfile .
+docker images
+docker run -d -p 80:80 vnd123
+docker ps -a
+
 ================================ Dockerfile2 ==============================
 
 FROM openjdk:8 AS BUILD_IMAGE

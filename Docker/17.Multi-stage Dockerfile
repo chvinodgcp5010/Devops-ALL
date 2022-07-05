@@ -280,6 +280,38 @@ CONTRIBUTING.md  NOTICE   RELEASE-NOTES  bin          lib   native-jni-lib  weba
 ROOT.war
 
 
+========================================== Reference Dockerfile ==================================================
+# Multistage Dockerfile
+#stage1
+FROM openjdk:8 AS BUILD_IMAGE
+RUN apt update && apt install maven -y
+RUN git clone -b vp-docker https://github.com/imranvisualpath/vprofile-repo.git
+RUN cd vprofile-repo && mvn install
+
+#stage2
+FROM tomcat:8-jre11
+RUN rm -rf /usr/local/tomcat/webapps/*
+COPY --from=BUILD_IMAGE vprofile-repo/target/vprofile-v2.war /usr/local/tomcat/webapps/ROOT.war      # BUILD_IMAGE (same name as stage1)
+EXPOSE 8080
+CMD ["catalina.sh", "run"]
+
+
+========================================== Reference Dockerfile ==================================================
+
+### STAGE 1: Build ###
+FROM node:12.7-alpine AS build
+WORKDIR src/app
+RUN npm update
+COPY . .
+
+ARG ENV
+RUN npm i 
+### RUN npm run build --qa ###
+RUN npm run build -- --c staging
+
+### STAGE 2: Run ###
+FROM nginx:1.17.1-alpine
+COPY --from=build src/app/dist/pre-boarding-UI /usr/share/nginx/html
 
 
 

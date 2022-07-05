@@ -9,7 +9,9 @@ cd vprofile-project
 
 https://github.com/chvinodgcp5010/vprofile-project/tree/docker/Docker-files/app
 
+
 =============================== 1.Without multistage dockerfile (File1) ================================
+#In vm it perform all mvn build and store .war in specfic target folder ,so we are copying from local to container (manually)
 
 FROM tomcat:8-jre11
 LABEL "Project"="Vprofile"
@@ -23,7 +25,7 @@ CMD ["catalina.sh", "run"]
 WORKDIR /usr/local/tomcat/
 VOLUME /usr/local/tomcat/webapps
 
-=========================================================================================
+=============================================EXPLANATION============================================
 
 Here we are running in node and copying artifact from node(vm) to container. but in "multi stage" all 
 build at container (stage1) and copy to other container in (stage2)
@@ -96,7 +98,29 @@ Or should I say you should not have build artifact and the artifact in the same 
 
 ->This was just to show you the problem.
 
-=================================== MULTISTAGE Dockerfile ===============================================
+
+
+CHECK IT BELOW FROM MANUAL BUILD WHERE TO GET WAR FILE (have git , mvn and docker)
+==================================================================================
+
+git clone -b vp-docker https://github.com/imranvisualpath/vprofile-repo.git
+cd vprofile-repo
+mvn install
+
+ubuntu@ip-172-31-93-221:~/vprofile-repo$ ls
+Docker-app  Docker-db  Docker-web  README.md  ansible  compose  helm  kubernetes  pom.xml  src  target
+
+ubuntu@ip-172-31-93-221:~/vprofile-repo$ cd target/
+
+ubuntu@ip-172-31-93-221:~/vprofile-repo/target$ ls
+classes            generated-test-sources  maven-archiver  site              test-classes  vprofile-v2.war
+generated-sources  jacoco.exec             maven-status    surefire-reports  vprofile-v2
+
+check path:
+pwd
+/target/vprofile-v2.war
+
+================================================== MULTISTAGE Dockerfile ===============================================
 
 # Multistage Dockerfile
 #stage1
@@ -173,6 +197,13 @@ see it's downloading so many dependencies.All that will be in the build image.
 
 Let's clear the screen and let's look at docker images.
 
+
+ubuntu@ip-172-31-93-221:~$ docker images
+REPOSITORY                                                   TAG           IMAGE ID       CREATED              SIZE
+firstwebsite                                                 latest        ab626d74f4d4   About a minute ago   374MB
+<none>                                                       <none>        cd410c135f45   About a minute ago   1.08GB
+
+
 Okay, now check this.This is our output image and its size is 374 MB.This consists the artifact and this one
 where you do not have any name.This is "our build image".
 
@@ -183,4 +214,68 @@ And that is multi stage Dockerfile.So keep this in mind when you work in any pro
 Whenever there is a build for any image, appimage, front end, back end, wherever there is build,
 
 you should have a multistage docker file.
+
+
+============================================ O/P =============================================
+docker build -t firstwebsite .
+Sending build context to Docker daemon  133.5MB
+Step 1/9 : FROM openjdk:8 AS BUILD_IMAGE
+ ---> 2a8331246713
+Step 2/9 : RUN apt update && apt install maven -y
+ ---> Running in b1d517f73df9
+
+WARNING: apt does not have a stable CLI interface. Use with caution in scripts.
+
+Get:1 http://security.debian.org/debian-security bullseye-security InRelease [44.1 kB]
+
+
+
+[INFO] Installing /vprofile-repo/target/vprofile-v2.war to /root/.m2/repository/com/visualpathit/vprofile/v2/vprofile-v2.war
+[INFO] Installing /vprofile-repo/pom.xml to /root/.m2/repository/com/visualpathit/vprofile/v2/vprofile-v2.pom
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  45.110 s
+[INFO] Finished at: 2022-07-05T14:45:17Z
+[INFO] ------------------------------------------------------------------------
+Removing intermediate container d16f8d727ee0
+ ---> cd410c135f45
+Step 5/9 : FROM tomcat:8-jre11
+ ---> f1191d755a83
+Step 6/9 : RUN rm -rf /usr/local/tomcat/webapps/*
+ ---> Using cache
+ ---> c453f5502262
+Step 7/9 : COPY --from=BUILD_IMAGE vprofile-repo/target/vprofile-v2.war /usr/local/tomcat/webapps/ROOT.war
+ ---> b9f5d38b5738
+Step 8/9 : EXPOSE 8080
+ ---> Running in 98fa29cc60e1
+Removing intermediate container 98fa29cc60e1
+ ---> 2d94fa376dcf
+Step 9/9 : CMD ["catalina.sh", "run"]
+ ---> Running in 746265e0086d
+Removing intermediate container 746265e0086d
+ ---> ab626d74f4d4
+Successfully built ab626d74f4d4
+Successfully tagged firstwebsite:latest
+
+====================================== OBSERVE  IMAGE MEMORY USING MULTISTAGE DOCKERFILE ========================================
+
+ubuntu@ip-172-31-93-221:~$ docker images
+REPOSITORY                                                   TAG           IMAGE ID       CREATED              SIZE
+firstwebsite                                                 latest        ab626d74f4d4   About a minute ago   374MB
+<none>                                                       <none>        cd410c135f45   About a minute ago   1.08GB
+
+
+Here My image "firstwebsite" is using for application 
+and <none> is not using anywhere "just build the image" and copied that code to other image
+
+
+
+
+
+
+
+
+
+
 

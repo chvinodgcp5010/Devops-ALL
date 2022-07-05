@@ -2,13 +2,55 @@ https://github.com/chvinodgcp5010/vprofile-project
 
 branch : Docker
 
+(below it specifically clone docker branch which has dockerfile)
 git clone -b docker https://github.com/chvinodgcp5010/vprofile-project.git
 
-=============================== Without multistage dockerfile ================================
+cd vprofile-project
+
+https://github.com/chvinodgcp5010/vprofile-project/tree/docker/Docker-files/app
+
+=============================== 1.Without multistage dockerfile (File1) ================================
 
 FROM tomcat:8-jre11
 LABEL "Project"="Vprofile"
 LABEL "Author"="Imran"
+
+RUN rm -rf /usr/local/tomcat/webapps/*
+COPY target/vprofile-v2.war /usr/local/tomcat/webapps/ROOT.war      #Here we are copying (manually)target/vprofile-v2.war 
+                                                                    #building from vm and copying artifacts from Vm to container.
+EXPOSE 8080
+CMD ["catalina.sh", "run"]
+WORKDIR /usr/local/tomcat/
+VOLUME /usr/local/tomcat/webapps
+
+=========================================================================================
+
+Here we are running in node and copying artifact from node(vm) to container. but in "multi stage" all 
+build at container (stage1) and copy to other container in (stage2)
+
+->This docker file has one problem.
+
+->The problem is it's not completely automated. We have to generate the artifact in this step.
+It copies the artifact.
+
+->But this artifact needs to be there in this directory.We need to manually build this artifact.
+
+->We have to do "MVN install" which creates this artifact And then we copy this.
+COPY target/vprofile-v2.war /usr/local/tomcat/webapps/ROOT.war
+
+->How about we put the MVN install command build commands in the Dockerfile, 
+then we don't need to do it manually right now. Sure, we can do that.
+
+
+
+=======================2. Copying .war file using automation (without multistage) Dockerfile ===============================
+
+FROM tomcat:8-jre11
+LABEL "Project"="Vprofile"
+LABEL "Author"="Imran"
+
+RUN apt update && apt install maven -y && apt install openjdk-8-jdk  -y
+git clone -b vp-rem https://github.com/chvinodgcp5010/vprofile-project.git && cd vprofile-project && mvn install
 
 RUN rm -rf /usr/local/tomcat/webapps/*
 COPY target/vprofile-v2.war /usr/local/tomcat/webapps/ROOT.war
@@ -18,38 +60,59 @@ CMD ["catalina.sh", "run"]
 WORKDIR /usr/local/tomcat/
 VOLUME /usr/local/tomcat/webapps
 
+=================================================Explanation =========================================
+
+I'm going to run the git clone command and specifically the branch -b vp-rem this branch we have our source code and then CD into 
+the repository.
+
+And then we will say "MVN install". Now for this we also need to have JDK.So I can say here apt.apt update, then apt install, 
+openjdk I have given ampersand in here two times and then -y
+
+Okay, so that should do, right?
+================================
+->But the problem with this is this tomcat image will also have the repository that will add to the storage.Then we have 
+"MVN install" which is going to download lots of dependencies that will be also in the image.
+
+->We will have target directory that will contain more than just the artifact.
+So we have many things into this image which is not even required.We just interested in the artifact.
+
+->If we do build in the same image,then this image size will be huge in GB's, which will be difficult for shipping.
+->It is possible to ship, but the size will be huge and we should have as small footprint as possible for the docker image.
+->So now you will say we can go back to our previous method.We can just build the artifact separately
+on the host machine and then copy. But then that is manual.
+
+->So we cannot do this and we cannot go with the manual step.
+
+#https://github.com/chvinodgcp5010/vprofile-project/tree/vp-rem.
 
 
-=========================================================================================
+But before we see multi stage docker file
+==========================================
 
-This docker file has one problem.The problem is it's not completely automated.We have to generate the artifact in this step.
+->you don't need to build this image. This is really not the real time.
 
-It copies the artifact.But this artifact needs to be there in this directory.We need to manually build this artifact.
+->Production use cases should not have build and the app image in the same docker file.
+Or should I say you should not have build artifact and the artifact in the same image. You should not have this.
 
-We have to do MV and install which creates this artifact.And then we copy this.How about we put the MVN install command
+->This was just to show you the problem.
 
-build commands in the Dockerfile, then we don't need to do it manually right now.Sure, we can do that.
-
-
-=================================== Dockerfile ===============================================
+=================================== MULTISTAGE Dockerfile ===============================================
 
 # Multistage Dockerfile
-
+#stage1
 FROM openjdk:8 AS BUILD_IMAGE
 RUN apt update && apt install maven -y
 RUN git clone -b vp-docker https://github.com/imranvisualpath/vprofile-repo.git
 RUN cd vprofile-repo && mvn install
 
+#stage2
 FROM tomcat:8-jre11
-
 RUN rm -rf /usr/local/tomcat/webapps/*
-
-COPY --from=BUILD_IMAGE vprofile-repo/target/vprofile-v2.war /usr/local/tomcat/webapps/ROOT.war
-
+COPY --from=BUILD_IMAGE vprofile-repo/target/vprofile-v2.war /usr/local/tomcat/webapps/ROOT.war      # BUILD_IMAGE (same name as stage1)
 EXPOSE 8080
 CMD ["catalina.sh", "run"]
 
-==================================================
+====================================BUILD COMMANDS==========================================
 
 cd git clone -b docker https://github.com/devopshydclub/vprofile-project.git
 cd vprofile-project/Docker-files/app/
@@ -61,4 +124,63 @@ docker build -t appimg:v1 .
 docker images
 
 
+=================================== Multi stage explanation ==============================
+
+Now we need "maven" to build our artifact. And for "maven" we need "open JDK".
+And there is already an open JDK image on docker hub.We can use that
+
+Now, I'm going to give a name to this image and that we do it like this.I'll give the name as "build_image".
+So we say fetch this image and give this docker file name as "build image".
+
+And in this one we are going to build our artifact.
+
+-------------
+Okay, so three run instruction, 
+
+->app update,app install, maven, clone the source code,
+->go into the repository and MVN install.
+This will build our artifact. 
+
+You will say what's the difference, it's the same thing.
+=======================================================
+
+->Hold on, this is our "build image". But our "app" image will be different.
+
+->So there will be one more instruction now from "tomcat 8-jre11"
+And we are going to remove the "default app" from that (RUN rm -rf /usr/local/tomcat/webapps/*)
+So that run instruction should remove everything from web apps directory.
+
+->Now, we want to copy our artifact from this "build image" to 'this image'.
+
+
+COPY --from=BUILD_IMAGE vprofile-repo/target/vprofile-v2.war /usr/local/tomcat/webapps/ROOT.war
+
+->For that we use your "copy" instruction as usual and we see from equal to this "build image".
+So copy from this image, copy what all the artifact which will be in this directory.
+
+->We have target and in that we have artifact copied at that location. And then your usual instruction expose on 80,
+80 and cmd catalina run on whatever instruction you have, volumes or work directory, anything.
+
+So you see now when we build this image, this will be the output image. This image is just to build the artifact.
+And when we copy from the build image, you have to understand this.
+
+->Whatever is the work directory for "open JDK" work directory, it is going to create this repository in that directory.
+So let's say it's root directory just slash. So the path will be viewprofile repo.
+And in this image, we don't need to specify the work directory here. We can just give the directory inside that or artifact copy to this location.
+
+build the image.So first it is doing the build image.There it's running MVN install and you
+see it's downloading so many dependencies.All that will be in the build image.
+
+Let's clear the screen and let's look at docker images.
+
+Okay, now check this.This is our output image and its size is 374 MB.This consists the artifact and this one
+where you do not have any name.This is "our build image".
+
+Look at its size.If you do both in the same image,then just add one GB plus 374 MB.
+So we reduced the footprint of our app image.And we have also automated the entire build process.
+
+And that is multi stage Dockerfile.So keep this in mind when you work in any project.
+Whenever there is a build for any image, appimage, front end, back end, wherever there is build,
+
+you should have a multistage docker file.
 

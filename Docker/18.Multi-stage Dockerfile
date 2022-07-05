@@ -1,0 +1,43 @@
+================================ Dockerfile1 ==============================
+
+### STAGE 1: Build ###
+FROM node:12.7-alpine AS build
+WORKDIR src/app
+RUN npm update
+COPY . .
+
+ARG ENV
+RUN npm i 
+### RUN npm run build --qa ###
+RUN npm run build -- --c staging
+
+### STAGE 2: Run ###
+FROM nginx:1.17.1-alpine
+COPY --from=build src/app/dist/pre-boarding-UI /usr/share/nginx/html
+
+================================ Dockerfile2 ==============================
+
+FROM openjdk:8 AS BUILD_IMAGE
+RUN apt update && apt install maven -y
+RUN git clone -b vp-docker https://github.com/imranvisualpath/vprofile-repo.git
+RUN cd vprofile-repo && mvn install
+
+FROM tomcat:8-jre11
+
+RUN rm -rf /usr/local/tomcat/webapps/*
+
+COPY --from=BUILD_IMAGE vprofile-repo/target/vprofile-v2.war /usr/local/tomcat/webapps/ROOT.war
+
+EXPOSE 8080
+CMD ["catalina.sh", "run"]
+
+==================================================
+
+cd git clone -b docker https://github.com/devopshydclub/vprofile-project.git
+cd vprofile-project/Docker-files/app/
+ls
+cd multistage/
+ls
+cat Dockerfile
+docker build -t appimg:v1 .
+docker images

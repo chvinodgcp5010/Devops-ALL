@@ -5,15 +5,14 @@ FROM node:12.7-alpine AS build
 WORKDIR src/app
 RUN npm update
 COPY . .
-
 ARG ENV
 RUN npm i 
 ### RUN npm run build --qa ###
-RUN npm run build -- --c staging
+RUN npm run build
 
 ### STAGE 2: Run ###
 FROM nginx:1.17.1-alpine
-COPY --from=build src/app/dist/pre-boarding-UI /usr/share/nginx/html
+COPY --from=build src/app/dist/pre-boarding-UI /usr/share/nginx/html 
 
 DOCKER COMMANDS:
 ----------------

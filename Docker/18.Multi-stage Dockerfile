@@ -1,4 +1,4 @@
-================================ Dockerfile1 ==============================
+==================================================== Dockerfile1 ==============================================
 
 ### STAGE 1: Build ###
 FROM node:12.7-alpine AS build
@@ -22,7 +22,14 @@ docker images
 docker run -d -p 80:80 vnd123
 docker ps -a
 
-================================ Dockerfile2 ==============================
+
+[root@cicdjenkins Preboarding-UI-Dev1]# docker images
+REPOSITORY                             TAG                 IMAGE ID            CREATED             SIZE
+vnd123                                 latest              92b1160a2d57        19 minutes ago      105MB
+<none>                                 <none>              a6418870bda3        19 minutes ago      928MB
+
+
+================================================ Dockerfile2 ====================================
 
 FROM openjdk:8 AS BUILD_IMAGE
 RUN apt update && apt install maven -y

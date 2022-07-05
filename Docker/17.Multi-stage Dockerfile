@@ -270,6 +270,14 @@ Here My image "firstwebsite" is using for application
 and <none> is not using anywhere "just build the image" and copied that code to other image
 
 
+ubuntu@ip-172-31-93-221:~$ docker run -ti firstwebsite /bin/sh
+# ls
+BUILDING.txt     LICENSE  README.md      RUNNING.txt  conf  logs            temp     webapps.dist
+CONTRIBUTING.md  NOTICE   RELEASE-NOTES  bin          lib   native-jni-lib  webapps  work
+
+
+# ls /usr/local/tomcat/webapps
+ROOT.war
 
 
 

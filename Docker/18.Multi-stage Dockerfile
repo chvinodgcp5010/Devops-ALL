@@ -28,6 +28,16 @@ vnd123                                 latest              92b1160a2d57        1
 <none>                                 <none>              a6418870bda3        19 minutes ago      928MB
 
 
+You can see above named <none> is primary image and we are taking useful data instead of copying all data and copy to other 
+image 
+
+compare the image length 
+
+secondary image :  105MB
+primary image : 928 
+
+so saving lot of time 
+
 ================================================ Dockerfile2 ====================================
 
 FROM openjdk:8 AS BUILD_IMAGE

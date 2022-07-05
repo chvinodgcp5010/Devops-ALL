@@ -4,6 +4,33 @@ branch : Docker
 
 git clone -b docker https://github.com/chvinodgcp5010/vprofile-project.git
 
+=============================== Without multistage dockerfile ================================
+
+FROM tomcat:8-jre11
+LABEL "Project"="Vprofile"
+LABEL "Author"="Imran"
+
+RUN rm -rf /usr/local/tomcat/webapps/*
+COPY target/vprofile-v2.war /usr/local/tomcat/webapps/ROOT.war
+
+EXPOSE 8080
+CMD ["catalina.sh", "run"]
+WORKDIR /usr/local/tomcat/
+VOLUME /usr/local/tomcat/webapps
+
+
+
+=========================================================================================
+
+This docker file has one problem.The problem is it's not completely automated.We have to generate the artifact in this step.
+
+It copies the artifact.But this artifact needs to be there in this directory.We need to manually build this artifact.
+
+We have to do MV and install which creates this artifact.And then we copy this.How about we put the MVN install command
+
+build commands in the Dockerfile, then we don't need to do it manually right now.Sure, we can do that.
+
+
 =================================== Dockerfile ===============================================
 
 # Multistage Dockerfile

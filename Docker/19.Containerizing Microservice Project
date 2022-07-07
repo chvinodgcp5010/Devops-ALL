@@ -25,14 +25,13 @@ micrservices happen through this API gateway.This will be an nginx service which
 the headers, based on the URLs.
 
 So if the request comes on a route, that is if you're just accessing the URL, then it sends to
-the client microservice which is written in angular.So this loads the front end pages of the website.
-And for back end data it is going to contact the API service "emart API" which is written in NodeJS
+the "client" microservice which is written in "angular".So this loads the front end pages of the website.
+And for back end data it is going to contact the API service "emart API" which is written in "NodeJs"
 and the URL will be "/API" and NodeJS application.These APIs will need database.And here we are using MongoDB, a NoSQL database.
 
 
-There is also one more integration
-of another service, books API.And this is written in Java.It uses my SQL database, which is an SQL database and it's URLs WebAPI.
-So this is an ecommerce application which has multiple microservice.
+There is also one more integration of another service, "books" API.And this is written in "Java".It uses my SQL database, 
+which is an SQL database and it's URLs WebAPI.So this is an ecommerce application which has multiple microservice.
 
 
 Source code:
@@ -41,15 +40,104 @@ Source code:
 https://github.com/chvinodgcp5010/emartapp
 
 
+Here "client", which is the "angular application",
+"java API", which is the "Books API".
+And you have "NGINX", which is the "API gateway",
+"node API" which is our "node JS microservice". 
+
+Now, all the microservices source code is in one repository.
+
+Repository name is "Emartapp" and these kinds of repositories are called as "mono repo".All the micro service source code is in one repository.Based on the requirement, it will be also segregated into multiple repositories.like you will have a separate repository for client, separate for Java API, separate for Node API and separate for NGINX.And that is very beneficial for creating separate CICD pipelines for all of this.
+
+We will go through its docker file and its docker compose file.So if you do not have Visual Studio install it.
+Or if you want to use any other ID like IntelliJ or anything else of your choice
+
+First we will go to the "client".And here we have a file called "docker file".Click on that.
 
 
+======================================client source code ==============================================
+
+https://github.com/chvinodgcp5010/emartapp/blob/main/client/Dockerfile
 
 
+FROM node:14 AS web-build
+WORKDIR /usr/src/app
+COPY ./ ./client
+RUN cd client && npm install && npm run build --prod
+
+# Use official nginx image as the base image
+FROM nginx:latest
+
+# Copy the build output to replace the default nginx contents.
+COPY --from=web-build /usr/src/app/client/dist/client/ /usr/share/nginx/html
+COPY nginx.conf /etc/nginx/conf.d/default.conf
+
+# Expose port 4200
+EXPOSE 4200
 
 
+================================ EXPLANATION ====================================
+
+->This is a multi stage docker file.First stage is to build the artifact and second stage is to copy the artifact into our main image.
+
+So first stage we are taking a 
+
+->node node image.  Angular application will be built under node image. We give it name as  "web_build". The tag is 14. 
+->We set a working directory. /USR/SRC/app 
+->copy instruction is going to copy everything, which is all the source code of the client into /client directory.
+
+->So basically your code will be in USR/SRC/app/client and then the run instruction which goes into the client directory and run the command "NPM install" .
+
+And then it is going to run "NPM run build prod".
 
 
+(((NOTE:)))
+===========
 
+If you have no idea about node and angular, do not worry.
+You don't need to learn that. Keep in mind, whenever you get into project, you need to get information from the developer of the build 
+process or the build commands to use to get the artifact.
+
+That is what I do?
+==================
+
+I talk to the developers. I get the information.Because when you write a docker file, the docker file contains the build steps.
+You should know how to build that application.
+
+So from the source code you get the output.Now the artifact which will be in the client directory,
+
+we need to copy to in our main image. Now, "Angular application" will be hosted on "NGINX" .Yes, it's a "web application".
+It's a web app. So we are using here NGINX. So we fetch an NGINX image.We copy from web build which is from here.
+
+From this image we copy copy what?
+
+We copy this directory.So USR/SRC/app/client/dist
+
+This is the path from this "build_image".In "dist" you have a "/client" directory and the content of that or that will be copied into this path "/usr/share/nginx/html".
+
+
+NOTE:
+=====
+((Now you will see how will I know this path?
+
+There is the artifact. This is the path where you will have the artifact that will be also getting or
+you'll be getting that information from the developer.
+
+=>So when you run the build command, there will be the artifact in this client and those HTML files you're going to put into the NGINX image at this path.
+
+Why this path?
+
+Because that's how the NGINX image was created. So if you read the official documentation of NGINX image on docker hub, you will see you need to place your HTML file in this directory.
+
+https://github.com/nginxinc/docker-nginx/blob/04226fe92cc11bed68dae464eb60fd5399daf3b1/mainline/debian/Dockerfile
+
+Also we are copying an NGINX configuration file into this path. So we need our own customized configuration.
+So let's check that Nginx configuration file which is here.So this configuration file simply says if someone access
+this nginx container on / path, then show the content from this directory and index.HTML and index.HTML files will be loaded in the browser.
+
+So in your artifact you will have this file index.HTML which basically our Nginx container is presenting to the user.
+
+=============================================================================================================
 
 
 

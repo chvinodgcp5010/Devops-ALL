@@ -66,7 +66,6 @@ RUN cd client && npm install && npm run build --prod
 
 # Use official nginx image as the base image
 FROM nginx:latest
-
 # Copy the build output to replace the default nginx contents.
 COPY --from=web-build /usr/src/app/client/dist/client/ /usr/share/nginx/html
 COPY nginx.conf /etc/nginx/conf.d/default.conf
@@ -179,6 +178,236 @@ And we are going to run this command to run our Node app, which is basically go 
 ================================================ 3. JAVA API =============================================================
 
 https://github.com/chvinodgcp5010/emartapp/blob/main/javaapi/Dockerfile
+
+FROM openjdk:8 AS BUILD_IMAGE
+WORKDIR /usr/src/app/
+RUN apt update && apt install maven -y
+COPY ./ /usr/src/app/
+RUN mvn install -DskipTests
+
+FROM openjdk:8
+WORKDIR /usr/src/app/
+COPY --from=BUILD_IMAGE /usr/src/app/target/book-work-0.0.1-SNAPSHOT.jar ./book-work-0.0.1.jar
+
+EXPOSE 9000
+ENTRYPOINT ["java","-jar","book-work-0.0.1.jar"]
+# Test
+
+
+
+=============================================== EXPLANATION ================================================================
+
+This is written in Java as the docker file. Again, this is also multi stage.
+We take an "open JDK image" because we need Maven.
+
+->We set the work directory /usr/src/app, 
+->we run "apt update" and "apt install maven", which installs maven.
+
+We copy the source code to USR/SRC/app directory and we run the command  "MVN install" , which will build the artifact.
+And this is where we will be hosting.
+
+So again, open JDK eight web directory, copy the artifact which is at this path book work version "snapshot.Jar"
+into the current directory with this name. Current directory means USR SRC app will be the current directory.
+
+->Expose it on port 9000 and run the command Java Jar and the Jar file path which is going to run the Java application and expose it on port 9000.
+
+
+================================================ 4. GATEWAY (NGINX) API =============================================================
+
+
+https://github.com/chvinodgcp5010/emartapp/blob/main/nginx/default.conf
+
+Here you have NGINX.  Now, we are not going to build a separate NGINX image. We're going to use official NGINX image.
+
+This is for the "API gateway".
+
+We just have the configuration here. So this configuration file "default.conf" we will copy to our Nginx official image.
+
+Not copy exactly.
+
+We'll attach it as a volume, this configuration file. 
+
+->So we don't need to build a separate NGINX image, because all we need is thiS configuration for the NGINX container to load 
+And the configuration is this, the routing rules, which is for our client container API, which is for our Node container and 
+/web API, which is for our Java container which will be running Books API.
+So this configuration has basically three routing rules for our three micro services.
+
+
+RUN nginx container and all containers using below "compose" file
+
+======================================== DOCKER COMPOSE ===========================================
+
+https://github.com/chvinodgcp5010/emartapp/blob/main/docker-compose.yaml
+
+version: "3.8"
+services:
+    client:
+        build:
+            context: ./client
+        ports:
+            - "4200:4200"
+        container_name: client
+        depends_on:
+            [api, webapi]
+
+    api:
+        build:
+            context: ./nodeapi
+        ports:
+            - "5000:5000"
+        container_name: api
+        depends_on:
+            - nginx
+        depends_on:
+            [emongo]
+
+    webapi:
+        build:
+            context: ./javaapi
+        ports:
+            - "9000:9000"
+        restart: always
+        container_name: webapi
+        depends_on:
+            [emartdb]
+
+    nginx:
+        restart: always
+        image: nginx:latest
+        container_name: nginx
+        volumes:
+            - "./nginx/default.conf:/etc/nginx/conf.d/default.conf"
+        ports:
+            - "80:80"
+        command: ['nginx-debug', '-g', 'daemon off;']
+        depends_on:
+            [client]
+
+    emongo:
+       image: mongo:4
+       container_name: emongo
+       environment:
+         - MONGO_INITDB_DATABASE=epoc
+       ports:
+         - "27017:27017"
+    emartdb:
+      image: mysql:5.7
+      container_name: emartdb
+      ports:
+         - "3306:3306"
+      environment:
+        - MYSQL_ROOT_PASSWORD=emartdbpass     
+        - MYSQL_DATABASE=books
+
+
+================================================================
+
+
+Docker compose.
+
+Now, you have "four services", actually, and not only four services for microservices, they also have two databases.
+
+And when you want to run all of them together or build them together, you need docker compose.
+So "services" means "containers"
+
+So we have "Client", which is again our "angular app" running in NGINX container which for that we have the docker file.
+
+We have API, which is Node web API, which is our Java Books API.
+
+And then Nginx, which is our API gateway. Plus we have the MongoDB service and emartdb, which is our MySQL service.
+
+
+So the client container, you have a build instruction here. Context means where is your docker file path. ./client.
+So if we see in the client, we have the docker file.So it's going to use this docker file to build this container container image map port 4200 with 4200 of container, container name. We have given client, which is important based on our routing rules.
+And this container depends on API and web API container.That means first it will be building API web API.Then only it will build the client
+
+container API, which is our Node. So build instruction goes to node API or node API directory where we have the docker file, which is here.This one there's the docker file port mapping container name we are giving API.And this depends on the NGINX container.
+
+So NGINX container needs to start first.Before this also it depends on Mongo Emongo container.So those two containers should be running.Then only this API container will start.
+
+
+Web API.
+
+This is our Java application, the Books API.And it's in Java API directory, the docker file.So in Java API you have the docker
+file port mapping container name web API.This depends on the emart DB,which is the MySQL database.
+The database needs to be ready so Web API container can connect to it.
+
+As I told you NGINX, we are not building a separate image.We are taking the NGINX official image from docker hub.
+Container name is NGINX.But we are mapping the Nginx configuration file, which is the routing rules in the default
+configuration of the container map port mapping at.And the command will be running nginx-debug -g daemon off
+And this depends on the client container, which is our Node API.
+
+Sorry, not API angular angular frontend.And then we have MongoDB database.This is for the Node API and it
+is also running from the official Mongo image.Container name is Emongo And we need to set up the database name to Epoch.
+
+And the database name is the project requirement.It is in the Node API configuration that it needs to connect to the database named Epoch.So that's why that name port mapping.And then finally emartdb, which is our MySQL container.And it is just a simple MySQL container port mapping.
+
+And we need to set up the MySQL root password to emartdbpass and the database names to Books.Now, if you're interested, you can
+go to the source code.
+
+
+docker file and docker compose file and Nginx configuration.
+
+
+=========================================
+Let's just pull all of them now.So client docker file, java API docker File Nginx configuration file, node API docker file.
+So when you are containerizing, you first need to create the docker file for your customized image.
+So we have three docker file here once again and the Nginx configuration for our Nginx container, which is the API gateway.
+Let me close these things. And finally the docker compose.
+
+So containerizing in short, really means writing docker file and docker compose file and configuration.
+Of course, if it is required in your microservices. Like here, we have the NGINX configuration file.
+Now, I know in such short span of time, writing docker file is nearly impossible.
+
+It's only possible if you already understand Node, Java and all those things. This will take some time.
+When you work in a project, you need to work with the developer.
+
+Understand the build steps and how to host your application. For example, Angular returns the
+HTML files and HTML files.
+
+We can run it on NGINX or Apache or any such service like that.
+
+If it's Java, we can directly run it on JDK or Tomcat containers.If it's Node again know the build process and Node artifact.
+We host it on the Node JS itself.It has its own hosting service.
+
+If you already have experience with this,you will do it very quickly.
+
+If you do not have experience with this,you need to work with the developers.Understand build processes and how
+to host the artifact.Okay, two things while writing the docker file, know the build process and the hosting method.
+Once you know that, your job will be writing docker file and then docker compose file
+to run all of them together.
+
+And this takes time. While you're doing this in real time in a project, you may get many errors while
+you're building and running container, then docker compose.When you're running containers together, I have talked
+about roubleshooting in the container section, checking logs,finding out what is the problem.
+
+Simple problems like not able to connect to the database may be wrong username and password,or wrong database names, or the container name you have given wrong going through the configuration.
+
+So when you're doing this, when you're writing it from the scratch, be patient.Take your time.Work with the developers.
+Once again, containerizing is docker file.
+
+Docker compose the next lecture.We will run all this together and it's going tobe very simple once you have all this ready.
+So take your time.Go through the docker files,go through the compose file.Understand each and every option.
+
+
+
+
+    nginx:
+        restart: always
+        image: nginx:latest
+        container_name: nginx
+        volumes:
+            - "./nginx/default.conf:/etc/nginx/conf.d/default.conf"
+        ports:
+            - "80:80"
+        command: ['nginx-debug', '-g', 'daemon off;']
+        depends_on:
+            [client]
+
+
+
+Restart always.  Because if the DB container still does not come and it takes time, this container Web API container will fail.
+If it fails, it's going to restart.And when it restarts, by the time the DB container should be running and it can connect to it.
 
 
 

@@ -9,7 +9,6 @@ And being a DevOps, you will definitely witness micro service application and yo
 
 So,
 
-
 Block diagram:
 ================
 
@@ -55,7 +54,7 @@ Or if you want to use any other ID like IntelliJ or anything else of your choice
 First we will go to the "client".And here we have a file called "docker file".Click on that.
 
 
-======================================client source code ==============================================
+====================================== client source code ==============================================
 
 https://github.com/chvinodgcp5010/emartapp/blob/main/client/Dockerfile
 
@@ -137,12 +136,44 @@ this nginx container on / path, then show the content from this directory and in
 
 So in your artifact you will have this file index.HTML which basically our Nginx container is presenting to the user.
 
-=============================================================================================================
+================================================ NODE API =============================================================
+
+https://github.com/chvinodgcp5010/emartapp/blob/main/nodeapi/Dockerfile
 
 
+FROM node:14 AS nodeapi-build
+WORKDIR /usr/src/app
+COPY ./ ./nodeapi/
+RUN cd nodeapi && npm install
+
+FROM node:14
+WORKDIR /usr/src/app/
+COPY --from=nodeapi-build /usr/src/app/nodeapi/ ./
+RUN ls
+EXPOSE 5000
+CMD ["/bin/sh", "-c", "cd /usr/src/app/ && npm start"]
+# Test3
 
 
+================================================== EXPLANATION =======================================================
 
+So you have this first stage which is going to "build the artifact" and the second stage which is going to use that artifact.
+So similar process work directory we set up,
+
+we copy the source code from current directory. So all the source code will be copied into Node API directory instruction.
+Go into that directory and run NPM install. That's the build command.
+
+The "first stage" will "generate the artifact". 
+The "second stage" it is "running on node".
+
+Again, we set the work directory and we copy the artifact from "Node-API" build which is from this image, from this path Node API directory which is there copied into the current directory.
+
+COPY --from=nodeapi-build /usr/src/app/nodeapi/ ./
+
+this will be the current directory work directory and just one LS command that I have given. So it's going to list the files from
+that directory which you can see when you're building it, exposing it on port 5000.
+
+And we are going to run this command to run our Node app, which is basically go into that directory and "run NPM start", which will start your Node app.
 
 
 

@@ -54,7 +54,7 @@ Or if you want to use any other ID like IntelliJ or anything else of your choice
 First we will go to the "client".And here we have a file called "docker file".Click on that.
 
 
-====================================== client source code ==============================================
+====================================== 1. client source code ==============================================
 
 https://github.com/chvinodgcp5010/emartapp/blob/main/client/Dockerfile
 
@@ -75,7 +75,7 @@ COPY nginx.conf /etc/nginx/conf.d/default.conf
 EXPOSE 4200
 
 
-================================ EXPLANATION ====================================
+========================================== EXPLANATION ==============================================
 
 ->This is a multi stage docker file.First stage is to build the artifact and second stage is to copy the artifact into our main image.
 
@@ -136,7 +136,7 @@ this nginx container on / path, then show the content from this directory and in
 
 So in your artifact you will have this file index.HTML which basically our Nginx container is presenting to the user.
 
-================================================ NODE API =============================================================
+================================================ 2. NODE API =============================================================
 
 https://github.com/chvinodgcp5010/emartapp/blob/main/nodeapi/Dockerfile
 

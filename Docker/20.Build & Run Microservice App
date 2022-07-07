@@ -1,1 +1,163 @@
+Once all docker file and setup is present 
+
+just run 
+
+docker-compose build
+
+=============================================================================================================
+
+1.clone source code
+2.docker compose build               (to build images from source code Dockerfile path)
+3.docker compose up                  ( make up containers)
+
+
+============================ vi docker-compose.yml ================================
+
+version: "3.8"
+services:
+    client:
+        build:
+            context: ./client
+        ports:
+            - "4200:4200"
+        container_name: client
+        depends_on:
+            [api, webapi]
+
+    api:
+        build:
+            context: ./nodeapi
+        ports:
+            - "5000:5000"
+        container_name: api
+        depends_on:
+            - nginx
+        depends_on:
+            [emongo]
+
+    webapi:
+        build:
+            context: ./javaapi
+        ports:
+            - "9000:9000"
+        restart: always
+        container_name: webapi
+        depends_on:
+            [emartdb]
+
+    nginx:
+        restart: always
+        image: nginx:latest
+        container_name: nginx
+        volumes:
+            - "./nginx/default.conf:/etc/nginx/conf.d/default.conf"
+        ports:
+            - "80:80"
+        command: ['nginx-debug', '-g', 'daemon off;']
+        depends_on:
+            [client]
+
+    emongo:
+       image: mongo:4
+       container_name: emongo
+       environment:
+         - MONGO_INITDB_DATABASE=epoc
+       ports:
+         - "27017:27017"
+    emartdb:
+      image: mysql:5.7
+      container_name: emartdb
+      ports:
+         - "3306:3306"
+      environment:
+        - MYSQL_ROOT_PASSWORD=emartdbpass     
+        - MYSQL_DATABASE=books
+
+============================ ============================  ============================ 
+
+Now we will need here docker engine and we will need docker compose.
+
+We just need to fetch the source code and use the Docker Compose file to build and on our container.
+So we'll say git clone, get the URL.
+
+You should have the repository clone here. So Docker compose file has"bild step"
+
+and how to run the container option. Aso we are going to say "Docker Compose Build".
+First we will build, and then after that we will run the container. Because build takes a very long time.
+We have multiple microservices. So let's click on Docker. Let's hit Docker Compose build. And this will take a very long time.
+
+->And now we should have images.So we have three images client, which is our angular app hosted in NGINX container.
+Web API, which is Java hosted in JDK container. 
+emart API, which is NodeJS running on a node JS container.
+
+
+->And you see some other containers over there,sorry, images which does not have any name. These are the build images.
+So when you do multi stage,you'll also see your build images. now all we need to do is to run them together.Docker Compose up, D to run it in the background.
+
+->If you want to run it in the foreground, don't use Hyphen D option.So you can see all the output of all the containers.
+And all means these three images. From these three images will have three containers.
+Then we have NGINX container, we have a Mongo container and we have a MySQL container,
+
+->If you have doubt in this, once again, take a look at the Docker Compose file and then do Docker Compose up.
+So it's pulling the Mongo images, mongo, MySQL and NGINX it will pull and it will run the containers from
+that and plus the three images that are already built, which is going to directly run containers from them.
+
+->And I have not used Hyphen D option.So everything you will see on the foreground, you will see Web API, that is Java EMart DB,
+Web API, all the containers you see coming up and their logs are coming on the screen.
+
+Okay, I think it's up.
+
+And now we will access the API gateway, which is the NGINX container.And we already did port mapping nginx container port
+80, map with port 80 of the container.
+
+So we just need to access our docker engine, which is the ec2 instance on port 80, and we should see the front end, and then we can log in and see the back end services as well.
+
+
+Okay, it's up and running.You can click on Register, give your details,any fake email address and a password.
+It will ask some other information like ID number.So fill in this information, say Register and I then log in and I'm in.
+And there is the book smart.
+
+Try Book smart.Go back.
+
+Now, this is a sample application, so it's not fully functional, but we see all the services are connected.
+That's the books API.And what you see in front of your screen right now, these pages are coming from
+the Nginx angular content and the login.
+
+All that intelligent work coming through the API of node.So all the services are working together.
+Let's go back.
+
+And now the right way to run it will be using Hyphen D option.
+
+So it starts all the container again and runs them in the background there.And then you can say docker PS,
+see all your containers running there.If you want, you can check logs ofindividual container, docker logs and the container name.
+
+You can see the logs, take some time, play with it. docker-compose ps, docker-compose top
+top, use all those commands.
+
+Once you're good, then you can do the clean up process. You're going to say docker compose down, which
+will stop and remove all the containers.Stopped and removed all the containers.
+
+If you want, you can remove the docker images. Now I know docker compose build.
+
+The build step took long time.And if you're thinking if it takes that much longer every time, no, we already have the images.
+
+Now, whenever developer makes a code change, we pull the changes. Right now there are no changes, but if
+there are any changes, we pull the changes and we do docker-compose build.
+Now, it's not going to build from the scratch.
+
+There's already image layers which are already cached, so only the changes will be built. You see, that was faster.
+I mean, we did not make any change,but even though any changes are there, it will be small changes, simple changes.
+And in micro services, it's always encouraged
+
+to make small, small changes multiple times, rather than making big and huge changes.
+So any small change, you build the image once again and you run the container and test it.
+
+And this all part can be automated by using a CI CD pipeline.
+
+Okay, so as I said in the previous lecture, also take your time.
+
+Go through the code again, stop the container, remove images, run the build process again.Test it.
+
+
+
 

@@ -176,9 +176,9 @@ that directory which you can see when you're building it, exposing it on port 50
 And we are going to run this command to run our Node app, which is basically go into that directory and "run NPM start", which will start your Node app.
 
 
+================================================ 3. JAVA API =============================================================
 
-
-
+https://github.com/chvinodgcp5010/emartapp/blob/main/javaapi/Dockerfile
 
 
 

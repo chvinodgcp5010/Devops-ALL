@@ -139,6 +139,7 @@ So in your artifact you will have this file index.HTML which basically our Nginx
 
 https://github.com/chvinodgcp5010/emartapp/blob/main/nodeapi/Dockerfile
 
+first clone source code and build code using "docker build -t image ."
 
 FROM node:14 AS nodeapi-build
 WORKDIR /usr/src/app

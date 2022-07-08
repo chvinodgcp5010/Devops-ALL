@@ -156,8 +156,6 @@ And this all part can be automated by using a CI CD pipeline.
 
 Okay, so as I said in the previous lecture, also take your time.
 
-Go through the code again, stop the container, remove images, run the build process again.Test it.
-
-
+Go through the code again, stop the container, remove images, run the build process again.Test it. 
 
 

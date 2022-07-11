@@ -1,7 +1,7 @@
 DOCKER COMPOSE & DOCKER SWARM
 -------------------------------
-Docker Compose is used for "configuring and starting multiple Docker containers on the same host" so you don't have to start each 
-container separately. 
+Docker Compose is used for "configuring and starting multiple Docker containers on the same host" so you don't have to 
+start each container separately. 
 
 You don’t want to deploy each individual container, configure it and then configure everything else to talk to it as well. 
 That will get tedious with even three containers. Docker-Compose lets you automate the deployment of multiple containers.

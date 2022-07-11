@@ -76,6 +76,11 @@ EXPOSE 4200
 
 ========================================== EXPLANATION ==============================================
 
+/usr/share/nginx/html
+
+The root directive indicates the actual path on your hard drive where this virtual host's assets (HTML, images, CSS, etc) 
+are located ie /usr/share/nginx/html .
+
 ->This is a multi stage docker file.First stage is to build the artifact and second stage is to copy the artifact into our main image.
 
 So first stage we are taking a 
@@ -84,7 +89,8 @@ So first stage we are taking a
 ->We set a working directory. /USR/SRC/app 
 ->copy instruction is going to copy everything, which is all the source code of the client into /client directory.
 
-->So basically your code will be in USR/SRC/app/client and then the run instruction which goes into the client directory and run the command "NPM install" .
+->So basically your code will be in USR/SRC/app/client and then the run instruction which goes into the client directory and
+run the command "NPM install" .
 
 And then it is going to run "NPM run build prod".
 
@@ -111,7 +117,8 @@ From this image we copy copy what?
 
 We copy this directory.So USR/SRC/app/client/dist
 
-This is the path from this "build_image".In "dist" you have a "/client" directory and the content of that or that will be copied into this path "/usr/share/nginx/html".
+This is the path from this "build_image".In "dist" you have a "/client" directory and the content of that or that will be 
+copied into this path "/usr/share/nginx/html".
 
 
 NOTE:
@@ -121,11 +128,13 @@ NOTE:
 There is the artifact. This is the path where you will have the artifact that will be also getting or
 you'll be getting that information from the developer.
 
-=>So when you run the build command, there will be the artifact in this client and those HTML files you're going to put into the NGINX image at this path.
+=>So when you run the build command, there will be the artifact in this client and those HTML files you're going to put 
+into the NGINX image at this path.
 
 Why this path?
 
-Because that's how the NGINX image was created. So if you read the official documentation of NGINX image on docker hub, you will see you need to place your HTML file in this directory.
+Because that's how the NGINX image was created. So if you read the official documentation of NGINX image on docker hub, 
+you will see you need to place your HTML file in this directory.
 
 https://github.com/nginxinc/docker-nginx/blob/04226fe92cc11bed68dae464eb60fd5399daf3b1/mainline/debian/Dockerfile
 

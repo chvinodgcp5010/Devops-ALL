@@ -53,6 +53,16 @@ once all containers are up check
 2. login with registered user , you can able to login (because your date is stored on db 
 
 
+Gateway:
+
+https://github.com/chvinodgcp5010/emartapp/blob/main/nginx/apigateway/default.conf
+
+here 
+
+<ip>:80
+<ip>:80/api
+<ip>:80/webapi
+
 
 =================================== Difference between DOCKER COMPOSE & DOCKER SWARM ======================================
 

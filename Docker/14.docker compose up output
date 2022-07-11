@@ -24,7 +24,15 @@ f0b4256b1317   emartapp_client   "/docker-entrypoint.…"   About a minute ago  
 f6798abc32d6   mongo:4           "docker-entrypoint.s…"   About a minute ago   Up About a minute   0.0.0.0:27017->27017/tcp, :::27017->27017/tcp          emongo
 5dce503b5f19   mysql:5.7         "docker-entrypoint.s…"   About a minute ago   Up About a minute   0.0.0.0:3306->3306/tcp, :::3306->3306/tcp, 33060/tcp   emartdb
 
+once all containers are up check 
 
+<ip>:80
+
+1.register 
+2. login with registered user , you can able to login (because your date is stored on db 
+
+
+===================================== docker compose up output =========================================
 [+] Running 28/28
  ⠿ emartdb Pulled                                                                                                                                                     17.5s
    ⠿ 66fb34780033 Pull complete                                                                                                                                        6.6s

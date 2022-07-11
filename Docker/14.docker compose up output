@@ -1,4 +1,30 @@
 [centos@ip-172-31-30-103 emartapp]$ docker compose up
+
+and check 
+
+=>[centos@ip-172-31-30-103 emartapp]$ docker images
+
+REPOSITORY        TAG       IMAGE ID       CREATED          SIZE
+emartapp_client   latest    c4bf7c80174d   41 minutes ago   147MB
+emartapp_webapi   latest    6aaef79e383e   43 minutes ago   564MB
+emartapp_api      latest    be043532c2a1   43 minutes ago   933MB
+mongo             4         1767a7f3a960   5 days ago       444MB
+mysql             5.7       34e82e623818   5 days ago       429MB
+nginx             latest    55f4b40fe486   2 weeks ago      142MB
+
+=>docker ps
+
+[centos@ip-172-31-30-103 ~]$ docker ps
+
+CONTAINER ID   IMAGE             COMMAND                  CREATED              STATUS              PORTS                                                  NAMES
+102124296da6   nginx:latest      "/docker-entrypoint.…"   About a minute ago   Up About a minute   0.0.0.0:80->80/tcp, :::80->80/tcp                      nginx
+f0b4256b1317   emartapp_client   "/docker-entrypoint.…"   About a minute ago   Up About a minute   80/tcp, 0.0.0.0:4200->4200/tcp, :::4200->4200/tcp      client
+7ead2c546bd1   emartapp_api      "docker-entrypoint.s…"   About a minute ago   Up About a minute   0.0.0.0:5000->5000/tcp, :::5000->5000/tcp              api
+80cdee5b8d41   emartapp_webapi   "java -jar book-work…"   About a minute ago   Up About a minute   0.0.0.0:9000->9000/tcp, :::9000->9000/tcp              webapi
+f6798abc32d6   mongo:4           "docker-entrypoint.s…"   About a minute ago   Up About a minute   0.0.0.0:27017->27017/tcp, :::27017->27017/tcp          emongo
+5dce503b5f19   mysql:5.7         "docker-entrypoint.s…"   About a minute ago   Up About a minute   0.0.0.0:3306->3306/tcp, :::3306->3306/tcp, 33060/tcp   emartdb
+
+
 [+] Running 28/28
  ⠿ emartdb Pulled                                                                                                                                                     17.5s
    ⠿ 66fb34780033 Pull complete                                                                                                                                        6.6s

@@ -1,0 +1,185 @@
+For example, for ls command, we give the path of a directory. So that path is the argument.
+
+when you're copying a file, the source and destination, we give basically arguments to the cp command or to the mv command.
+So we've seen many, many commands and many, many commands needs many, many arguments.
+
+How can we programmatically take arguments from our script?
+For example, we may want to take the URL of the artifact as an argument so user can pass any URL in our script, will deploy 
+that website for the user.
+
+vi cla.sh
+chmod +x cla.sh
+
+================================================= cla.sh ====================================================
+
+echo "Value of 0 is"
+echo $0
+echo "value of 1 is"
+echo $1
+echo "value of 2 is"
+echo $2
+echo "value of 3 is"
+echo $3
+
+==========================  ==========================  ======================================
+
+Explanation :
+
+Here we have not declared any value of $0 $1 $2 and $3 so it will not give output (because we have not declare any)
+
+so o/p is 
+=========
+Value of 0 is
+cla.sh
+
+by default the command you execute after sh is argument so it is taking as value of 0 is "cla.sh" and rest of the value is 
+"empty" because we did not provide any arguments over command line after cla.sh so its taking 1st argument as 
+cla.sh
+
+
+sh cla.sh
+----------
+Value of 0 is
+cla.sh
+value of 1 is
+
+value of 2 is
+
+value of 3 is
+
+#
+
+Here you need to mention "arguments" over command line
+
+========================================== cla.sh ========================================
+
+echo "Value of 0 is"
+echo $0
+echo "value of 1 is"
+echo $1
+echo "value of 2 is"
+echo $2
+echo "value of 3 is"
+echo $3
+
+O/P:
+====
+[root@ip-172-31-10-46 ~]# sh cla.sh 12 13 14
+Value of 0 is
+cla.sh
+value of 1 is
+12
+value of 2 is
+13
+value of 3 is
+14
+
+==================================== Command line argument ==============================
+
+Here in script we are commenting env variable 
+#URL  
+#ART_NAME 
+
+and in place of them we are adding $1 and $2 
+so if whatever we mention in argument over commandline it will take the arguments and replace with $1 as 1st argument 
+$2 as 2nd argument.
+
+Updated shell script:
+=====================
+line no : 136,137,138 added below code
+
+wget $1 > /dev/null
+unzip $2.zip > /dev/null
+sudo cp -r $2/* /var/www/html/     
+
+Execute below shell script 
+====================
+
+#sh cla.sh https://www.tooplate.com/zip-templates/2125_artxibition.zip 2125_artxibition
+
+Here
+
+$0 =  cla.sh
+$1 = https://www.tooplate.com/zip-templates/2125_artxibition.zip
+$2 = 2125_artxibition
+
+
+=======================================================  SCRIPT.SH ======================================================
+#!/bin/bash
+
+#VARIABLE DECLARATION
+
+PACKAGE="wget unzip httpd"
+SVC="httpd"
+TEMPDIR="/tmp/webfiles"
+#URL="https://www.tooplate.com/zip-templates/2126_antique_cafe.zip"
+#ART_NAME="2126_antique_cafe"
+
+
+#INSTALLING PACKAGES
+echo "#################################"
+echo "installing packages"
+echo "#################################"
+sudo yum install $PACKAGE -y > /dev/null                      #for non root user #/dev/null will not show o/p on console
+echo
+
+#START AND ENABLE SERVICE
+echo "#################################"
+echo "Start and enable http service"
+echo "#################################"
+sudo systemctl start $SVC
+sudo systemctl enable $SVC
+echo
+
+#CREATE /TMP DIRECTORY & ARTIFACT DEPLOYMENT
+echo "#################################"
+echo "Create directory and copy html files"
+echo "#################################"
+mkdir -p $TEMPDIR                                                 #if directory exists it will not through error
+cd $TEMPDIR
+
+wget $1 > /dev/null
+unzip $2.zip > /dev/null
+sudo cp -r $2/* /var/www/html/                             #/var/www/html/ directory owned by root user so use sudo
+
+#START HTTPD SERVICE
+echo "#################################"
+echo "Starting and artifact deployment"
+echo "#################################"
+systemctl restart $SVC
+echo
+
+#REMOVE TEMPORARY FILES
+echo "#################################"
+echo "REMOVE TEMPORARY FILES"
+echo "#################################"
+rm -rf $TEMPDIR
+echo
+
+sudo systemctl status $SVC
+
+===============================================================================================
+
+Execute shell script
+====================
+
+#sh cla.sh https://www.tooplate.com/zip-templates/2125_artxibition.zip 2125_artxibition
+
+Here
+
+$0 =  cla.sh
+$1 = https://www.tooplate.com/zip-templates/2125_artxibition.zip
+$2 = 2125_artxibition
+
+so it will take arguments from command line and using at script, so we donot need to change script file , directly we 
+need to change arguments while executing the scripts.
+
+
+check:
+======
+
+cd /var/www/html
+<ip>:80
+
+
+

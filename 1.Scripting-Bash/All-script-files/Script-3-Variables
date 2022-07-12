@@ -34,7 +34,7 @@ vi dismantle.sh
 
 systemctl stop httpd
 rm -rf /var/www/html/*
-yum remove httpd unzip wget -y
+yum remove httpd unzip wget -y >/dev/null
 
 
 ================================ SCRIPT.SH =====================================

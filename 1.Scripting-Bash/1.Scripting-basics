@@ -1,3 +1,15 @@
+Information:
+=============
+
+First line in your script will be a Shebang character hash exclamation. That's one character Shebang that really gives or 
+tells the path of the interpretive.
+
+So what basically we're telling the script when it executes is that open this interpreter and execute
+
+all the commands that I'm writing on that interpreter, if it happens to be a Python script, you'll have the path of Python 
+interpreter. If it's Ruby, you'll have ruby interpreter.
+
+
 
 
 

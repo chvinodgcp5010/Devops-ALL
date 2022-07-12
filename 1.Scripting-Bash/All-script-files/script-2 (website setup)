@@ -30,7 +30,7 @@ in a UNIX system.
 echo "#################################"
 echo "installing packages"
 echo "#################################"
-sudo yum install wget unzip httpd -y > /dev/null                      #for non root user
+sudo yum install wget unzip httpd -y > /dev/null                      #for non root user #/dev/null will not show o/p on console
 echo 
 
 #START AND ENABLE SERVICE

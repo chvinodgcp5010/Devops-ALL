@@ -1,0 +1,57 @@
+============================================= shell script ======================================
+
+#!/bin/bash
+#This script prints system info"
+
+echo "Welcome to bash script"
+echo
+
+echo "##########################"
+
+#checking system uptime
+echo "The uptime of the system is: "
+uptime
+echo
+echo "############################"
+
+#Memory utilization
+echo "memory utilization is :"
+free -m
+echo
+echo "############################"
+
+#Disk utilization
+echo "Disk utilization: "
+df -hT
+echo
+
+============================================= shell script O/P======================================
+
+[root@ip-172-31-30-103 shellscript]# sh shell1.sh
+Welcome to bash script
+
+##########################
+The uptime of the system is:
+ 07:32:12 up 23:42,  5 users,  load average: 0.00, 0.01, 0.05
+
+############################
+memory utilization is :
+              total        used        free      shared  buff/cache   available
+Mem:           3787        1260         127          17        2399        2230
+Swap:             0           0           0
+
+############################
+Disk utilization:
+Filesystem     Type      Size  Used Avail Use% Mounted on
+devtmpfs       devtmpfs  1.9G     0  1.9G   0% /dev
+tmpfs          tmpfs     1.9G     0  1.9G   0% /dev/shm
+tmpfs          tmpfs     1.9G   18M  1.9G   1% /run
+tmpfs          tmpfs     1.9G     0  1.9G   0% /sys/fs/cgroup
+/dev/xvda1     xfs        10G  6.7G  3.4G  67% /
+overlay        overlay    10G  6.7G  3.4G  67% /var/lib/docker/overlay2/760cb816ced39fda12fb42bfb298a355ba4f9752405084760bdb2f1639ae56fb/merged
+overlay        overlay    10G  6.7G  3.4G  67% /var/lib/docker/overlay2/13d1d8cec21b75967156ccf487d5fb0454ad040ca6687a3a28ba0796a8aad15d/merged
+overlay        overlay    10G  6.7G  3.4G  67% /var/lib/docker/overlay2/f0890806c963518e7196db592ba12525e9105195bb0b32b211293cba4ad7082a/merged
+overlay        overlay    10G  6.7G  3.4G  67% /var/lib/docker/overlay2/9c171184405bb7fb0c2052064e54c085b4945fbc0c2b4f27d248701dededb980/merged
+overlay        overlay    10G  6.7G  3.4G  67% /var/lib/docker/overlay2/2b665267452e959e31ac9c66611bb3da1ae03cb6ca369161d0964a85b51fe168/merged
+overlay        overlay    10G  6.7G  3.4G  67% /var/lib/docker/overlay2/c75ecfb58cef2b6465e6604921a9e96f415753c5d97d79170dfacec584f0b6df/merged
+tmpfs          tmpfs     379M     0  379M   0% /run/user/1000

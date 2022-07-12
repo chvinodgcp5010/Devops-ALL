@@ -68,7 +68,9 @@ echo
 
 sudo systemctl status httpd
 
+=============================================================================
 
+Try searching on your browser <ip>:80  webiste able to access or not
 
 
 

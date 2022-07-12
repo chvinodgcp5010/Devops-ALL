@@ -73,6 +73,9 @@ sudo systemctl status httpd
 Try searching on your browser <ip>:80  webiste able to access or not
 
 
+[root@ip-172-31-10-46 ~]# cd /var/www/html
+[root@ip-172-31-10-46 html]# ls
+ABOUT THIS TEMPLATE.txt  css  img  index.html  js  webfonts
 
 
 

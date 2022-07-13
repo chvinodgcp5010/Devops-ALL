@@ -11,7 +11,7 @@ $$ : Process ID of the current script
 $USER : User name of the user running script
 $HOSTNAME : hostname of the machine the script is running on 
 $SECONDS: Number of seconds since the script was started
-$RANDOM : Returns a different random number each time is it referred to 
+$RANDOM : Returns a different random number each time is it referred to ,It just give random number in the range 0 – 32767
 $LINENO : Current line number in the bash script.
 
 

@@ -53,7 +53,7 @@ ip-172-31-10-46.ec2.internal
 [root@ip-172-31-10-46 ~]# echo $?
 0
 
-
+$?:  print exit status of last command?
 
 
 

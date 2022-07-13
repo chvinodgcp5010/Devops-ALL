@@ -1,0 +1,61 @@
+https://stackoverflow.com/questions/5163144/what-are-the-special-dollar-sign-shell-variables
+
+https://www.gnu.org/software/bash/manual/html_node/Special-Parameters.html
+
+$0 is the name of the shell or shell script.
+$1 -$9 : The first 9 arguments to bash script
+$#  : How many arguments were passed to bash script
+$@   : all arguments were passed to bash script
+$? : exit status of the most recently run process.
+$$ : Process ID of the current script
+$USER : User name of the user running script
+$HOSTNAME : hostname of the machine the script is running on 
+$SECONDS: Number of seconds since the script was started
+$RANDOM : Returns a different random number each time is it referred to 
+$LINENO : Current line number in the bash script.
+
+
+$zero is the name of the script dollar one two nine are the command line arguments.
+
+========================================= Commands check =========================================
+
+$?
+
+$?   ====>  So basically what this means is if you get zero, that means the last command was a success.
+            If you get a non-zero the last command failed.
+            
+(If you receive 0 for echo $? it means executed command is successful) If it's non zero the previous was failed.
+
+[root@ip-172-31-10-46 ~]# free -m
+              total        used        free      shared  buff/cache   available
+Mem:           1836         121        1586          16         128        1569
+Swap:             0           0           0
+[root@ip-172-31-10-46 ~]# echo $?
+0
+
+[root@ip-172-31-10-46 ~]# freee -urrt
+-bash: freee: command not found
+[root@ip-172-31-10-46 ~]# echo $?
+127
+    
+==============================
+The $user gives user executing script $ hostname gives the hostname. $random, gives as a random number. 
+
+[root@ip-172-31-10-46 ~]# echo $USER
+root
+
+[root@ip-172-31-10-46 ~]# echo $HOSTNAME
+ip-172-31-10-46.ec2.internal
+
+[root@ip-172-31-10-46 ~]# echo $RANDOM
+5304
+
+[root@ip-172-31-10-46 ~]# echo $?
+0
+
+
+
+
+
+
+

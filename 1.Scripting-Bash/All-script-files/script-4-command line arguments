@@ -1,3 +1,18 @@
+
+https://stackoverflow.com/questions/29258603/what-do-0-1-2-mean-in-shell-script
+
+These are positional arguments of the script.
+
+Executing
+
+./script.sh Hello World
+Will make
+
+$0 = ./script.sh
+$1 = Hello
+$2 = World
+
+
 For example, for ls command, we give the path of a directory. So that path is the argument.
 
 when you're copying a file, the source and destination, we give basically arguments to the cp command or to the mv command.

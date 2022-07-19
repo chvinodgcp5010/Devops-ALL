@@ -1,0 +1,73 @@
+--------------------------------------- script --------------------------------------------
+
+#!/bin/bash
+echo "Enter your skills"
+read SKILL
+echo "Your $SKILL skill is high demand in IT industry"
+
+read -p "Username: " USR                       # -p : prompt          
+read -sp "password: " pass                     # -sp : suppress prompt    
+echo                                                      
+echo "Login successful: welcome USER $USR"
+
+--------------------------------------- --------------------------------------- 
+
+Here
+
+# -p : prompt
+# -sp it will "supress prompt" it will not show password on console while entering
+
+
+Execute script
+------------------
+
+[root@ip-172-31-10-46 ~]# sh s1.sh
+Enter your skills
+java
+
+Your java skill is high demand in IT industry
+
+Username: vinod
+password:
+Login successful: welcome USER vinod & root
+
+====================================== Explanation ====================================
+
+how we can make our script interactive, taking input from the user and then execute the script.
+
+So it's done simply by using the command "read" and the variable name.
+
+read var1
+
+When you executes a script which has a read statement, it will wait for the user input, user enters a value, it will be 
+stored into the variable, and then we can use that variable.
+
+Just some print statement and a read statement.
+
+There's also some options with read, -p, which is for prompt. So it's like a typical prompt.
+
+-s is antoher option it will suppress the input. That means when the user types, user will not be able to read or see, 
+which is mostly used for things like password or any secret.
+
+We are giving user, a prompt for username and a prompt for password, user enters. And then just simply a print statement.
+So we're printing the user variable. But don't you dare print pass variable, because if you print that, then what's
+the point of using -s
+
+-s?  That is, so nobody can see what you're typing.
+
+
+Note:
+-----
+
+But it's really not recommended in devops at least, to make the script interactive because we run scripts from background 
+from some other tools. And we really don't want user to interact with the system. Because user interaction is always error 
+prone.
+
+
+
+
+
+
+
+
+

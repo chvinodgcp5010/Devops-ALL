@@ -1,3 +1,5 @@
+https://github.com/chvinodgcp5010/Devops-ALL/blob/main/1.Scripting-Bash/export%20variable
+
 
 [root@ip-172-31-10-46 ~]# SEASON="MONSOON"                             ##parent shell
 [root@ip-172-31-10-46 ~]# echo $SEASON

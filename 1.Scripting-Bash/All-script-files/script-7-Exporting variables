@@ -1,1 +1,142 @@
 
+[root@ip-172-31-10-46 ~]# SEASON="MONSOON"                             ##parent shell
+[root@ip-172-31-10-46 ~]# echo $SEASON
+MONSOON
+
+Exposed outside of script and try to access over inside it will not work "show empty"
+
+vi s1.sh
+------------------------------
+!#/bin/sh
+echo $SEASON                                                       #child shell
+
+[root@ip-172-31-10-46 ~]# sh s1.sh
+
+[root@ip-172-31-10-46 ~]#
+
+==============================
+Here its showing empty because we have given variable and its value over "parent" it will not reflect in chiild process. 
+If you want you need  to "export" the "parent variable" to access on child process.
+
+First export variable to use "globally" , once you expose you can access on child process as well. but once you exit changes 
+will not persist.
+
+Here variable is not refer anywhere inside script but we are trying to fetch from parent but its not possible , if you want to 
+fetch from parent you need to export varialbe and try to execute script it will take from parent.
+
+[root@ip-172-31-10-46 ~]# export SEASON
+
+[root@ip-172-31-10-46 ~]# sh s1.sh
+SEASON
+
+Note:
+----
+Once you expose and exit from shell, changes will not persist, so we need to make it these changes are permanent.
+
+[root@ip-172-31-10-46 ~]# exit
+logout
+
+[centos@ip-172-31-10-46 ~]$ sudo su -
+[root@ip-172-31-10-46 ~]# sh s1.sh
+
+[root@ip-172-31-10-46 ~]# echo $SEASON
+
+[root@ip-172-31-10-46 ~]#
+
+============================================ So how do I make this permanent =====================================
+
+login back and the variable is gone. So how do I make this permanent, what we can do is in every user's home directory?
+There is a hidden file called as .bashrc,
+
+if we place our export command and variable in ".bashrc" file, then it will become permanent for this "root" user.
+
+-> Update bottom of file on root user.
+
+#vi .bashrc
+
+[root@ip-172-31-10-46 ~]# vi .bashrc
+---------------------------------------
+# .bashrc
+
+if [ -f /etc/bashrc ]; then
+       	. /etc/bashrc
+fi
+export VAR="MONSOON"
+---------------------------------------
+
+#source .bashrc
+[root@ip-172-31-10-46 ~]# sh s1.sh
+MONSOON
+
+Logout and check if the variable present after relogin using "root" user
+-------------------------------------------------------------------------
+#ctrl+d
+
+[centos@ip-172-31-10-46 ~]$ sudo su -
+
+[root@ip-172-31-10-46 ~]# sh s1.sh
+MONSOON
+
+So what happens is whenever the root user login or any user, whenever any user log in. Every user will have its own a bashrc 
+file and also another file ".bash_profile"
+
+So if I edit  .bashrc file and place my commands or script anything, if I place over here, it will get executed.
+
+=>Currently, I am ubuntu user. ubuntu user has its own bashrc file, there. So if I want to set make this variable permanent 
+for ubuntu users, then I need to edit, bashrc, file of ubuntu user.
+
+
+========================== How to use variable to access globally for every user ======================================= 
+
+
+If you want to do it globally for every user, then you can use this file /etc/profile. Now, this is global, so.
+
+->Go to the end of this file /etc/profile file and I can place my commands over here, so I'm going to say export season 
+equal to and this time I'm giving a different value.Because I also want you to see the preference between these two
+
+
+=========================================
+vi /etc/profile
+
+---------------
+---------------
+
+export SEASON="Mindtree"
+
+=====================================
+Once done execute "source /etc/profile"
+
+source /etc/profile
+
+[root@ip-172-31-10-46 ~]# sh s1.sh
+Mindtree
+
+Here I exported same variable in "/etc/profile" and same variable in "bashrc" , but both has different values.
+
+vi .bashrc 
+
+export SEASON="MONSOON"
+
+vi /etc/profile
+
+export SEASON="Mindtree"
+
+============================================================
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

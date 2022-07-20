@@ -24,10 +24,52 @@ You number is greaterthan 100
 Wed Jul 20 15:16:59 UTC 2022
 Script execution is completed successfully
 
-
+if its true it will execute if statement otherwise it will execute rest of the statement than if.
 Enter number less than 100 and check it will not enter if block simply 
 
 [root@ip-172-31-10-46 ~]# sh s1.sh
 Enter the number: 23
 
 Script execution is completed successfully
+
+
+================================== If-else =========================================
+
+#!/bin/bash
+
+read -p "Enter the number: " NUM
+if [ $NUM -gt 100 ]
+then 
+  echo "entered in to if block"
+  date
+  sleep 3
+  echo "entered number is more than 100"  
+else
+  echo "You have entered number lessthan 100"
+fi
+
+echo "Script executed successfully"
+
+==================== execute ============================
+
+[root@ip-172-31-10-46 ~]# sh s1.sh
+Enter the number: 23
+You have entered number lessthan 100
+Script executed successfully
+
+
+[root@ip-172-31-10-46 ~]# sh s1.sh
+Enter the number: 234
+
+
+entered in to if block
+Wed Jul 20 15:51:07 UTC 2022
+entered number is more than 100
+Script executed successfully
+
+
+
+
+
+
+

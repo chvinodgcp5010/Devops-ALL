@@ -50,8 +50,28 @@ O/P:
 [root@ip-172-31-10-46 ~]# sh s1.sh
 a is less than 25
 
+=================================== SCRIPT 3 ========================================
+
+echo -n "Enter a number:"
+read VAR
+
+if [[ $VAR -gt 10 ]]
+then 
+  echo "Variable is gt 10"
+elif [[ $VAR -eq 10 ]]
+then 
+  echo "variable is eq 10"
+else
+  echo "variable is lt 10"
+fi
+
+o/p:
+
+[root@ip-172-31-10-46 ~]# sh s1.sh
+Enter a number:23
 
 
+Variable is gt 10
 
 
 

@@ -1,0 +1,43 @@
+======================================== SCRIPT =======================================================
+
+#!/bin/bash
+
+ls /var/run/httpd/httpd.pid
+if [ $? -eq 0 ]
+then
+  echo "httpd process is running"
+else
+  echo "Httpd process is not running"
+  echo "Start the process"
+  systemctl start httpd
+
+  if [ $? -eq 0 ]
+  then
+   echo "Process started successfully"
+  else
+   echo "Process starting failed , contact admin"
+  fi
+
+fi
+
+================================ Execute script =============================
+
+# sh s1.sh
+/var/run/httpd/httpd.pid
+httpd process is running
+
+stop the process and check script will start httpd or not 
+
+#systemctl stop httpd
+#systemctl status httpd
+exited
+
+execute script:
+-----------------
+#sh s1.sh
+
+ls: cannot access /var/run/httpd/httpd.pid: No such file or directory
+Httpd process is not running
+Start the process
+Process started successfully
+

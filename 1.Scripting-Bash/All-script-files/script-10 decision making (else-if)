@@ -1,0 +1,62 @@
+Check command from linux vm 
+
+[root@ip-172-31-10-46 ~]# ip addr show |grep -v LOOPBACK |grep -ic mtu
+1
+
+==================================== write script =============================
+
+#!/bin/bash
+
+value=$(ip addr show |grep -v LOOPBACK |grep -ic mtu)
+if [ $value -eq 1 ]
+then
+  echo "1 active network connection found"
+elif [ $value -gt 1 ]
+then
+  echo "Found multiple network interfaces found"
+else
+  echo "No active interface found"
+fi
+====================================  ==================================== 
+O/P:
+
+[root@ip-172-31-10-46 ~]# ./s1.sh
+1 active network connection found
+
+
+
+
+=================================== SCRIPT2 =====================================
+
+#!/bin/bash
+# Initializing the variable
+a=20
+if [ $a -lt 10 ]
+then
+      # If variable less than 10
+      echo "a is less than 10"
+elif [ $a -lt 25 ]
+then
+      # If variable less than 25
+      echo "a is less than 25"
+else
+     # If variable is greater than 25
+       echo "a is greater than 25"
+fi
+
+O/P:
+====
+
+[root@ip-172-31-10-46 ~]# sh s1.sh
+a is less than 25
+
+
+
+
+
+
+
+
+
+
+

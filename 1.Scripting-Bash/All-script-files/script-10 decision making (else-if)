@@ -23,9 +23,6 @@ O/P:
 [root@ip-172-31-10-46 ~]# ./s1.sh
 1 active network connection found
 
-
-
-
 =================================== SCRIPT2 =====================================
 
 #!/bin/bash
@@ -70,11 +67,7 @@ o/p:
 [root@ip-172-31-10-46 ~]# sh s1.sh
 Enter a number:23
 
-
 Variable is gt 10
-
-
-
 
 
 

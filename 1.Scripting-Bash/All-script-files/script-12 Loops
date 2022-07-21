@@ -1,0 +1,35 @@
+https://www.geeksforgeeks.org/bash-scripting-for-loop/
+
+#!/bin/bash
+for VAR1 in devops cloud python scripting terraform
+do
+   echo "Looping ....."
+   sleep 5                                             # delay time for each and every iteration
+   echo "########################################"
+   echo "Var1 is $VAR1"
+   date
+done
+
+===================================== Execute ==================
+
+sh s1.sh
+Looping .....
+########################################
+Var1 is devops
+Thu Jul 21 17:54:52 UTC 2022
+Looping .....
+########################################
+Var1 is cloud
+Thu Jul 21 17:54:57 UTC 2022
+Looping .....
+########################################
+Var1 is python
+Thu Jul 21 17:55:02 UTC 2022
+Looping .....
+########################################
+Var1 is scripting
+Thu Jul 21 17:55:07 UTC 2022
+Looping .....
+########################################
+Var1 is terraform
+Thu Jul 21 17:55:12 UTC 2022

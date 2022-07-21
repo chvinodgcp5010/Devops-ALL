@@ -1,0 +1,102 @@
+https://www.geeksforgeeks.org/bash-scripting-for-loop/
+
+There are a couple of ways to use for loops depending on the use case and the problem it is trying to automate.
+
+Simple For loop
+Range-based for loop
+Array iteration for loops
+C-Styled for loops
+Infinite for loop
+
+
+=========================================Simple For loop====================================
+To execute a for loop we can write the following syntax:
+
+#!/bin/usr/env bash
+
+for n in a b c;
+do
+   echo $n
+done
+
+
+O/P:
+-----
+a
+b
+c
+
+============================================= Range-based for loop ========================
+
+We can use range-based for loops. In this type of loop, we can specify the number to start, to stop, and to increment at every iteration(optional) 
+in the statement. There are two ways you can do this i.e. by mentioning the increment/decrementer value and by incrementing by one by default. 
+The syntax looks like this:
+
+#!/bin/usr/env bash
+
+for n in {1..5}; 
+do
+    echo $n
+done
+
+o/p:
+1
+2
+3
+4
+5
+
+In the above code, we use the “{}” to specify a range of numbers. Inside the curly braces, we specify the start point followed by two dots 
+and an endpoint. By default, it increments by one. Hence we print 5 numbers from 1 to 5 both inclusive. 
+
+#!/bin/usr/env bash
+
+for n in {1..5..2}; 
+do
+    echo $n
+done
+
+Here we can see that the loop incremented by 2 units as mentioned in the curly braces. Thus this makes working with numbers very easy and 
+convenient. This can also be used with alphabetical characters. 
+
+
+=========================================== Array iteration for loops =============================================
+
+We can iterate over arrays conveniently in bash using for loops with a specific syntax. We can use the special variables in BASH i.e @ to access all the elements in the array. Let’s look at the code:
+
+#!/bin/usr/env bash
+
+s=("football" "cricket" "hockey") 
+for n in ${s[@]}; 
+do
+    echo $n
+done
+
+
+
+O/P:
+
+football
+cricket
+hockey
+
+We can iterate over the array elements using the @ operator that gets all the elements in the array. Thus using the for loop we 
+iterate over them one by one. We use the variable ${variable_name[@]} in which, the curly braces here expand the value of the variable “s” 
+here which is an array of strings. Using the [@] operator we access all the elements and thus iterate over them in the for a loop. Here, the 
+“n” is the iterator hence, we can print the value or do the required processing on it. 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

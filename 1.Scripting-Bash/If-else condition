@@ -1,0 +1,143 @@
+IF Statement
+This statement is used when there is a need to check only conditions. If the condition founds to be true then the statement was written inside the if block will get executed.
+
+Syntax:
+
+if (condition)
+then
+ statement
+fi
+
+Code:
+=======
+if [ 15 -gt 10 ]
+then  
+# If variable less than 10  
+   echo "a is greater than 10"
+
+fi 
+
+Output:
+
+a is greater than 10
+
+=========================== If-else =======================================
+
+IF-ELSE statement
+As seen in the If statement, If the condition is true, the IF statement block gets executed but if the condition is false nothing is returned or executed. If we want the program to perform certain action after the IF statement condition is false, we use the ELSE statement after the If statement.
+
+Syntax:
+
+if [condition ]
+then  
+    If statement
+else
+    ELSE statement
+fi 
+
+
+If the condition is true: the IF statement will get executed.
+If the condition is false: the ELSE statement will get executed.
+
+
+Code:
+
+if [ 5 -gt 10 ]
+then  
+# If variable less than 10  
+   echo "number is greater than 10"
+else
+   echo "number is less than 10"
+fi 
+
+
+Output:
+
+number is less than 10
+
+================================== ELSE-IF ========================================
+
+ELIF (ELSE IF) statement
+ELIF is the keyword used for the ELSE IF statement in bash scripting. If in a loop if more than two conditions exist which can not be solved only by using IF-ELSE statement then ELIF is used. Multiple ELIF conditions can be defined inside one if-else loop.
+
+ELIF syntax:
+
+if [ condition1 ]
+then
+       statement1
+ elif [ condition2 ]
+then
+       statement2
+ elif [condition3 ]
+then
+       statement3
+else
+      statement_n
+fi
+
+Code:
+============
+
+#!/bin/bash
+# Initializing the variable
+a=20
+if [ $a -lt 10 ]
+then
+      # If variable less than 10
+      echo "a is less than 10"
+elif [ $a -lt 25 ]
+then
+      # If variable less than 25
+      echo "a is less than 25"
+else
+     # If variable is greater than 25
+       echo "a is greater than 25"
+fi
+
+Output:
+
+a is less than 25
+
+
+=============================== NESTED-IF ==================================
+
+NESTED statements
+If one or more than one conditional statement is written inside another statement, this is called nested statements like IF statements inside another IF statement.
+
+Syntax (Nested IF):
+
+If [condition]
+then 
+      if [condition_2]
+      then 
+            statement_1
+
+      fi
+fi
+
+#!/bin/bash
+#Initializing the variable
+
+if [ 12 -gt 10 ]
+then
+   if [ 12 -gt 15]
+   then
+       echo "number is greater than 15"
+
+   else
+       echo "number is less than 15"
+   fi
+fi 
+
+o/p:
+number is less than 15
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,84 @@
+====================================== SCRIPT FOR USER FRIENDLY =======================================
+
+here output of below command shows some output so i dont want to show the output and move that into /dev/null 
+
+#ls /var/run/httpd/httpd.pid
+/var/run/httpd/httpd.pid
+
+ls /var/run/httpd/httpd.pid >/dev/null 
+
+====================================================================================
+#!/bin/bash
+
+echo "#######################################"
+date
+ls /var/run/httpd/httpd.pid > /dev/null
+if [ $? -eq 0 ]
+then
+  echo "httpd process is running"
+else
+  echo "Httpd process is not running"
+  echo "Start the process"
+  systemctl start httpd
+
+  if [ $? -eq 0 ]
+  then
+   echo "Process started successfully"
+  else
+   echo "Process starting failed , contact admin"
+  fi
+
+fi
+echo "#######################################"
+echo
+====================================================================================
+
+I need this script will run each day at specific time , it its down it start the process if it's up simply it store o/p
+on /var/log/monit_httpd.log
+
+added crontab
+
+->crontab -e
+# MM HH DOM mm DOW (Date Of Month -> 1-31) #month (1-12) DOW(1-7)
+# Every day from "Mon-friday" @8.30PM 
+#30 20 * * 1-5 COMMAND
+#If you want to execute your script every minutes use below 
+
+* * * * * /root/s1.sh >>/var/log/monit_httpd.log
+
+check:
+-----
+stop httpd first and check after a minute it will up or not.
+and save the file o/p on /var/log/monit_httpd.log
+
+Here
+------------------------------------------------------
+* * * * * /root/s1.sh  --> this will generate an ouptut and I want to store this logfile to /var/log/monit_httpd.log
+
+[root@ip-172-31-10-46 ~]# cat /var/log/monit_httpd.log
+
+#######################################
+Thu Jul 21 11:41:01 UTC 2022
+Httpd process is not running
+Start the process
+Process started successfully
+#######################################
+You have new mail in /var/spool/mail/root
+#######################################
+#######################################
+Thu Jul 21 11:42:01 UTC 2022
+httpd process is running
+#######################################
+#######################################
+Thu Jul 21 11:43:01 UTC 2022
+httpd process is running
+#######################################
+#######################################
+
+
+
+
+
+
+
+

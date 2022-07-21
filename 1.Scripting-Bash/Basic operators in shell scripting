@@ -1,0 +1,67 @@
+https://www.geeksforgeeks.org/basic-operators-in-shell-scripting/
+
+Basic Operators in Shell Scripting
+
+There are 5 basic operators in bash/shell scripting:
+
+Arithmetic Operators
+Relational Operators
+Boolean Operators
+Bitwise Operators
+File Test Operators
+
+1. Arithmetic Operators: These operators are used to perform normal arithmetics/mathematical operations. There are 7 arithmetic operators:
+
+Addition (+): Binary operation used to add two operands.
+Subtraction (-): Binary operation used to subtract two operands.
+Multiplication (*): Binary operation used to multiply two operands.
+Division (/): Binary operation used to divide two operands.
+Modulus (%): Binary operation used to find remainder of two operands.
+Increment Operator (++): Unary operator used to increase the value of operand by one.
+Decrement Operator (- -): Unary operator used to decrease the value of a operand by one
+
+
+vi arith.sh
+-------------
+
+read -p "Enter a : " a
+read -p "Enter b : " b
+add=$((a+b))                           #value = $((a+b))  invalid no space needed while allocating variable to value.
+echo "addition of and b are" $add
+sub=$((a-b)) 
+echo "addition of and b are" $sub
+mul=$((a*b)) 
+echo "addition of and b are" $mul
+div=$((a/b)) 
+echo "addition of and b are" $div
+mod=$((a%b)) 
+echo "addition of and b are" $mod
+((++a))
+echo increment operator a=$a
+((--b))
+echo decrement operator b=$b
+
+
+sh s1.sh
+
+Enter a : 23
+Enter b : 24
+addition of and b are 47
+addition of and b are -1
+addition of and b are 552
+addition of and b are 0
+addition of and b are 23
+increment operator a=24
+decrement operator b=23
+
+
+
+
+
+
+
+
+
+
+
+

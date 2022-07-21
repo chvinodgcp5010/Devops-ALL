@@ -1,0 +1,57 @@
+if [ -f  /var/run/httpd/httpd.pid ]
+
+Here -f it check file exists or not if exists it will simply execute "if" otherwise it execute "else"
+
+#!/bin/bash
+
+echo "#######################################"
+date
+#ls /var/run/httpd/httpd.pid > /dev/null
+if [ -f /var/run/httpd/httpd.pid ]
+then
+  echo "httpd process is running"
+else
+  echo "Httpd process is not running"
+  echo "Start the process"
+  systemctl start httpd
+
+  if [ $? -eq 0 ]
+  then
+   echo "Process started successfully"
+  else
+   echo "Process starting failed , contact admin"
+  fi
+
+fi
+echo "#######################################"
+
+=====================================================
+
+Once httpd is up it will have below files
+
+[root@ip-172-31-10-46 ~]# cd /var/run/httpd/
+
+[root@ip-172-31-10-46 httpd]# ls
+authdigest_shm.2912  htcacheclean  httpd.pid
+
+Once stop it will not have the file mentioned above  "httpd.pid"
+------------------------------------------------------------------
+[root@ip-172-31-10-46 httpd]# systemctl stop httpd
+[root@ip-172-31-10-46 httpd]# ls
+htcacheclean
+
+[root@ip-172-31-10-46 httpd]# sh /root/s1.sh
+#######################################
+Thu Jul 21 17:21:25 UTC 2022
+Httpd process is not running
+Start the process
+Process started successfully
+######################################
+
+check :
+
+[root@ip-172-31-10-46 httpd]# ls
+authdigest_shm.2912  htcacheclean  httpd.pid
+
+
+

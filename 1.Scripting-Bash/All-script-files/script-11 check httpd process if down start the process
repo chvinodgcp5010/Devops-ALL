@@ -1,0 +1,118 @@
+If the file exist and we just say, the file exists, that means the process is running and httpd is running.
+Else we will say the process is not running and it will start the process.
+
+
+Here how to check httpd up or donw
+
+#ls /var/run/httpd/httpd.pid
+/var/run/httpd/httpd.pid                        #if file exists means httpd is up and running
+
+#ls /var/run/httpd/httpd.pid                    #if not exist means httpd is down
+#ls: cannot access /var/run/httpd/httpd.pid: No such file or directory 
+
+======================================== SCRIPT =======================================================
+
+#!/bin/bash
+
+ls /var/run/httpd/httpd.pid
+if [ $? -eq 0 ]
+then
+  echo "httpd process is running"
+else
+  echo "Httpd process is not running"
+  echo "Start the process"
+  systemctl start httpd
+
+  if [ $? -eq 0 ]
+  then
+   echo "Process started successfully"
+  else
+   echo "Process starting failed , contact admin"
+  fi
+
+fi
+
+================================ Execute script =============================
+
+# sh s1.sh
+/var/run/httpd/httpd.pid
+httpd process is running
+
+stop the process and check script will start httpd or not 
+
+#systemctl stop httpd
+#systemctl status httpd
+exited
+
+execute script:
+-----------------
+#sh s1.sh
+
+ls: cannot access /var/run/httpd/httpd.pid: No such file or directory
+Httpd process is not running
+Start the process
+Process started successfully
+
+================================ ================================
+
+Here we have stopped httpd , so it checks ls /var/run/httpd/httpd.pid  (once it stop that file will not exist) so that 
+command will fail.
+
+echo $? value is nonzero so it move to else process. In else process having below details to start httpd
+
+  echo "Httpd process is not running"
+  echo "Start the process"
+  systemctl start httpd
+  if [ $? -eq 0 ]
+  
+  
+if we have started process but may be it will up or down or failed the command , so it check echo $? it provides 0 means 
+httpd process is up  otherwise it will be down.
+
+
+
+==================================== EXPLANATION ==============================================================  \
+
+Command is failing the exit code "$?" value should be non-zero.  echo $?    ie non zero
+
+But if the command works, its exit code should be zero.  0 means true in bash scripting, and non-zero means false.
+
+systemctl status httpd The process is running.  whenever there is a process running, there will be PID file that will get created.
+So if httpd is running, there should be a PID file for it.
+
+#yum install httpd -y
+#systemctl status httpd 
+running
+
+#if file exists means httpd running and will give PID for this . if not running /var/run/httpd/httpd.pid will not exists( no such file or directory)
+if httpd up it shows some pid
+
+[root@ip-172-31-10-46 httpd]# systemctl status httpd
+   Active: active (running) 
+
+#cat /var/run/httpd/httpd.pid              # if process is running it will show directory and its id otherwise it show "not exist" 
+2206
+
+echo $?                                    # means previous or last command is executed successfully.
+0
+
+/var/run/httpd/httpd.pid
+
+httpd.pid, this file will contain the process ID,   but if the process is dead, Then that file will cease to exist.  
+You see no such file or directory. 
+
+Now, if we get no such file or directory,  then the "$?" value will be non zero. so let's start the httpd process first.  PID file appears
+
+lets stop process and see :
+============================
+#systemctl stop httpd
+
+# cat /var/run/httpd/httpd.pid
+cat: /var/run/httpd/httpd.pid: No such file or directory
+
+Here command failed so check using echo $? will provide non zero (means last commnad is failed)
+
+#echo $?
+1
+
+

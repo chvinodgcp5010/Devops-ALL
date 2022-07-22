@@ -1,4 +1,12 @@
+https://github.com/chvinodgcp5010/Devops-ALL/blob/main/1.Scripting-Bash/2.while%20loop
+
+for:  loop runs for a sequence a 
+while: loop runs for a condition, as long as the condition is true,
+
+it will keep running the code which is mentioned in the while block.
+
 ====================================== SCRIPT =================================
+
 #!/bin/bash
 a=7
 while [ $a -gt 4 ]
@@ -10,10 +18,81 @@ done
 echo "out of the loop"
 
 
-===O/P===
+========================= O/P =======================
 
 7
 6
 5
 out of the loop
+
+====================================== SCRIPT 1 =================================
+
+#!/bin/bash
+counter=0
+while [ $counter -lt 5 ]
+do
+  echo "looping ....."
+  echo "Value of counter is $counter"
+  counter=$(( counter+1 ))
+  sleep1
+done
+echo "Out of the loop"
+
+====================================== o/p ======================================
+
+looping ......
+Value of counter is 0
+looping ......
+Value of counter is 1
+looping ......
+Value of counter is 2
+looping ......
+Value of counter is 3
+looping ......
+Value of counter is 4
+Out of the loop
+
+====================================== SCRIPT 2 (Multiplication) =================================
+
+Mulitple of 2
+
+#!/bin/bash
+
+counter=2
+
+while true
+do
+  echo "Looping ....."
+  echo "Value of counter is $counter"
+  counter=$(( $counter * 2 ))
+  sleep 1
+done
+
+echo "out of the loop"
+
+====================================== o/p ======================================
+
+Looping .....
+Value of counter is 2
+Looping .....
+Value of counter is 4
+Looping .....
+Value of counter is 8
+Looping .....
+Value of counter is 16
+Looping .....
+Value of counter is 32
+Looping .....
+Value of counter is 64
+------------------
+------------------
+
+So make sure whenever you're using while loop, you know, how to terminate, that condition
+needs to become false at some point of time, otherwise it will run for infinity.And imagine that running in the background
+as a cron job. OK, that will put some load on your system if you're doing some heavy operation.
+
+
+
+
+
 

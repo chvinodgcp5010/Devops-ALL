@@ -1,5 +1,9 @@
+https://github.com/chvinodgcp5010/Devops-ALL/blob/main/1.Scripting-Bash/1.loops
+
 https://www.geeksforgeeks.org/bash-scripting-for-loop/
 
+
+--------------------------------------- script.sh ------------------------------
 #!/bin/bash
 for VAR1 in devops cloud python scripting terraform
 do
@@ -10,7 +14,7 @@ do
    date
 done
 
-===================================== Execute ==================
+===================================== Execute ==================================
 
 sh s1.sh
 Looping .....
@@ -33,3 +37,20 @@ Looping .....
 ########################################
 Var1 is terraform
 Thu Jul 21 17:55:12 UTC 2022
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

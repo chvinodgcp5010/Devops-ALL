@@ -1,0 +1,26 @@
+==================================== ====================================
+
+#!/bin/bash
+MYUSERS="alpha beta gamma"
+
+for usr in $MYUSERS
+do
+  echo "Adding user $usr"
+  useradd $usr
+  id $usr
+  echo "####################################"
+done
+
+==================================== Execute script =====================
+
+Adding user alpha
+uid=1002(alpha) gid=1002(alpha) groups=1002(alpha)
+####################################
+Adding user beta
+uid=1003(beta) gid=1003(beta) groups=1003(beta)
+####################################
+Adding user gamma
+uid=1004(gamma) gid=1004(gamma) groups=1004(gamma)
+####################################
+[root@ip-172-31-10-46 ~]# id alpha
+uid=1002(alpha) gid=1002(alpha) groups=1002(alpha)

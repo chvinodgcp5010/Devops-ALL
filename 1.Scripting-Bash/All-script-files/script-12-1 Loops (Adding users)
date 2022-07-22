@@ -1,4 +1,4 @@
-==================================== ====================================
+==================================== add users ====================================
 
 #!/bin/bash
 MYUSERS="alpha beta gamma"
@@ -24,3 +24,26 @@ uid=1004(gamma) gid=1004(gamma) groups=1004(gamma)
 ####################################
 [root@ip-172-31-10-46 ~]# id alpha
 uid=1002(alpha) gid=1002(alpha) groups=1002(alpha)
+
+
+======================================= SCRIPT-2  ====================================
+
+#!/bin/bash
+for (( c=1; c<=5; c++ ))
+do 
+  echo "welcome $c times"
+done
+
+====================================================================================
+#sh s1.sh
+
+welcome 1 times
+welcome 2 times
+welcome 3 times
+welcome 4 times
+welcome 5 times
+
+
+
+
+

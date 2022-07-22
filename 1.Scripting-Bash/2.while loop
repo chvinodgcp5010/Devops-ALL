@@ -1,0 +1,76 @@
+https://www.geeksforgeeks.org/bash-scripting-while-loop/
+
+A while loop is a statement that iterates over a block of code till the condition specified is evaluated to true. 
+We can use this statement or loop in our program when do not know how many times the condition is going to evaluate to 
+false before evaluating to true.  
+
+syntax 
+================================================
+
+while [ condition ];
+do
+    # statements
+    # commands
+done  
+
+================================================
+If the condition is false then the commands inside the while block are executed and are iterated again after checking 
+the condition. 
+
+Also if the condition is true the statements inside the while block are skipped and the statements after the while block 
+are executed. 
+
+The example of a while loop is as follows:
+
+#!/usr/bin/bash 
+
+a=7
+while [ $a -gt 4 ];
+do
+    echo $a
+    ((a--))
+done
+
+echo "Out of the loop"
+
+=============================== Reading a file with a while loop   ===========================
+
+We can read a file with a while loop in BASH.  By parsing certain parameters to the while loop condition, 
+we can iterate over the file line by line or by other groups like characters or words.
+
+#!/usr/bin/bash 
+
+file=temp.txt
+
+while read -r line;
+do
+    echo $line
+done < "$file
+
+
+We use the command read to actually fetch the lines or characters from the file. The read command is passed with 
+-r argument which ignores the escaping of characters if the \  appears and hence it is parsed as its.  
+We read a line from a file mentioned after the done statement. The read command reads a line from the mentioned file and 
+the while loops end when the last line from the file is read ( no line is left to read). 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

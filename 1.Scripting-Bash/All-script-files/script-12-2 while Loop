@@ -1,0 +1,19 @@
+====================================== SCRIPT =================================
+#!/bin/bash
+a=7
+while [ $a -gt 4 ]
+do 
+  echo $a
+  ((a--))
+done
+
+echo "out of the loop"
+
+
+===O/P===
+
+7
+6
+5
+out of the loop
+

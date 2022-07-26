@@ -35,6 +35,13 @@ Your username is centos
 you are not a root
 
 
+
+[centos@ip-172-31-10-46 ~]$ sudo sh s1.sh
+your UID is 0
+Your username is root
+You are root
+
+
 ================================================== man bash ====================================================
 
 #man bash

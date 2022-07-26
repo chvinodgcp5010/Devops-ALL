@@ -38,12 +38,4 @@ echo "${WORD}${ENDING} is fun!"
 
 #Re-assigne value to ENDING
 ENDING='s'
-echo "you are going to write many  command in the ${WORD}${ENDING} class
-
-
-
-
-
-
-
-
+echo "you are going to write many  command in the ${WORD}${ENDING} class"

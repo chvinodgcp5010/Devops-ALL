@@ -7,11 +7,11 @@
 echo "your UID is ${UID}"
 
 #Display username
-USER_NAME=$(id -un)                                #(OR) USER_NAME=$(whoami)   #(OR) USER_NAME=`id -un`
+USER_NAME=$(id -un)                                #(OR) USER_NAME=$(whoami)   #(OR) USER_NAME=`id -un`  #this is old pattern
 echo "Your username is ${USER_NAME}"
 
 #Display if the user is root or not               #if [ "${UID}" -eq 0 ] -> old pattern still we can use it.
-if [[ "${UID}" -eq 0 ]]                      
+if [[ "${UID}" -eq 0 ]]                           #if [ "$UID" -eq 0 ] 
 then
   echo "You are root"
 else

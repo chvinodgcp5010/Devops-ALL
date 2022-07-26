@@ -1,0 +1,49 @@
+#!/bin/bash
+#Script displays various information
+
+#Display 'hello'
+echo 'hello'
+
+#Assign a value to a variable
+WORD='script'
+
+#Display that value using variable
+echo "$WORD"
+
+#Demonstrate that single quote cause variables to Not got expanded
+echo '$WORD'
+
+#Combine variable with hard-coded text
+echo "This is a shell $WORD"
+
+#Display the contents of the variables using an alternative syntax
+echo "This is a shell ${WORD}"
+
+#Append text to variables
+echo "${WORD}ing is fun!"
+
+#Show how not append text to a variables
+#This does not work
+echo $WORDing is fun!
+
+#Create a new variables
+ENDING='ed'
+
+#Combine the two variables
+echo "This is ${WORD}${ENDING}"
+
+#Change the value stored in the ENDING variable (Reassignment)
+ENDING='ing'
+echo "${WORD}${ENDING} is fun!"
+
+#Re-assigne value to ENDING
+ENDING='s'
+echo "you are going to write many  command in the ${WORD}${ENDING} class
+
+
+
+
+
+
+
+

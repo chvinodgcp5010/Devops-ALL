@@ -1,0 +1,74 @@
+create a file and add execute permission to it , otherwise shell execution fail.
+
+touch script.sh
+
+chmod 755 script.sh
+
+[root@ip-172-31-10-46 ~]# type -a echo
+echo is a shell builtin
+echo is /bin/echo
+echo is /usr/bin/echo
+
+
+echo is build in shell command but uptime is not built in shell command -> so you can check it using man uptime, help will not work 
+Then we get hallo display to the screen and that's exactly what happens when we execute the script.
+
+->type -a echo
+
+->help echo
+
+->type -a uptime
+
+->man uptime 
+
+--------------------------------------------------------------------------------------------
+
+[root@ip-172-31-10-46 ~]# type -a echo
+echo is a shell builtin
+echo is /bin/echo
+echo is /usr/bin/echo
+
+
+[root@ip-172-31-10-46 ~]# help echo
+echo: echo [-neE] [arg ...]
+    Write arguments to the standard output.
+
+    Display the ARGs on the standard output followed by a newline.
+
+    Options:
+      -n       	do not append a newline
+      -e       	enable interpretation of the following backslash escapes
+      -E       	explicitly suppress interpretation of backslash escapes
+
+    `echo' interprets the following backslash-escaped characters:
+      \a       	alert (bell)
+      \b       	backspace
+      \c       	suppress further output
+      \e       	escape character
+      \f       	form feed
+      \n       	new line
+      \r       	carriage return
+      \t       	horizontal tab
+      \v       	vertical tab
+      \\       	backslash
+      \0nnn    	the character whose ASCII code is NNN (octal).  NNN can be
+       	0 to 3 octal digits
+      \xHH     	the eight-bit character whose value is HH (hexadecimal).  HH
+       	can be one or two hex digits
+
+    Exit Status:
+    Returns success unless a write error occurs.
+
+----------------------------------------------------------------------------------------
+->type -a uptime
+uptime is /bin/uptime
+uptime is /usr/bin/uptime
+
+uptime is not built in shell command so you can use man uptime (not help uptime)
+
+->man uptime |less
+
+
+
+
+

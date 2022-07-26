@@ -1,0 +1,689 @@
+===================================== shell script =======================================
+
+#!/bin/bash
+#This script will be prompted for account name and password
+
+#Ask for the user name
+read -p 'Enter the username to create: ' USER_NAME
+
+#Ask for the real name 
+read -p "Enter the name of the person whom this account is for: " COMMENT
+
+#Ask for the password
+read -p 'Enter the password: ' PASSWORD 
+
+#Create the user 
+useradd -c "${COMMENT}" -m ${USER_NAME}
+
+#Set the password for the user 
+#Note: You can also use the following command
+#echo ${PASSWORD} | passwd --stdin ${USER_NAME}
+
+#Force password change on the first login
+passwd -e ${USER_NAME}
+
+EXecute:
+============
+
+sh s1.sh
+============================================================
+
+[root@ip-172-31-10-46 ~]# sh s1.sh
+Enter the username to create: iqoo7
+Enter the name of the person whom this account is for: iqoo
+Enter the password: root
+
+Expiring password for user vinod.
+passwd: Success
+
+============================== Login to user and update password ==============================
+
+[centos@ip-172-31-10-46 ~]$ su - iqoo7
+Password:
+
+You are required to change your password immediately (root enforced)
+Changing password for iqoo7.
+(current) UNIX password:
+New password:
+Retype new password:
+Last failed login: Tue Jul 26 14:33:29 UTC 2022 on pts/1
+There were 2 failed login attempts since the last successful login.
+
+
+#type -a read   
+
+read is a shell builtin
+read is /bin/read
+read is /usr/bin/read
+
+# read is a shell built in command so help will work otherwise you can use man read
+
+------------------------------- help -a read --------------------------------
+#help -a read
+
+read: read [-ers] [-a array] [-d delim] [-i text] [-n nchars] [-N nchars] [-p prompt] [-t timeout] [-u fd] [name ...]
+    Read a line from the standard input and split it into fields.
+
+    Reads a single line from the standard input, or from file descriptor FD
+    if the -u option is supplied.  The line is split into fields as with word
+    splitting, and the first word is assigned to the first NAME, the second
+    word to the second NAME, and so on, with any leftover words assigned to
+    the last NAME.  Only the characters found in $IFS are recognized as word
+    delimiters.
+
+    If no NAMEs are supplied, the line read is stored in the REPLY variable.
+
+    Options:
+      -a array 	assign the words read to sequential indices of the array
+       	       	variable ARRAY, starting at zero
+      -d delim 	continue until the first character of DELIM is read, rather
+       	       	than newline
+      -e       	       	use Readline to obtain the line in an interactive shell
+      -i text  	Use TEXT as the initial text for Readline
+      -n nchars	return after reading NCHARS characters rather than waiting
+       	       	for a newline, but honor a delimiter if fewer than NCHARS
+       	       	characters are read before the delimiter
+      -N nchars	return only after reading exactly NCHARS characters, unless
+       	       	EOF is encountered or read times out, ignoring any delimiter
+      -p prompt	output the string PROMPT without a trailing newline before
+       	       	attempting to read
+      -r       	       	do not allow backslashes to escape any characters
+      -s       	       	do not echo input coming from a terminal
+      -t timeout       	time out and return failure if a complete line of input is
+       	       	not read withint TIMEOUT seconds.  The value of the TMOUT
+       	       	variable is the default timeout.  TIMEOUT may be a
+       	       	fractional number.  If TIMEOUT is 0, read returns success only
+       	       	if input is available on the specified file descriptor.  The
+       	       	exit status is greater than 128 if the timeout is exceeded
+      -u fd    	       	read from file descriptor FD instead of the standard input
+
+    Exit Status:
+    The return code is zero, unless end-of-file is encountered, read times out,
+    or an invalid file descriptor is supplied as the argument to -u.
+readarray: readarray [-n count] [-O origin] [-s count] [-t] [-u fd] [-C callback] [-c quantum] [array]
+    Read lines from a file into an array variable.
+
+    A synonym for `mapfile'.
+readonly: readonly [-aAf] [name[=value] ...] or readonly -p
+    Mark shell variables as unchangeable.
+
+    Mark each NAME as read-only; the values of these NAMEs may not be
+    changed by subsequent assignment.  If VALUE is supplied, assign VALUE
+    before marking as read-only.
+
+    Options:
+      -a       	refer to indexed array variables
+      -A       	refer to associative array variables
+      -f       	refer to shell functions
+      -p       	display a list of all readonly variables and functions
+
+    An argument of `--' disables further option processing.
+
+    Exit Status:
+    Returns success unless an invalid option is given or NAME is invalid.
+	
+===============================================================================
+
+      -p prompt	output the string PROMPT without a trailing newline before
+       	       	attempting to read
+
+
+[root@ip-172-31-10-46 ~]# read -p "Enter some value: " VALUE
+Enter some value: scripting
+
+[root@ip-172-31-10-46 ~]# echo $VALUE
+scripting
+
+
+===================================== man useradd =================================
+
+#type -a useradd
+
+useradd is /sbin/useradd
+useradd is /usr/sbin/useradd
+
+#man useradd
+
+NAME
+       useradd - create a new user or update default new user information
+
+SYNOPSIS
+       useradd [options] LOGIN
+
+       useradd -D
+
+       useradd -D [options]
+
+DESCRIPTION
+       When invoked without the -D option, the useradd command creates a new user account using the values specified on the command line plus the default values from
+       the system. Depending on command line options, the useradd command will update system files and may also create the new user's home directory and copy initial
+       files.
+
+       By default, a group will also be created for the new user (see -g, -N, -U, and USERGROUPS_ENAB).
+
+OPTIONS
+       The options which apply to the useradd command are:
+
+       -b, --base-dir BASE_DIR
+           The default base directory for the system if -d HOME_DIR is not specified.  BASE_DIR is concatenated with the account name to define the home directory. If
+           the -m option is not used, BASE_DIR must exist.
+
+           If this option is not specified, useradd will use the base directory specified by the HOME variable in /etc/default/useradd, or /home by default.
+
+       -c, --comment COMMENT
+           Any text string. It is generally a short description of the login, and is currently used as the field for the user's full name.
+
+       -d, --home-dir HOME_DIR
+           The new user will be created using HOME_DIR as the value for the user's login directory. The default is to append the LOGIN name to BASE_DIR and use that as
+           the login directory name. The directory HOME_DIR does not have to exist but will not be created if it is missing.
+
+       -D, --defaults
+           See below, the subsection "Changing the default values".
+
+       -e, --expiredate EXPIRE_DATE
+           The date on which the user account will be disabled. The date is specified in the format YYYY-MM-DD.
+
+           If not specified, useradd will use the default expiry date specified by the EXPIRE variable in /etc/default/useradd, or an empty string (no expiry) by
+           default.
+
+       -f, --inactive INACTIVE
+           The number of days after a password expires until the account is permanently disabled. A value of 0 disables the account as soon as the password has
+           expired, and a value of -1 disables the feature.
+
+           If not specified, useradd will use the default inactivity period specified by the INACTIVE variable in /etc/default/useradd, or -1 by default.
+
+       -g, --gid GROUP
+           The group name or number of the user's initial login group. The group name must exist. A group number must refer to an already existing group.
+
+           If not specified, the behavior of useradd will depend on the USERGROUPS_ENAB variable in /etc/login.defs. If this variable is set to yes (or -U/--user-group
+           is specified on the command line), a group will be created for the user, with the same name as her loginname. If the variable is set to no (or
+           -N/--no-user-group is specified on the command line), useradd will set the primary group of the new user to the value specified by the GROUP variable in
+           /etc/default/useradd, or 100 by default.
+
+       -G, --groups GROUP1[,GROUP2,...[,GROUPN]]]
+           A list of supplementary groups which the user is also a member of. Each group is separated from the next by a comma, with no intervening whitespace. The
+           groups are subject to the same restrictions as the group given with the -g option. The default is for the user to belong only to the initial group.
+
+       -h, --help
+           Display help message and exit.
+
+       -k, --skel SKEL_DIR
+           The skeleton directory, which contains files and directories to be copied in the user's home directory, when the home directory is created by useradd.
+
+           This option is only valid if the -m (or --create-home) option is specified.
+
+           If this option is not set, the skeleton directory is defined by the SKEL variable in /etc/default/useradd or, by default, /etc/skel.
+
+           If possible, the ACLs and extended attributes are copied.
+
+       -K, --key KEY=VALUE
+           Overrides /etc/login.defs defaults (UID_MIN, UID_MAX, UMASK, PASS_MAX_DAYS and others).
+
+           Example: -K PASS_MAX_DAYS=-1 can be used when creating system account to turn off password aging, even though system account has no password at all.
+           Multiple -K options can be specified, e.g.: -K UID_MIN=100  -K UID_MAX=499
+
+       -l, --no-log-init
+           Do not add the user to the lastlog and faillog databases.
+
+           By default, the user's entries in the lastlog and faillog databases are reset to avoid reusing the entry from a previously deleted user.
+
+       -m, --create-home
+           Create the user's home directory if it does not exist. The files and directories contained in the skeleton directory (which can be defined with the -k
+           option) will be copied to the home directory.
+
+           By default, if this option is not specified and CREATE_HOME is not enabled, no home directories are created.
+
+           The directory where the user's home directory is created must exist and have proper SELinux context and permissions. Otherwise the user's home directory
+           cannot be created or accessed.
+
+       -M, --no-create-home
+           Do no create the user's home directory, even if the system wide setting from /etc/login.defs (CREATE_HOME) is set to yes.
+
+       -N, --no-user-group
+           Do not create a group with the same name as the user, but add the user to the group specified by the -g option or by the GROUP variable in
+           /etc/default/useradd.
+
+           The default behavior (if the -g, -N, and -U options are not specified) is defined by the USERGROUPS_ENAB variable in /etc/login.defs.
+
+       -o, --non-unique
+           Allow the creation of a user account with a duplicate (non-unique) UID.
+
+           This option is only valid in combination with the -u option.
+
+       -p, --password PASSWORD
+           The encrypted password, as returned by crypt(3). The default is to disable the password.
+
+           Note: This option is not recommended because the password (or encrypted password) will be visible by users listing the processes.
+
+           You should make sure the password respects the system's password policy.
+
+       -r, --system
+           Create a system account.
+
+           System users will be created with no aging information in /etc/shadow, and their numeric identifiers are chosen in the SYS_UID_MIN-SYS_UID_MAX range,
+           defined in /etc/login.defs, instead of UID_MIN-UID_MAX (and their GID counterparts for the creation of groups).
+
+           Note that useradd will not create a home directory for such a user, regardless of the default setting in /etc/login.defs (CREATE_HOME). You have to specify
+           the -m options if you want a home directory for a system account to be created.
+
+       -R, --root CHROOT_DIR
+           Apply changes in the CHROOT_DIR directory and use the configuration files from the CHROOT_DIR directory.
+
+       -P, --prefix PREFIX_DIR
+           Apply changes in the PREFIX_DIR directory and use the configuration files from the PREFIX_DIR directory. This option does not chroot and is intended for
+           preparing a cross-compilation target. Some limitations: NIS and LDAP users/groups are not verified. PAM authentication is using the host files. No SELINUX
+           support.
+
+       -s, --shell SHELL
+           The name of the user's login shell. The default is to leave this field blank, which causes the system to select the default login shell specified by the
+           SHELL variable in /etc/default/useradd, or an empty string by default.
+
+       -u, --uid UID
+           The numerical value of the user's ID. This value must be unique, unless the -o option is used. The value must be non-negative. The default is to use the
+           smallest ID value greater than or equal to UID_MIN and greater than every other user.
+
+           See also the -r option and the UID_MAX description.
+
+       -U, --user-group
+           Create a group with the same name as the user, and add the user to this group.
+
+           The default behavior (if the -g, -N, and -U options are not specified) is defined by the USERGROUPS_ENAB variable in /etc/login.defs.
+
+       -Z, --selinux-user SEUSER
+           The SELinux user for the user's login. The default is to leave this field blank, which causes the system to select the default SELinux user.
+
+   Changing the default values
+       When invoked with only the -D option, useradd will display the current default values. When invoked with -D plus other options, useradd will update the default
+       values for the specified options. Valid default-changing options are:
+
+       -b, --base-dir BASE_DIR
+           The path prefix for a new user's home directory. The user's name will be affixed to the end of BASE_DIR to form the new user's home directory name, if the
+           -d option is not used when creating a new account.
+
+           This option sets the HOME variable in /etc/default/useradd.
+
+       -e, --expiredate EXPIRE_DATE
+           The date on which the user account is disabled.
+
+           This option sets the EXPIRE variable in /etc/default/useradd.
+
+       -f, --inactive INACTIVE
+           The number of days after a password has expired before the account will be disabled.
+
+           This option sets the INACTIVE variable in /etc/default/useradd.
+
+       -g, --gid GROUP
+           The group name or ID for a new user's initial group (when the -N/--no-user-group is used or when the USERGROUPS_ENAB variable is set to no in
+           /etc/login.defs). The named group must exist, and a numerical group ID must have an existing entry.
+
+           This option sets the GROUP variable in /etc/default/useradd.
+
+       -s, --shell SHELL
+           The name of a new user's login shell.
+
+           This option sets the SHELL variable in /etc/default/useradd.
+
+NOTES
+       The system administrator is responsible for placing the default user files in the /etc/skel/ directory (or any other skeleton directory specified in
+       /etc/default/useradd or on the command line).
+
+CAVEATS
+       You may not add a user to a NIS or LDAP group. This must be performed on the corresponding server.
+
+       Similarly, if the username already exists in an external user database such as NIS or LDAP, useradd will deny the user account creation request.
+
+       Usernames may contain only lower and upper case letters, digits, underscores, or dashes. They can end with a dollar sign. Dashes are not allowed at the
+       beginning of the username. Fully numeric usernames and usernames . or .. are also disallowed. It is not recommended to use usernames beginning with . character
+       as their home directories will be hidden in the ls output. In regular expression terms: [a-zA-Z0-9_.][a-zA-Z0-9_.-]*[$]?
+
+       Usernames may only be up to 32 characters long.
+
+CONFIGURATION
+       The following configuration variables in /etc/login.defs change the behavior of this tool:
+
+       CREATE_HOME (boolean)
+           Indicate if a home directory should be created by default for new users.
+
+           This setting does not apply to system users, and can be overridden on the command line.
+
+       GID_MAX (number), GID_MIN (number)
+           Range of group IDs used for the creation of regular groups by useradd, groupadd, or newusers.
+
+           The default value for GID_MIN (resp.  GID_MAX) is 1000 (resp. 60000).
+
+       MAIL_DIR (string)
+           The mail spool directory. This is needed to manipulate the mailbox when its corresponding user account is modified or deleted. If not specified, a
+           compile-time default is used.
+
+       MAIL_FILE (string)
+           Defines the location of the users mail spool files relatively to their home directory.
+
+       The MAIL_DIR and MAIL_FILE variables are used by useradd, usermod, and userdel to create, move, or delete the user's mail spool.
+
+       If MAIL_CHECK_ENAB is set to yes, they are also used to define the MAIL environment variable.
+
+       MAX_MEMBERS_PER_GROUP (number)
+           Maximum members per group entry. When the maximum is reached, a new group entry (line) is started in /etc/group (with the same name, same password, and same
+           GID).
+
+           The default value is 0, meaning that there are no limits in the number of members in a group.
+
+           This feature (split group) permits to limit the length of lines in the group file. This is useful to make sure that lines for NIS groups are not larger than
+           1024 characters.
+
+           If you need to enforce such limit, you can use 25.
+
+           Note: split groups may not be supported by all tools (even in the Shadow toolsuite). You should not use this variable unless you really need it.
+
+       PASS_MAX_DAYS (number)
+           The maximum number of days a password may be used. If the password is older than this, a password change will be forced. If not specified, -1 will be
+           assumed (which disables the restriction).
+
+       PASS_MIN_DAYS (number)
+           The minimum number of days allowed between password changes. Any password changes attempted sooner than this will be rejected. If not specified, -1 will be
+           assumed (which disables the restriction).
+
+       PASS_WARN_AGE (number)
+           The number of days warning given before a password expires. A zero means warning is given only upon the day of expiration, a negative value means no warning
+           is given. If not specified, no warning will be provided.
+
+       SUB_GID_MIN (number), SUB_GID_MAX (number), SUB_GID_COUNT (number)
+           If /etc/subuid exists, the commands useradd and newusers (unless the user already have subordinate group IDs) allocate SUB_GID_COUNT unused group IDs from
+           the range SUB_GID_MIN to SUB_GID_MAX for each new user.
+
+           The default values for SUB_GID_MIN, SUB_GID_MAX, SUB_GID_COUNT are respectively 100000, 600100000 and 65536.
+
+       SUB_UID_MIN (number), SUB_UID_MAX (number), SUB_UID_COUNT (number)
+           If /etc/subuid exists, the commands useradd and newusers (unless the user already have subordinate user IDs) allocate SUB_UID_COUNT unused user IDs from the
+           range SUB_UID_MIN to SUB_UID_MAX for each new user.
+
+           The default values for SUB_UID_MIN, SUB_UID_MAX, SUB_UID_COUNT are respectively 100000, 600100000 and 65536.
+
+       SYS_GID_MAX (number), SYS_GID_MIN (number)
+           Range of group IDs used for the creation of system groups by useradd, groupadd, or newusers.
+
+           The default value for SYS_GID_MIN (resp.  SYS_GID_MAX) is 101 (resp.  GID_MIN-1).
+
+       SYS_UID_MAX (number), SYS_UID_MIN (number)
+           Range of user IDs used for the creation of system users by useradd or newusers.
+
+           The default value for SYS_UID_MIN (resp.  SYS_UID_MAX) is 101 (resp.  UID_MIN-1).
+
+       UID_MAX (number), UID_MIN (number)
+           Range of user IDs used for the creation of regular users by useradd or newusers.
+
+           The default value for UID_MIN (resp.  UID_MAX) is 1000 (resp. 60000).
+
+       UMASK (number)
+           The file mode creation mask is initialized to this value. If not specified, the mask will be initialized to 022.
+
+           useradd and newusers use this mask to set the mode of the home directory they create
+
+           It is also used by login to define users' initial umask. Note that this mask can be overridden by the user's GECOS line (if QUOTAS_ENAB is set) or by the
+           specification of a limit with the K identifier in limits(5).
+
+       USERGROUPS_ENAB (boolean)
+           Enable setting of the umask group bits to be the same as owner bits (examples: 022 -> 002, 077 -> 007) for non-root users, if the uid is the same as gid,
+           and username is the same as the primary group name.
+
+           If set to yes, userdel will remove the user's group if it contains no more members, and useradd will create by default a group with the name of the user.
+
+FILES
+       /etc/passwd
+           User account information.
+
+       /etc/shadow
+           Secure user account information.
+
+       /etc/group
+           Group account information.
+
+       /etc/gshadow
+           Secure group account information.
+
+       /etc/default/useradd
+           Default values for account creation.
+
+       /etc/skel/
+           Directory containing default files.
+
+       /etc/subgid
+           Per user subordinate group IDs.
+
+       /etc/subuid
+           Per user subordinate user IDs.
+
+       /etc/login.defs
+           Shadow password suite configuration.
+
+EXIT VALUES
+       The useradd command exits with the following values:
+
+       0
+           success
+
+       1
+           can't update password file
+
+       2
+           invalid command syntax
+
+       3
+           invalid argument to option
+
+       4
+           UID already in use (and no -o)
+
+       6
+           specified group doesn't exist
+
+       9
+           username already in use
+
+       10
+           can't update group file
+
+       12
+           can't create home directory
+
+       14
+           can't update SELinux user mapping
+
+
+=============================== man passwd ==================================
+
+[root@ip-172-31-10-46 ~]# cat passwd
+PASSWD(1)                                                                    User utilities                                                                   PASSWD(1)
+
+
+
+NAME
+       passwd - update user's authentication tokens
+
+
+SYNOPSIS
+       passwd [-k] [-l] [-u [-f]] [-d] [-e] [-n mindays] [-x maxdays] [-w warndays] [-i inactivedays] [-S] [--stdin] [username]
+
+
+
+DESCRIPTION
+       The passwd utility is used to update user's authentication token(s).
+
+       This task is achieved through calls to the Linux-PAM and Libuser API.  Essentially, it initializes itself as a "passwd" service with Linux-PAM and utilizes con‐
+       figured password modules to authenticate and then update a user's password.
+
+
+       A simple entry in the global Linux-PAM configuration file for this service would be:
+
+        #
+        # passwd service entry that does strength checking of
+        # a proposed password before updating it.
+        #
+        passwd password requisite pam_cracklib.so retry=3
+        passwd password required pam_unix.so use_authtok
+        #
+
+
+       Note, other module types are not required for this application to function correctly.
+
+
+OPTIONS
+       -k, --keep
+              The option -k is used to indicate that the update should only be for expired authentication tokens (passwords); the user wishes to keep their non-expired
+              tokens as before.
+
+
+       -l, --lock
+              This option is used to lock the password of specified account and it is available to root only. The locking is performed by rendering the encrypted pass‐
+              word into an invalid string (by prefixing the encrypted string with an !). Note that the account is not fully locked - the user can still log in by other
+              means of authentication such as the ssh public key authentication. Use chage -E 0 user command instead for full account locking.
+
+
+       --stdin
+              This option is used to indicate that passwd should read the new password from standard input, which can be a pipe.
+
+
+       -u, --unlock
+              This  is  the  reverse of the -l option - it will unlock the account password by removing the ! prefix. This option is available to root only. By default
+              passwd will refuse to create a passwordless account (it will not unlock an account that has only "!" as a password). The force option  -f  will  override
+              this protection.
+
+
+       -d, --delete
+              This is a quick way to delete a password for an account. It will set the named account passwordless. Available to root only.
+
+
+       -e, --expire
+              This is a quick way to expire a password for an account. The user will be forced to change the password during the next login attempt.  Available to root
+              only.
+
+
+       -f, --force
+              Force the specified operation.
+
+
+       -n, --minimum DAYS
+              This will set the minimum password lifetime, in days, if the user's account supports password lifetimes.  Available to root only.
+
+
+       -x, --maximum DAYS
+              This will set the maximum password lifetime, in days, if the user's account supports password lifetimes.  Available to root only.
+
+
+       -w, --warning DAYS
+              This will set the number of days in advance the user will begin receiving warnings that her password will expire, if the user's account supports password
+              lifetimes.  Available to root only.
+
+
+       -i, --inactive DAYS
+              This  will  set  the  number  of  days which will pass before an expired password for this account will be taken to mean that the account is inactive and
+              should be disabled, if the user's account supports password lifetimes.  Available to root only.
+
+
+       -S, --status
+              This will output a short information about the status of the password for a given account. The status information consists of 7 fields. The  first  field
+              is the user's login name. The second field indicates if the user account has a locked password (LK), has no password (NP), or has a usable password (PS).
+              The third field gives the date of the last password change. The next four fields are the minimum age, maximum age, warning period, and inactivity  period
+              for the password. These ages are expressed in days.
+
+              Notes:  The  date  of  the last password change is stored as a number of days since epoch. Depending on the current time zone, the passwd -S username may
+              show the date of the last password change that is different from the real date of the last password change by ±1 day.
+
+              This option is available to root only.
+
+
+Remember the following two principles
+       Protect your password.
+              Don't write down your password - memorize it.  In particular, don't write it down and leave it anywhere, and don't place it in an unencrypted file!   Use
+              unrelated  passwords  for systems controlled by different organizations.  Don't give or share your password, in particular to someone claiming to be from
+              computer support or a vendor.  Don't let anyone watch you enter your password.  Don't enter your password to a computer you  don't  trust  or  if  things
+              "look funny"; someone may be trying to hijack your password.  Use the password for a limited time and change it periodically.
+
+
+       Choose a hard-to-guess password.
+              passwd  through the calls to the pam_cracklib PAM module will try to prevent you from choosing a really bad password, but it isn't foolproof; create your
+              password wisely.  Don't use something you'd find in a dictionary (in any language or jargon).  Don't use a name (including  that  of  a  spouse,  parent,
+              child,  pet,  fantasy  character, famous person, and location) or any variation of your personal or account name.  Don't use accessible information about
+              you (such as your phone number, license plate, or social security number) or your environment.  Don't use  a  birthday  or  a  simple  pattern  (such  as
+              "qwerty",  "abc",  or  "aaa").   Don't use any of those backwards, followed by a digit, or preceded by a digit. Instead, use a mixture of upper and lower
+              case letters, as well as digits or punctuation.  When choosing a new password, make sure it's unrelated to any previous password. Use long passwords (say
+              at  least 8 characters long).  You might use a word pair with punctuation inserted, a passphrase (an understandable sequence of words), or the first let‐
+              ter of each word in a passphrase.
+
+
+
+       These principles are partially enforced by the system, but only partly so.  Vigilance on your part will make the system much more secure.
+
+
+EXIT CODE
+       The passwd command exits with the following codes:
+
+       0
+           success
+
+       1
+           passwd/libuser operation failed
+
+       2
+           unknown user
+
+       252
+           unknown user name
+
+       253
+           bad arguments or passwordless account
+
+       254
+           invalid application of arguments
+
+       255
+           libuser operation failed
+
+       Error messages are written to the standard error stream.
+
+
+
+======================================================
+
+
+$sudo useradd doughsephler
+$sudo su - doughsephler
+ps -ef 
+
+$ sudo su - doughsephler
+Last login: Tue Jul 26 12:28:04 UTC 2022 on pts/6
+
+$ps -ef
+
+doughse+  5210  5209  0 12:29 pts/6    00:00:00 -bash
+doughse+  5229  5210  0 12:29 pts/6    00:00:00 ps -ef
+
+Note:
+
+As you can see process of doughse+ only first 8 characters so longer than that we see + object it will store all data after 8 characters
+
+but historically username are limited to 8 characters.
+
+Useradd:
+
+      -m, --create-home
+           Create the user's home directory if it does not exist. The files and directories contained in the skeleton directory (which can be defined with the -k
+           option) will be copied to the home directory.
+
+           By default, if this option is not specified and CREATE_HOME is not enabled, no home directories are created.
+
+           The directory where the user's home directory is created must exist and have proper SELinux context and permissions. Otherwise the user's home directory
+           cannot be created or accessed.
+
+       -c, --comment COMMENT
+           Any text string. It is generally a short description of the login, and is currently used as the field for the user's full name.
+
+
+
+passwd:
+
+       -e, --expire
+              This is a quick way to expire a password for an account. The user will be forced to change the password during the next login attempt.  Available to root
+              only.
+
+

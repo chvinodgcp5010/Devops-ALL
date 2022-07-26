@@ -130,6 +130,21 @@ if COMMANDS; then COMMANDS; [ elif COMMANDS; then COMMANDS; ]... [ else COMMANDS
 
     Exit Status:
     Returns the status of the last command executed.
+    
+    
+============================== [ ==============================
+
+#[root@ip-172-31-10-46 ~]# type -a [
+[ is a shell builtin
+[ is /bin/[
+[ is /usr/bin/[
+
+# help [
+[: [ arg... ]
+    Evaluate conditional expression.
+
+    This is a synonym for the "test" builtin, but the last argument must
+    be a literal `]', to match the opening `['.
 
 ============================== [[ ==============================
 

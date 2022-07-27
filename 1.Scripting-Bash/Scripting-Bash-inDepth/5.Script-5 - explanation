@@ -1,0 +1,32 @@
+check
+#man bash 
+
+search for /hostname
+
+in shell variable section
+
+       HOSTNAME
+              Automatically set to the name of the current host.
+
+
+Execute shell script:
+-----------------------
+
+[root@ip-172-31-10-46 ~]# sh s1.sh
+
+Enter the username to create: dell
+Enter the name of the person or application that will be using this account: facebook
+Enter the password to use for the account: dell123
+
+
+Changing password for user dell.
+passwd: all authentication tokens updated successfully.
+Expiring password for user dell.
+passwd: Success
+
+username:
+dell
+password:
+dell123
+host
+host:

@@ -30,3 +30,26 @@ password:
 dell123
 host
 host:
+
+Login and check 
+
+centos $su - dell                  # here centos is user having root/sudo access
+password: dell123
+
+it will prompt you "you are required to change password immediately (root enforced)
+
+
+--------------------- Execute shell from other user (not sudo/root) user --------------------
+
+#sh s1.sh
+Please run with sudo or as root user 
+
+
+
+
+
+
+
+
+
+

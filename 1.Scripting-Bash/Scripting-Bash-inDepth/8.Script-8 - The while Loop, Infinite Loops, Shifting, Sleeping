@@ -1,0 +1,246 @@
+First positional parameter of dollar sign zero contains the name of the script itself, 
+
+while dollar Sign one stores the value of the  first argument pass to the script on the command line 
+dollar sign, two stores, the second argument and so on.
+
+
+#!/bin/bash
+
+#Demonstrate the use of shift and while loops
+
+#Display the first 3 parameters
+echo "Parameter 1 : ${1}"
+echo "Parameter 2 : ${2}"
+echo "Parameter 3 : ${3}"
+echo 
+
+
+------------------------------
+
+I'm going to add an eco statement here, which is just going to print a blank line.
+
+Execute:
+
+[root@ip-172-31-10-46 ~]# sh s1.sh
+Parameter 1 :
+Parameter 2 :
+Parameter 3 :
+
+[root@ip-172-31-10-46 ~]# sh s1.sh apple samusung
+Parameter 1 : apple
+Parameter 2 : samusung
+Parameter 3 :
+
+
+[root@ip-172-31-10-46 ~]# sh s1.sh apple samusung iqoo while
+Parameter 1 : apple
+Parameter 2 : samusung
+Parameter 3 : iqoo
+
+
+
+---------------------------------- help true --------------------------------
+# type -a true
+
+true is a shell builtin
+true is /bin/true
+true is /usr/bin/true
+
+
+# help true
+true: true
+    Return a successful result.
+
+    Exit Status:
+    Always succeeds.
+
+
+#man true 
+
+DESCRIPTION
+       Exit with a status code indicating success.
+
+#true 
+
+# echo $?
+0
+
+
+# false
+# echo $?
+
+========================== man sleep ===================
+
+#type -a sleep 
+
+sleep is /bin/sleep
+sleep is /usr/bin/sleep
+
+
+#man sleep
+
+ sleep - delay for a specified amount of time
+
+SYNOPSIS
+       sleep NUMBER[SUFFIX]...
+       sleep OPTION
+
+DESCRIPTION
+       Pause  for  NUMBER  seconds.   SUFFIX  may be 's' for seconds (the default), 'm' for minutes, 'h' for hours or 'd' for days.
+       Unlike most implementations that require NUMBER be an integer, here NUMBER may be an arbitrary floating point number.  Given
+       two or more arguments, pause for the amount of time specified by the sum of their values.
+
+It stops 10 seconds and execute 
+
+#sleep 10
+OR
+
+# sleep 10s
+
+#sleep 0.5
+
+------------------ 
+
+[root@ip-172-31-10-46 ~]# while [[ true ]]
+> do
+> echo "${RANDOM}"
+> sleep 3
+> done
+
+
+26231
+13764
+24118
+14882
+7516
+
+---------------------------------
+
+#sleep 10m                   # sleep for 10 minutes and resume
+
+=========================================== help shift =======================================
+
+#type -a shift
+shift is a shell builtin
+
+
+# help shift
+shift: shift [n]
+    Shift positional parameters.
+
+    Rename the positional parameters $N+1,$N+2 ... to $1,$2 ...  If N is
+    not given, it is assumed to be 1.
+
+    Exit Status:
+    Returns success unless N is negative or greater than $#.
+	
+$# -> no of positional parameters
+
+sh s1.sh hi hello hru 
+
+here positional parameters : 3  
+
+
+================================== shell script =================================
+
+#!/bin/bash
+
+# Demonstrate the use of shift and while loops.
+
+# Display the first three parameters.
+echo "Parameter 1: ${1}"
+echo "Parameter 2: ${2}"
+echo "Parameter 3: ${3}"
+echo
+
+# Loop through all the positional parameters.
+while [[ "${#}" -gt 0 ]]
+do
+  echo "Number of parameters: ${#}"
+  echo "Parameter 1: ${1}"
+  echo "Parameter 2: ${2}"
+  echo "Parameter 3: ${3}"
+  echo
+  shift
+done
+
+
+----------------------------------------------------------
+
+========================> # sh s1.sh
+Parameter 1 :
+Parameter 2 :
+Parameter 3 :
+
+========================>  sh s1.sh hi
+Parameter 1 : hi
+Parameter 2 :
+Parameter 3 :
+
+Number of parameters: 1
+Parameter 1 : hi
+Parameter 2 :
+Parameter 3 :
+
+========================> # sh s1.sh hi hello
+Parameter 1 : hi
+Parameter 2 : hello
+Parameter 3 :
+
+Number of parameters: 2
+Parameter 1 : hi
+Parameter 2 : hello
+Parameter 3 :
+
+Number of parameters: 1
+Parameter 1 : hello
+Parameter 2 :
+Parameter 3 :
+
+========================> # sh s1.sh hi hello hru
+Parameter 1 : hi
+Parameter 2 : hello
+Parameter 3 : hru
+
+Number of parameters: 3
+Parameter 1 : hi
+Parameter 2 : hello
+Parameter 3 : hru
+
+Number of parameters: 2
+Parameter 1 : hello
+Parameter 2 : hru
+Parameter 3 :
+
+Number of parameters: 1
+Parameter 1 : hru
+Parameter 2 :
+Parameter 3 :
+
+=========================># sh s1.sh hi hello hru fine
+Parameter 1 : hi
+Parameter 2 : hello
+Parameter 3 : hru
+
+Number of parameters: 4
+Parameter 1 : hi
+Parameter 2 : hello
+Parameter 3 : hru
+
+Number of parameters: 3
+Parameter 1 : hello
+Parameter 2 : hru
+Parameter 3 : fine
+
+Number of parameters: 2
+Parameter 1 : hru
+Parameter 2 : fine
+Parameter 3 :
+
+Number of parameters: 1
+Parameter 1 : fine
+Parameter 2 :
+Parameter 3 :
+
+
+

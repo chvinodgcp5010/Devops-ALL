@@ -1,0 +1,90 @@
+#!/bin/bash
+
+# This script demonstrate I/O redirection
+
+# Redirect STDOUT to a file
+FILE="/tmp/data"
+head -n1 /etc/passwd > ${FILE}
+
+# Redirect STDIN to a program
+read LINE < ${FILE}
+echo "LINE contains : ${LINE}"
+
+# Redirect STDOUT to a file, overwriting the FILE
+head -n3 /etc/passwd > ${FILE}
+echo
+echo "Contents of ${FILE}: "
+cat ${FILE}
+
+# Redirect STDOUT to a file, appending to the file 
+echo "${RANDOM} ${RANDOM}" >> ${FILE}
+echo "${RANDOM} ${RANDOM}" >> ${FILE}
+echo
+echo "Contents of ${FILE}:"
+cat ${FILE}
+
+#Redirect STDIN to a program , using File descriptor 
+#by default it will take input (0) no need to specify any Filedescriptor
+
+read LINE 0<${FILE}                      #read LINE <${FILE}
+echo
+echo "LINE contains : ${LINE}"           #it will pick the first row
+
+#Redirect STDOUT to a file using FD (file descriptor)1, overwriting a FILE
+#If you not provide any file descriptor it will redirect o/p default it will take Filedescriptor 1.
+
+head -n3 /etc/passwd 1> ${FILE}
+echo
+echo "Contents of ${FILE}"
+cat ${FILE}
+
+#Redirect STDERR to a file using file descriptor 2
+#By default standard input it will take , no need to specify any FD 0, no need to specify 0>${FILE}
+#By default standard output it will take , no need to specify any FD 1 like 1>${FILE}
+#For STDERR we need to mention as 2>${FILE} it will not pick by default
+
+ERR_FILE="/tmp/data.err"
+head -n3 /etc/passwd /fakefile 2> ${ERR_FILE}
+echo 
+echo "Contents of ${ERR_FILE}:"
+cat ${ERR_FILE}
+
+#Redirect STDOUT & STDERR to a file.
+head -n3 /etc/passwd /etc/hosts /fakefile &> ${FILE}
+#head -n3 /etc/passwd /etc/hosts /fakefile 2>&1 ${FILE}
+echo
+echo "Contents of ${FILE}:"
+cat ${FILE}
+
+#Redirect STDOUT and STDERR through a pipe.
+echo 
+head -n3 /etc/passwd /fakefile |& cat -n 
+
+# Discard STDOUT
+echo
+echo "Discarding STDOUT:"
+head -n3 /etc/passwd /fakefile > /dev/null
+
+#Discard STDERR
+echo 
+echo "Discarding STDERR:"
+head -n3 /etc/passwd /fakefile 2> /dev/null
+
+#Discard STDOUT and STDERR
+echo 
+echo "Discarding STDOUT and STDERR:"
+head -n3 /etc/passwd /fakefile &> /dev/null
+
+#Cleanup 
+rm ${FILE} ${ERR_FILE} &> /dev/null
+
+
+
+
+
+
+
+
+
+
+

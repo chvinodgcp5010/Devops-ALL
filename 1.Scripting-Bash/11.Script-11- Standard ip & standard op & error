@@ -1,0 +1,449 @@
+A file descriptor is simply a number that represents an open file.
+For us humans, it's easier for us to reference files by name, but it's easier for computers to reference
+them by number by default.
+
+Every new process starts with three open file descriptors.
+
+They are file descriptor zero, which is standard input file 
+
+descriptor one, which is standard output
+and file descriptor two, which is standard error.
+
+By default, standard input comes from my keyboard, but my keyboard isn't a file.
+
+And by default, standard output and standard error are displayed to my screen.
+
+But my screen is in a file either on one level, that's true, but Linux represents practically everything
+as a file.
+
+Perhaps a more accurate description of a file descriptor is that it's a way that a program interacts
+
+with files or to other resources that work like files.
+
+
+For example, when we redirect standard input into a command file, descriptor zero is assumed.
+
+---------------------------------
+So we're going to read into the variable X the contents of its CentOS release.
+Now if we echo dollar sign X, we'll see the contents of that file.
+So sure enough, that input redirection worked and that's the implicit way to do it.
+
+
+------------------------- implicit way -----------------------------
+
+[root@ip-172-31-26-70 ~]# cat /etc/os-release
+NAME="Amazon Linux"
+VERSION="2"
+ID="amzn"
+ID_LIKE="centos rhel fedora"
+VERSION_ID="2"
+PRETTY_NAME="Amazon Linux 2"
+ANSI_COLOR="0;33"
+CPE_NAME="cpe:2.3:o:amazon:amazon_linux:2"
+HOME_URL="https://amazonlinux.com/"
+
+
+------------------------ Explicit way (using file descriptor (read X 0</etc/os-release) --------------------
+
+[root@ip-172-31-26-70 ~]# read X < /etc/os-release
+
+[root@ip-172-31-26-70 ~]# echo $X
+NAME="Amazon Linux"
+
+
+[root@ip-172-31-26-70 ~]# read X 0</etc/os-release
+
+[root@ip-172-31-26-70 ~]# echo ${X}
+NAME="Amazon Linux"
+
+
+
+If you want to be explicit, specify the file descriptor number right before the redirection operator. (read X 0</etc/os-release)
+So the previous redirection is the same thing as this read x zero less than sign etsi centos release
+
+and hit enter.
+
+And if we echo x, sure enough it does the same thing.
+The reason it's the same is because if you don't supply a file descriptor then zero is assumed for standard input.
+
+Notice:
+That there is no space between the file descriptor zero in this case and the redirection operator.
+The less than sign in this case.
+
+This is very, very important.
+
+If you leave a space, then what you thought was a file descriptor number that you were specifying ends.
+
+#read X 0 < /etc/os-release
+-bash: read: `0': not a valid identifier
+
+up being an argument to the command before the redirection operator so quickly.
+
+
+
+------------------------------------ Implicit way (standard output -------------------------------------
+
+[root@ip-172-31-26-70 ~]# echo "${UID}" > uid
+[root@ip-172-31-26-70 ~]# cat uid
+0
+
+------------------------------------ Explicit way (standard output) 1 -------------------------------------
+)
+#echo "${UID}" 1> uid
+
+# cat uid
+0
+
+So we'll do UID and then one and specify a space.  Now this is the wrong way to do this.
+
+echo "${UID}" 1 > uid
+[root@ip-172-31-26-70 ~]# cat uid
+0 1
+
+
+And one because one was treated as an argument to echo.
+
+***Normal program output is sent to standard output while error messages are sent to standard error.
+
+When you're working at the command prompt,  default they are both displayed to the screen.(stdin and stdout)
+
+======================================== standard error 2 ==============================================
+
+Let's make a program, generate an error.
+
+#man head
+
+#head -n1 /etc/passwd /etc/host
+
+==> /etc/passwd <==
+root:x:0:0:root:/root:/bin/bash
+head: cannot open ‘/etc/host’ for reading: No such file or directory
+[root@ip-172-31-26-70 ~]# head -n1 /etc/passwd /etc/hosts
+==> /etc/passwd <==
+root:x:0:0:root:/root:/bin/bash
+
+==> /etc/hosts <==
+127.0.0.1   localhost localhost.localdomain localhost4 localhost4.localdomain4
+
+
+
+lets execute a false statement and check 
+--------------------------------------------
+
+[root@ip-172-31-26-70 ~]# head -n1 /etc/passwd /etc/hosts /fakefile
+==> /etc/passwd <==
+root:x:0:0:root:/root:/bin/bash
+
+==> /etc/hosts <==
+127.0.0.1   localhost localhost.localdomain localhost4 localhost4.localdomain4
+head: cannot open ‘/fakefile’ for reading: No such file or directory
+
+There is both standard output and standard error generated here.
+
+Let's redirect standard output to a file run the same command the greater than sign.
+-------------------------------------------------------------------------------------
+
+Since standard error was not redirected, it was sent to the screen.
+
+# head -n1 /etc/passwd /etc/hosts /fakefile >head.out
+head: cannot open ‘/fakefile’ for reading: No such file or directory
+
+--------------------------------------------------------------------------
+#cat head.out
+
+==> /etc/passwd <==
+root:x:0:0:root:/root:/bin/bash
+
+==> /etc/hosts <==
+127.0.0.1   localhost localhost.localdomain localhost4 localhost4.localdomain4
+
+
+let's redirect standard error.And the way to do that file descriptor 2 (as per file descriptor it's storing error and displaying o/p)
+=====================================================================================================================================
+
+ head -n1 /etc/passwd /etc/hosts /fakefile 2>head.error
+==> /etc/passwd <==
+root:x:0:0:root:/root:/bin/bash
+
+==> /etc/hosts <==
+127.0.0.1   localhost localhost.localdomain localhost4 localhost4.localdomain4
+
+
+[root@ip-172-31-26-70 ~]# cat head.error
+head: cannot open ‘/fakefile’ for reading: No such file or directory
+
+
+================================= standard output to head out and standard error to head error (Old syntax) . ================================
+
+head -n1 /etc/passwd /etc/hosts /fakefile >head.out 2>head.error
+
+head -n 1 /etc/passwd /etc/hosts /fakefile >head.out 2>head.error
+
+[root@ip-172-31-26-70 ~]# ls
+head.error  head.out  s1.sh
+
+[root@ip-172-31-26-70 ~]# cat head.error
+head: cannot open ‘/fakefile’ for reading: No such file or directory
+
+
+[root@ip-172-31-26-70 ~]# cat head.out
+==> /etc/passwd <==
+root:x:0:0:root:/root:/bin/bash
+
+==> /etc/hosts <==
+127.0.0.1   localhost localhost.localdomain localhost4 localhost4.localdomain4
+
+=================================  =================================  ================================= 
+
+You can probably see that this could be helpful in some situations.
+
+If you were just concerned about errors that were being generated, well, you could redirect all the
+
+error messages coming from standard error into a file.
+
+For example, by the way, a pending output is probably what you would expect using to greater than signs assume standard 
+But even when you use a specific file descriptor such as file descriptor two for standard 
+Error.
+
+
+By each and every time it is overwriting the file and displaying new data , so appending the data to the existing data would probably 
+good for  history of data.
+
+
+#head -n1 /etc/passwd /etc/profile /fakefile >head.out 2>> head.error
+
+[root@ip-172-31-26-70 ~]# cat head.error
+head: cannot open ‘/fakefile’ for reading: No such file or directory
+head: cannot open ‘/fakefile’ for reading: No such file or directory
+head: cannot open ‘/fakefile’ for reading: No such file or directory
+
+
+#cat head.out
+==> /etc/passwd <==
+root:x:0:0:root:/root:/bin/bash
+
+==> /etc/profile <==
+# /etc/profile
+
+
+====================== What if you want to send standard output and standard error to the same place? ========================
+
+#head -n1 /etc/passwd /etc/hosts /fakefile >head.both 2>&1
+
+[root@ip-172-31-26-70 ~]# ls
+head.both  s1.sh
+
+
+[root@ip-172-31-26-70 ~]# cat head.both
+==> /etc/passwd <==
+root:x:0:0:root:/root:/bin/bash
+
+==> /etc/hosts <==
+127.0.0.1   localhost localhost.localdomain localhost4 localhost4.localdomain4
+head: cannot open ‘/fakefile’ for reading: No such file or directory
+
+head.both 2>&1
+
+Since standard error(2) is redirected to standard output (1)and standard output is redirected to head both,
+all output will be written to head both.
+
+Note:
+-----
+
+#head -n1 /etc/passwd /etc/hosts /fakefile >head.both 2>&1
+
+2>&1
+
+A number that comes directly before redirect operator is a file descriptor, so to greater than means
+redirect standard error.
+
+The new piece is the ampersand symbol. Normally with redirection of file follows the redirection operator.
+However, if you want to use a file descriptor instead of a file name, use the ampersand symbol.
+So instead of redirecting standard error to a file, it is being redirected to standard input.
+
+If you were to omit the ampersand, then one would be treated as a file named one.
+
+#head -n1 /etc/passwd /etc/hosts /fakefile >head.both 2>&vinod
+-bash: vinod: ambiguous redirect
+
+
+If you were to omit the ampersand, then one would be treated as a file named one.
+
+#head -n1 /etc/passwd /etc/hosts /fakefile >head.both 2>1
+
+#ls 
+1 head.both
+
+One sends the standard output of head to the file named head both and appends the standard error to
+the standard output.
+
+
+======================= New syntax to copy output and error in same file =====================================
+
+New syntax was added to Bash to redirect both standard input and standard output.
+That syntax is ampersand greater than and then a path to a file.
+
+
+#head -n1 /etc/passwd /etc/hosts /fakefile &> file.both1
+#head -n1 /etc/passwd /etc/hosts /fakefile &>> file.both1
+
+[root@ip-172-31-26-70 ~]# ls
+file.both1  
+
+
+[root@ip-172-31-26-70 ~]# cat file.both1
+==> /etc/passwd <==
+root:x:0:0:root:/root:/bin/bash
+
+==> /etc/hosts <==
+127.0.0.1   localhost localhost.localdomain localhost4 localhost4.localdomain4
+head: cannot open ‘/fakefile’ for reading: No such file or directory
+
+
+========================================== man cat ========================================
+
+       -n, --number
+              number all output lines
+
+
+# head -n 1 /etc/passwd /etc/hosts /fakefile | cat -n
+head:      1   	==> /etc/passwd <==
+     2 	root:x:0:0:root:/root:/bin/bash
+     3
+     4 	==> /etc/hosts <==
+     5 	127.0.0.1   localhost localhost.localdomain localhost4 localhost4.localdomain4
+cannot open ‘/fakefile’ for reading: No such file or directory
+
+
+Note:
+
+you see its not counting the error line , it only counting "output" line.
+It's important to know that about pipes that you're only getting the standard output going through the
+pipe.
+
+If you want to force all the output of a command through the pipe, then you need to append the standard
+error to the standard input.
+
+So one way we can do this is specify a file descriptor of two, which is for standard error, and then
+redirect that into ampersand one, which represents file descriptor one, which in turn represents standard
+output.
+
+So now that standard error is going to standard output and all the standard output goes through the
+pipe, then cat should count all of our lines.
+
+#head -n1 /etc/passwd /etc/hosts /fakefile 2>&1 | cat -n 
+OR
+#head -n1 /etc/passwd /etc/hosts /fakefile |& cat -n
+
+
+head -n1 /etc/passwd /etc/hosts /fakefile 2>&1 | cat -n
+     1 	==> /etc/passwd <==
+     2 	root:x:0:0:root:/root:/bin/bash
+     3
+     4 	==> /etc/hosts <==
+     5 	127.0.0.1   localhost localhost.localdomain localhost4 localhost4.localdomain4
+     6 	head: cannot open ‘/fakefile’ for reading: No such file or directory
+
+
+---------------------------- discard output --------------------------
+it shows output and error 
+
+#head -n1 /etc/passwd /fakefile
+ 
+==> /etc/passwd <==
+root:x:0:0:root:/root:/bin/bash
+head: cannot open ‘/fakefile’ for reading: No such file or directory
+
+#Discard o/p , then it will show only error,# here it will will move o/p to /dev/null and displaying only error message.
+
+[root@ip-172-31-26-70 ~]# head -n1 /etc/passwd /fakefile >/dev/null
+head: cannot open ‘/fakefile’ for reading: No such file or directory
+
+
+------------------------- discard error -------------------------------
+
+#head -n3 /etc/passwd /fakefile 2> /dev/null
+ 
+==> /etc/passwd <==
+root:x:0:0:root:/root:/bin/bash
+bin:x:1:1:bin:/bin:/sbin/nologin
+daemon:x:2:2:daemon:/sbin:/sbin/nologin
+
+
+------------------------- discard output & error -------------------------------
+
+#head -n3 /etc/passwd /fakefile &> /dev/null
+
+#
+
+
+----------------------------------------------------- shell script execut ------------------------------------------------
+https://github.com/chvinodgcp5010/Devops-ALL/blob/main/1.Scripting-Bash/Scripting-Bash-inDepth/Scripts/11.Script-11-%20Standard%20ip%20%26%20standard%20op%20%26%20error
+
+#sh s1.sh
+
+LINE contains : root:x:0:0:root:/root:/bin/bash
+
+Contents of /tmp/data:
+root:x:0:0:root:/root:/bin/bash
+bin:x:1:1:bin:/bin:/sbin/nologin
+daemon:x:2:2:daemon:/sbin:/sbin/nologin
+
+Contents of /tmp/data:
+root:x:0:0:root:/root:/bin/bash
+bin:x:1:1:bin:/bin:/sbin/nologin
+daemon:x:2:2:daemon:/sbin:/sbin/nologin
+8786 18954
+25618 26034
+
+LINE contains : root:x:0:0:root:/root:/bin/bash
+
+Contents of /tmp/data
+root:x:0:0:root:/root:/bin/bash
+bin:x:1:1:bin:/bin:/sbin/nologin
+daemon:x:2:2:daemon:/sbin:/sbin/nologin
+==> /etc/passwd <==
+root:x:0:0:root:/root:/bin/bash
+bin:x:1:1:bin:/bin:/sbin/nologin
+daemon:x:2:2:daemon:/sbin:/sbin/nologin
+
+Contents of /tmp/data.err:
+head: cannot open ‘/fakefile’ for reading: No such file or directory
+
+Contents of /tmp/data:
+==> /etc/passwd <==
+root:x:0:0:root:/root:/bin/bash
+bin:x:1:1:bin:/bin:/sbin/nologin
+daemon:x:2:2:daemon:/sbin:/sbin/nologin
+
+==> /etc/hosts <==
+127.0.0.1   localhost localhost.localdomain localhost4 localhost4.localdomain4
+::1         localhost6 localhost6.localdomain6
+head: cannot open ‘/fakefile’ for reading: No such file or directory
+
+     1 	==> /etc/passwd <==
+     2 	root:x:0:0:root:/root:/bin/bash
+     3 	bin:x:1:1:bin:/bin:/sbin/nologin
+     4 	daemon:x:2:2:daemon:/sbin:/sbin/nologin
+     5 	head: cannot open ‘/fakefile’ for reading: No such file or directory
+
+Discarding STDOUT:
+head: cannot open ‘/fakefile’ for reading: No such file or directory
+
+Discarding STDERR:
+==> /etc/passwd <==
+root:x:0:0:root:/root:/bin/bash
+bin:x:1:1:bin:/bin:/sbin/nologin
+daemon:x:2:2:daemon:/sbin:/sbin/nologin
+
+Discarding STDOUT and STDERR:
+
+
+
+
+
+
+
+
+
+

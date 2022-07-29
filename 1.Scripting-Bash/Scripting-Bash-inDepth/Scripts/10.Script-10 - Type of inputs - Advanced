@@ -1,0 +1,24 @@
+#!/bin/bash 
+
+#This script demonstrate I/O redirection.
+
+#Redirect STDOUT to a file (file name is "data")
+FILE="/tmp/data"
+head -n10 /etc/passwd > ${FILE}
+
+#Redirect STDIN to a program
+read LINEVND < ${FILE}           #variable LINEVND contains first line of the file.
+echo "LINEVND contains:: ${LINEVND}"
+
+#Redirect STDOUT to a file,overwriting the file 
+head -n3 /etc/passwd > "${FILE}"
+echo 
+echo "Contents of ${FILE}: "
+cat ${FILE}
+
+#Redirect STDOUT to a file, appending to the file.
+echo "${RANDOM} ${RANDOM}" >> ${FILE}
+echo "${RANDOM} ${RANDOM}" >> ${FILE}
+echo 
+echo "Contents for ${FILE}:"
+cat ${FILE}
